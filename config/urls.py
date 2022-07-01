@@ -21,3 +21,4 @@ urlpatterns = [
     path('accounts/', include('apps.accounts.urls')),
     path('checklists/', include('apps.checklists.urls')),
 ]
+#test
