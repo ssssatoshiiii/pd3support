@@ -1,0 +1,299 @@
+section {
+  max-width: 300px;
+  margin: 60px auto;
+}
+
+div.edit_btn {
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+  background: #fff;
+  border: 1px solid #5ebec1;
+  box-sizing: border-box;
+  width: 100%;
+  height: 80px;
+  padding: 0 25px;
+  color: #5ebec1;
+  font-size: 16px;
+  text-align: left;
+  text-decoration: none;
+  position: relative;
+  transition-duration: 0.2s;
+}
+
+div.edit_btn:hover {
+  background: #5ebec1;
+  border: 1px solid #5ebec1;
+  color: #fff;
+}
+
+div.edit_btn:before {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 0 40px 50px;
+  border-color: transparent transparent #5ebec1 transparent;
+}
+
+div.edit_btn span {
+  position: absolute;
+  bottom: 12px;
+  right: 20px;
+  display: inline-block;
+}
+
+div.edit_btn span:before {
+  content: '';
+  width: 15px;
+  height: 15px;
+  background: #ffffff;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  margin-top: -7px;
+}
+
+div.edit_btn span:after {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border: 0;
+  border-top: 2px solid #5ebec1;
+  border-right: 2px solid #5ebec1;
+  transform: rotate(45deg);
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  margin-top: -3px;
+}
+
+
+
+/* @import url(https://fonts.googleapis.com/css?family=Raleway:300);
+@import url(https://fonts.googleapis.com/css?family=Lusitana:400,700); */
+
+.align-center {
+  text-align: center;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  position: relative;
+}
+
+/* .row {
+  margin: -20px 0;
+} */
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.row .col {
+  padding: 0 20px;
+  float: left;
+  box-sizing: border-box;
+}
+
+.row .col.x-50 {
+  width: 50%;
+}
+
+.row .col.x-100 {
+  width: 100%;
+}
+
+.row .col.x-0 {
+  width: 0%;
+  height:0%;
+}
+
+.content-wrapper {
+  min-height: 100%;
+  position: relative;
+}
+
+.get-in-touch {
+  max-width: 650px;
+  margin: 0 auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.get-in-touch .title {
+  text-align: center;
+  font-family: Raleway, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  font-size: 36px;
+  line-height: 48px;
+  padding-bottom: 48px;
+}
+
+.contact-form .form-field {
+  position: relative;
+  margin: 32px 0;
+}
+
+.contact-form .input-text {
+  display: block;
+  width: 100%;
+  height: 36px;
+  border-width: 0 0 2px 0;
+  border-color: #000;
+  font-family: Lusitana, serif;
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 400;
+}
+
+.contact-form .input-text:focus {
+  outline: none;
+}
+
+.contact-form .input-text:focus+.label,
+.contact-form .input-text.not-empty+.label {
+  transform: translateY(-18px);
+}
+
+.contact-form .label {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  font-family: Lusitana, serif;
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 400;
+  color: #888;
+  cursor: text;
+  transition: transform 0.2s ease-in-out;
+}
+
+.contact-form .submit-btn {
+  display: inline-block;
+  background-color: #000;
+  color: #fff;
+  font-family: Raleway, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 16px;
+  line-height: 24px;
+  padding: 8px 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.note {
+  position: absolute;
+  left: 0;
+  bottom: 10px;
+  width: 100%;
+  text-align: center;
+  font-family: Lusitana, serif;
+  font-size: 16px;
+  line-height: 21px;
+}
+
+.note .link {
+  color: #888;
+  text-decoration: none;
+}
+
+.note .link:hover {
+  text-decoration: underline;
+}
+
+
+
+
+
+
+/*** USWITCH SELECT ** */
+.us-form select {
+  position: relative;
+  -webkit-appearance: button;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  display: inline-block;
+  vertical-align: middle;
+  height: 2.2em;
+  margin: 2px;
+  padding: 0.3em 0.6em;
+  background: white;
+  border: 1px solid #aaaaaa;
+  border-radius: 0.3em;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.4);
+  /* font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; */
+  font-family: Lusitana,serif;
+  font-size: 0.85em;
+  font-weight: normal;
+  overflow: hidden;
+  text-shadow: 0 1px 0 white;
+  -webkit-transition: box-shadow 200ms, border-color 200ms;
+  -moz-transition: box-shadow 200ms, border-color 200ms;
+  transition: box-shadow 200ms, border-color 200ms;
+  white-space: nowrap;
+}
+
+.us-form select option {
+  text-shadow: none;
+}
+
+.us-form select:disabled,
+.us-form select:disabled:hover {
+  color: #cccccc !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+.us-form select.error {
+  color: #bf212e;
+  border-color: #bf212e;
+}
+
+.us-form select.input-big {
+  font-size: 17px;
+}
+
+.us-form.error select,
+.us-form .error select {
+  color: #bf212e;
+  border-color: #bf212e;
+}
+
+
+
+
+.m-form-item-textarea textarea {
+  height: 300px;
+}
+
+.m-form-textarea {
+  display: block;
+  width: 100%;
+  padding: 4px 16px;
+  border-radius: 4px;
+  border: none;
+  box-shadow: 0 0 0 1px #ccc inset;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  resize: vertical;
+}
+
+.m-form-textarea:focus {
+  outline: 0;
+  box-shadow: 0 0 0 2px rgb(33, 150, 243) inset;
+}

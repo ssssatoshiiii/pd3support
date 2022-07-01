@@ -1,0 +1,130 @@
+{% load static %}
+{% load boost %}
+
+<!DOCTYPE html>
+<html lang="ja">
+
+
+<head>
+  <!--- 共通ヘッダ --->
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="author" content="ダイキン工業 TIC 生産システム革新G">
+  <meta name="description" content="team_leader_support_tool">
+  <link rel="icon" href="{% static 'common/images/PICHON.ico'%}">
+
+  <title>{% block title %}{% endblock %} - 組長支援ツール</title>
+
+  <!--- CSS --->
+  <link rel="stylesheet" type="text/css" href="{% static 'common/css/bootstrap/bootstrap.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'common/css/fontawesome-all.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'common/css/bootstrap/bootstrap-datepicker.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'common/css/animate.min.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'common/css/sweetalert2.css' %}">
+
+  <!--- 自作CSS --->
+  <link rel="stylesheet" type="text/css" href="{% static 'common/css/scroll_bar.css' %}">
+
+  <!--- 追加CSS --->
+  {% block CSS %}{% endblock %}
+
+  <!--- JavaScript --->
+  <!--- JavaScript : jquery --->
+  <script type="text/javascript" src="{% static 'common/js/jquery-3.3.1.min.js'%}"></script>
+
+  <!--- JavaScript : BootStrap --->
+  <script type="text/javascript" src="{% static 'common/js/bootstrap/popper.min.js'%}"></script>
+  <script type="text/javascript" src="{% static 'common/js/bootstrap/bootstrap.min.js'%}"></script>
+  <script type="text/javascript" src="{% static 'common/js/bootstrap/bootstrap-datepicker.min.js'%}"></script>
+  <script type="text/javascript" src="{% static 'common/js/bootstrap/bootstrap-datepicker.ja.min.js'%}"></script>
+
+  <!--- JavaScript : Cookie --->
+  <script type="text/javascript" src="{% static 'common/js/jquery.cookie.js'%}"></script>
+
+  <!--- JavaScript : Table To JSON --->
+  <script type="text/javascript" src="{% static 'common/js/jquery.tabletojson.min.js'%}"></script>
+
+  <!--- JavaScript : sweetalert2.all.min.js --->
+  <script type="text/javascript" src="{% static 'common/js/sweetalert2.all.min.js'%}"></script>
+  <script type="text/javascript" src="{% static 'common/js/sweetalert2.min.js'%}"></script>
+  <!--- JavaScript : ContextMenu --->
+  <script type="text/javascript" src="{% static 'common/js/jquery.ui.position.min.js'%}"></script>
+  <script type="text/javascript" src="{% static 'common/js/jquery.contextMenu.min.js'%}"></script>
+
+  <!-- 追加JS -->
+  {% block JS %}{% endblock %}
+</head>
+
+<!--- ナビゲーション部 --->
+{% block nav %}
+<nav class="navbar navbar-expand navbar-light bg-light sticky-top">
+  <a class="navbar-brand m-2" href="#"><img
+      src="{% static 'common/images/DaikinLogo_FullColor_clear.png'%}" width="215" height="45">
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-content"
+    aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <!-- ナビゲーション -->
+  <div class="collapse navbar-collapse" id="navbar-content">
+    <!-- ナビゲーションメニュー -->
+    <ul class="navbar-nav mr-auto">
+    </ul>
+  </div>
+  <div class = "nav navbar-nav" style = "text-align:right">
+    {%if user.is_authenticated %}
+    <a class= "nav-link" >ユーザ名: {{user.get_username}}</a>
+    <a class = "nav-link" href="{% url 'accounts:logout'%}"}>ログアウト</a>
+    {% endif%}
+  </div>
+  {% block nav_button %}
+  {%endblock%}
+</nav>
+{% endblock %}
+
+
+{% block Title %}
+{% endblock %}
+
+{% block three_column %}
+<div class="container-fluid">
+  <div class="container-fluid" style ="width:70%; float:left;">
+    <div class="row pb-5 mb-4" id = "action_list">
+      {% block layer_list %}
+      {% endblock %}
+    </div>
+  </div>
+  {% block action_supinfo %}
+  {% endblock %}
+</div>
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+
+
+{% block footer %}
+<footer class="py-4 bg-dark text-light fixed-bottom">
+  <div class="container text-center">
+    <p class="m-0">
+      <small></small>
+    </p>
+  </div>
+</footer>
+
+<!-- IE禁止 -->
+<script language="javascript">
+  var isMSIE = /*@cc_on!@*/false;
+  if (isMSIE) {
+    if (confirm('当WebアプリはInternet Explorerに対応しておりません。本アプリを正常に使用するためにはMicrosoft Edge,Google Chrome等のモダンなブラウザをご利用ください(無料)。対応ブラウザのダウンロードページに移動しますか？') == true) {
+      location.href = "https://www.google.co.jp/chrome/";
+    } else {
+    }
+  }
+</script>
+{% endblock %}
+
+
+</html>

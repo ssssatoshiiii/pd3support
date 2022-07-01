@@ -1,0 +1,24 @@
+<!-- テンプレートの継承 -->
+{% extends "accounts/base.html" %}
+{% load static %}
+
+{% block Title %}
+<div class="login title">
+  <b>ログアウトしました</b>
+</div>
+{% endblock %}
+
+{% block three_column %}
+{% endblock %}
+
+
+{% block content %}
+<div class="main border col-4 container mt-5">
+  <div class="login title mt-2">
+    <b>ログインはこちらから<b>
+  </div>
+  <div class="logout col-5 container mt-2 mb-3">
+      <button onclick = "location.href='./login'" class="btn btn-primary btn-block btn-flat">ログイン</button>
+  </div>
+</div>
+{% endblock %}

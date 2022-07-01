@@ -1,0 +1,43 @@
+<!-- テンプレートの継承 -->
+{% extends "common/base.html" %}
+{% load static %}
+
+{% block Title %}
+<div class="login title">
+  <b>ログイン画面です</b>
+</div>
+{% endblock %}
+
+{% block three_column %}
+{% endblock %}
+
+
+{% block content %}
+<div class="border col-4 mt-5 container">
+  <div class="login title">
+    <b>ユーザー名とパスワードをご入力ください</b>
+  </div>
+  <form action="" method="POST">
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="form-group has-feedback mt-3 col-8 container">
+      {{ field }}
+    </div>
+    {% endfor %}
+    <div class="row">
+
+      {% for error in form.non_field_errors %}
+      <div class="alert alert-danger" role="alert">
+        <p>{{ error }}</p>
+      </div>
+      {% endfor %}
+      <!-- /.col -->
+      <div class="col-8 container mb-3">
+        <button  type = "submit" class="btn btn-primary btn-block btn-flat">ログイン</button>
+      </form>
+      </div>
+      <!-- /.col -->
+    </div>
+</div>
+
+{% endblock %}

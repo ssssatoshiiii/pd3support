@@ -1,0 +1,25 @@
+<!-- テンプレートの継承 -->
+{% extends "accounts/base.html" %}
+{% load static %}
+
+{% block Title %}
+<div class="login title">
+  <b>トップ画面です</b>
+</div>
+{% endblock %}
+
+{% block three_column %}
+{% endblock %}
+
+
+{% block content %}
+<div class="main border col-4 container mt-5">
+  <div class="login title mt-2">
+    <b>Hello! World!<b>
+  </div>
+  <div class="logout col-5 container mt-2 mb-3">
+
+    <button onclick = "location.href='./logout'" class="btn btn-primary btn-block btn-flat">ログアウト</button>
+  </div>
+</div>
+{% endblock %}

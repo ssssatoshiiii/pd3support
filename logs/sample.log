@@ -1,0 +1,906 @@
+2022-06-05 08:22:03,979 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-05 08:23:12,028 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-05 08:24:34,620 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/sparql.py changed, reloading.
+2022-06-05 08:24:34,906 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-05 08:25:11,830 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/sparql.py changed, reloading.
+2022-06-05 08:25:12,125 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-05 08:26:30,634 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/sparql.py changed, reloading.
+2022-06-05 08:26:30,921 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-05 09:03:34,859 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/sparql.py changed, reloading.
+2022-06-05 09:03:35,635 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-05 09:03:52,038 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/views.py changed, reloading.
+2022-06-05 09:03:52,315 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-05 09:04:11,748 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/sparql.py changed, reloading.
+2022-06-05 09:04:12,048 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-05 09:04:14,922 ERROR    [log#log_response 241] Internal Server Error: /myapp1/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/views.py", line 8, in index
+    return HttpResponse(template.render( context, request))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 62, in render
+    return self.template.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1059, in render
+    output = self.filter_expression.resolve(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 712, in resolve
+    obj = self.var.resolve(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 842, in resolve
+    value = self._resolve_lookup(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 909, in _resolve_lookup
+    current = current()
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/sparql.py", line 22, in get_graph
+    return(graph_url_list.values())
+AttributeError: 'list' object has no attribute 'values'
+2022-06-05 09:05:27,576 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/sparql.py changed, reloading.
+2022-06-05 09:05:27,867 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-05 09:12:22,464 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/sparql.py changed, reloading.
+2022-06-05 09:12:22,760 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 09:24:48,545 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 09:24:56,349 WARNING  [log#log_response 241] Not Found: /
+2022-06-13 09:29:56,379 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 09:30:00,003 ERROR    [log#log_response 241] Internal Server Error: /myapp1/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 62, in render
+    return self.template.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 132, in render
+    compiled_parent = self.get_parent(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 129, in get_parent
+    return self.find_template(parent, context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 107, in find_template
+    template, origin = context.template.engine.find_template(
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/engine.py", line 162, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: common/base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/views.py", line 9, in index
+    return HttpResponse(template.render( context, request))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 64, in render
+    reraise(exc, self.backend)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 85, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: common/base.html
+2022-06-13 09:31:06,655 ERROR    [log#log_response 241] Internal Server Error: /myapp1/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/defaulttags.py", line 1027, in find_library
+    return parser.libraries[name]
+KeyError: 'boost'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/views.py", line 9, in index
+    return HttpResponse(template.render( context, request))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 62, in render
+    return self.template.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 132, in render
+    compiled_parent = self.get_parent(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 129, in get_parent
+    return self.find_template(parent, context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 107, in find_template
+    template, origin = context.template.engine.find_template(
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/engine.py", line 158, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 200, in compile_nodelist
+    return parser.parse()
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 513, in parse
+    raise self.error(token, e)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 511, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/defaulttags.py", line 1089, in load
+    lib = find_library(parser, name)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/defaulttags.py", line 1029, in find_library
+    raise TemplateSyntaxError(
+django.template.exceptions.TemplateSyntaxError: 'boost' is not a registered tag library. Must be one of:
+admin_list
+admin_modify
+admin_urls
+cache
+i18n
+l10n
+log
+static
+tz
+2022-06-13 09:34:01,606 ERROR    [log#log_response 241] Internal Server Error: /myapp1/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/defaulttags.py", line 1027, in find_library
+    return parser.libraries[name]
+KeyError: 'boost'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/views.py", line 9, in index
+    return HttpResponse(template.render( context, request))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 62, in render
+    return self.template.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 132, in render
+    compiled_parent = self.get_parent(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 129, in get_parent
+    return self.find_template(parent, context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 107, in find_template
+    template, origin = context.template.engine.find_template(
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/engine.py", line 158, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 200, in compile_nodelist
+    return parser.parse()
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 513, in parse
+    raise self.error(token, e)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 511, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/defaulttags.py", line 1089, in load
+    lib = find_library(parser, name)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/defaulttags.py", line 1029, in find_library
+    raise TemplateSyntaxError(
+django.template.exceptions.TemplateSyntaxError: 'boost' is not a registered tag library. Must be one of:
+admin_list
+admin_modify
+admin_urls
+cache
+i18n
+l10n
+log
+static
+tz
+2022-06-13 09:34:19,799 ERROR    [log#log_response 241] Internal Server Error: /myapp1/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/views.py", line 9, in index
+    return HttpResponse(template.render( context, request))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 62, in render
+    return self.template.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/defaulttags.py", line 472, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/urls/resolvers.py", line 802, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'logout' not found. 'logout' is not a valid view function or pattern name.
+2022-06-13 09:40:32,608 ERROR    [log#log_response 241] Internal Server Error: /myapp1/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/views.py", line 9, in index
+    return HttpResponse(template.render( context, request))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 62, in render
+    return self.template.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/defaulttags.py", line 472, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/urls/resolvers.py", line 802, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'logout' not found. 'logout' is not a valid view function or pattern name.
+2022-06-13 09:40:56,011 ERROR    [log#log_response 241] Internal Server Error: /myapp1/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/defaulttags.py", line 1027, in find_library
+    return parser.libraries[name]
+KeyError: 'boost'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/views.py", line 9, in index
+    return HttpResponse(template.render( context, request))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 62, in render
+    return self.template.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 132, in render
+    compiled_parent = self.get_parent(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 129, in get_parent
+    return self.find_template(parent, context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 107, in find_template
+    template, origin = context.template.engine.find_template(
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/engine.py", line 158, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loaders/base.py", line 28, in get_template
+    return Template(
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 200, in compile_nodelist
+    return parser.parse()
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 513, in parse
+    raise self.error(token, e)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 511, in parse
+    compiled_result = compile_func(self, token)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/defaulttags.py", line 1089, in load
+    lib = find_library(parser, name)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/defaulttags.py", line 1029, in find_library
+    raise TemplateSyntaxError(
+django.template.exceptions.TemplateSyntaxError: 'boost' is not a registered tag library. Must be one of:
+admin_list
+admin_modify
+admin_urls
+cache
+i18n
+l10n
+log
+static
+tz
+2022-06-13 09:42:44,972 ERROR    [log#log_response 241] Internal Server Error: /myapp1/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/views.py", line 9, in index
+    return HttpResponse(template.render( context, request))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 62, in render
+    return self.template.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/defaulttags.py", line 472, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/urls/resolvers.py", line 802, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'logout' not found. 'logout' is not a valid view function or pattern name.
+2022-06-13 09:45:55,021 ERROR    [log#log_response 241] Internal Server Error: /myapp1/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/views.py", line 9, in index
+    return HttpResponse(template.render( context, request))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 62, in render
+    return self.template.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/defaulttags.py", line 472, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/urls/resolvers.py", line 802, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'logout' not found. 'logout' is not a valid view function or pattern name.
+2022-06-13 09:47:16,353 ERROR    [log#log_response 241] Internal Server Error: /myapp1/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/views.py", line 9, in index
+    return HttpResponse(template.render( context, request))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 62, in render
+    return self.template.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 157, in render
+    return compiled_parent._render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 63, in render
+    result = block.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/defaulttags.py", line 472, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/urls/resolvers.py", line 802, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'logout' not found. 'logout' is not a valid view function or pattern name.
+2022-06-13 09:54:14,812 WARNING  [log#log_response 241] Not Found: /myapp1/logout
+2022-06-13 10:00:21,373 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/test/myapp1/urls.py changed, reloading.
+2022-06-13 10:00:22,085 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:10:52,133 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:13:44,107 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/config/settings.py changed, reloading.
+2022-06-13 10:13:44,316 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:15:05,316 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/apps.py changed, reloading.
+2022-06-13 10:15:05,757 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:15:59,545 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/config/settings.py changed, reloading.
+2022-06-13 10:15:59,960 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:16:41,823 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/config/settings.py changed, reloading.
+2022-06-13 10:16:42,101 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:16:52,570 WARNING  [log#log_response 241] Not Found: /myapp1/
+2022-06-13 10:16:53,837 WARNING  [log#log_response 241] Not Found: /myapp1/
+2022-06-13 10:16:57,290 WARNING  [log#log_response 241] Not Found: /myapp1/
+2022-06-13 10:17:03,209 ERROR    [log#log_response 241] Internal Server Error: /accounts/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py", line 14, in top
+    return render(request, os.getcwd()+'/templates/accounts/hello.html')
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/templates/accounts/hello.html
+2022-06-13 10:21:22,621 ERROR    [log#log_response 241] Internal Server Error: /accounts/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py", line 14, in top
+    return render(request, os.getcwd()+'/templates/accounts/hello.html')
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/templates/accounts/hello.html
+2022-06-13 10:24:28,208 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py changed, reloading.
+2022-06-13 10:24:28,517 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:24:33,727 ERROR    [log#log_response 241] Internal Server Error: /accounts/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py", line 14, in top
+    template = loader.get_template(os.getcwd()+'/templates/accounts/hello.html')
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/templates/accounts/hello.html
+2022-06-13 10:24:34,377 ERROR    [log#log_response 241] Internal Server Error: /accounts/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py", line 14, in top
+    template = loader.get_template(os.getcwd()+'/templates/accounts/hello.html')
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/templates/accounts/hello.html
+2022-06-13 10:24:35,035 ERROR    [log#log_response 241] Internal Server Error: /accounts/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py", line 14, in top
+    template = loader.get_template(os.getcwd()+'/templates/accounts/hello.html')
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/templates/accounts/hello.html
+2022-06-13 10:25:06,337 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py changed, reloading.
+2022-06-13 10:25:06,617 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:25:08,560 ERROR    [log#log_response 241] Internal Server Error: /accounts/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py", line 14, in top
+    return render(request, os.getcwd()+'/templates/accounts/hello.html')
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/templates/accounts/hello.html
+2022-06-13 10:27:31,685 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py changed, reloading.
+2022-06-13 10:27:32,015 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:30:14,355 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py changed, reloading.
+2022-06-13 10:30:14,639 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:31:06,836 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py changed, reloading.
+2022-06-13 10:31:07,108 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:31:08,679 ERROR    [log#log_response 241] Internal Server Error: /accounts/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py", line 15, in top
+    return render(request, 'templates/myapp1/index.html')
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: templates/myapp1/index.html
+2022-06-13 10:31:17,476 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py changed, reloading.
+2022-06-13 10:31:17,717 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:32:24,161 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py changed, reloading.
+2022-06-13 10:32:24,478 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:32:25,860 ERROR    [log#log_response 241] Internal Server Error: /accounts/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py", line 15, in top
+    return render(request, './index.html')
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: ./index.html
+2022-06-13 10:32:29,747 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py changed, reloading.
+2022-06-13 10:32:30,017 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:32:31,364 ERROR    [log#log_response 241] Internal Server Error: /accounts/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py", line 15, in top
+    return render(request, 'index.html')
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: index.html
+2022-06-13 10:34:07,051 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py changed, reloading.
+2022-06-13 10:34:07,344 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:34:26,928 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py changed, reloading.
+2022-06-13 10:34:27,194 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:34:28,828 ERROR    [log#log_response 241] Internal Server Error: /accounts/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py", line 15, in top
+    return render(request, '/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/index.html')
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/index.html
+2022-06-13 10:38:20,933 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py changed, reloading.
+2022-06-13 10:38:21,206 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:38:40,682 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py changed, reloading.
+2022-06-13 10:38:40,936 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:42:12,002 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py changed, reloading.
+2022-06-13 10:42:12,319 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:42:26,755 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py changed, reloading.
+2022-06-13 10:42:27,019 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:42:28,930 ERROR    [log#log_response 241] Internal Server Error: /accounts/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py", line 11, in top
+    return render(request, '/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/index.html')
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/index.html
+2022-06-13 10:44:55,333 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py changed, reloading.
+2022-06-13 10:44:55,621 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:44:57,393 ERROR    [log#log_response 241] Internal Server Error: /accounts/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py", line 11, in top
+    return render(request, os.getcwd()+'/templates/accounts/hello.html')
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/templates/accounts/hello.html
+2022-06-13 10:45:02,706 WARNING  [log#log_response 241] Not Found: /myapp1/
+2022-06-13 10:45:04,314 WARNING  [log#log_response 241] Not Found: /myapp1/
+2022-06-13 10:45:04,881 WARNING  [log#log_response 241] Not Found: /myapp1/
+2022-06-13 10:46:48,008 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py changed, reloading.
+2022-06-13 10:46:48,280 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:46:50,373 ERROR    [log#log_response 241] Internal Server Error: /accounts/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py", line 12, in top
+    return render(request, os.getcwd()+'/templates/accounts/hello.html')
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/templates/accounts/hello.html
+2022-06-13 10:47:32,877 ERROR    [log#log_response 241] Internal Server Error: /accounts/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py", line 12, in top
+    return render(request, os.getcwd()+'/templates/accounts/hello.html')
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/templates/accounts/hello.html
+2022-06-13 10:47:50,604 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py changed, reloading.
+2022-06-13 10:47:50,874 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:48:09,459 ERROR    [log#log_response 241] Internal Server Error: /accounts/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py", line 12, in top
+    return render(request, os.getcwd()+'/templates/accounts/hello.html')
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/templates/accounts/hello.html
+2022-06-13 10:49:48,285 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/config/settings.py changed, reloading.
+2022-06-13 10:49:48,574 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:49:50,470 ERROR    [log#log_response 241] Internal Server Error: /accounts/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 62, in render
+    return self.template.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 132, in render
+    compiled_parent = self.get_parent(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 129, in get_parent
+    return self.find_template(parent, context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 107, in find_template
+    template, origin = context.template.engine.find_template(
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/engine.py", line 162, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/templates/common/base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py", line 12, in top
+    return render(request, os.getcwd()+'/templates/accounts/hello.html')
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 64, in render
+    reraise(exc, self.backend)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 85, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/templates/common/base.html
+2022-06-13 10:51:11,885 ERROR    [log#log_response 241] Internal Server Error: /accounts/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 62, in render
+    return self.template.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 132, in render
+    compiled_parent = self.get_parent(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 129, in get_parent
+    return self.find_template(parent, context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 107, in find_template
+    template, origin = context.template.engine.find_template(
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/engine.py", line 162, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/templates/common/base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py", line 12, in top
+    return render(request, os.getcwd()+'/templates/accounts/hello.html')
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 64, in render
+    reraise(exc, self.backend)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 85, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/templates/common/base.html
+2022-06-13 10:51:12,892 ERROR    [log#log_response 241] Internal Server Error: /accounts/
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 62, in render
+    return self.template.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 175, in render
+    return self._render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 167, in _render
+    return self.nodelist.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 1000, in <listcomp>
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/base.py", line 958, in render_annotated
+    return self.render(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 132, in render
+    compiled_parent = self.get_parent(context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 129, in get_parent
+    return self.find_template(parent, context)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader_tags.py", line 107, in find_template
+    template, origin = context.template.engine.find_template(
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/engine.py", line 162, in find_template
+    raise TemplateDoesNotExist(name, tried=tried)
+django.template.exceptions.TemplateDoesNotExist: Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/templates/common/base.html
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py", line 12, in top
+    return render(request, os.getcwd()+'/templates/accounts/hello.html')
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/shortcuts.py", line 24, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 64, in render
+    reraise(exc, self.backend)
+  File "/Users/shinmorisatoshi/Library/Python/3.10/lib/python/site-packages/django/template/backends/django.py", line 85, in reraise
+    raise new from exc
+django.template.exceptions.TemplateDoesNotExist: Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/templates/common/base.html
+2022-06-13 10:51:21,673 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/apps/accounts/views.py changed, reloading.
+2022-06-13 10:51:21,983 INFO     [autoreload#run_with_reloader 677] Watching for file changes with StatReloader
+2022-06-13 10:54:40,154 INFO     [autoreload#trigger_reload 266] /Users/shinmorisatoshi/Documents/0_修論/システム開発関連/pd3support/config/settings.py changed, reloading.

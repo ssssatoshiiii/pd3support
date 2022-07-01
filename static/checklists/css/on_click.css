@@ -1,0 +1,16 @@
+.swal2-popup {
+  font-size: 0.9rem !important;
+  /* font-family: Georgia, serif; */
+}
+
+.swal2-confirm {
+  margin: 1rem;
+}
+
+.swal2-cancel {
+  margin: 1rem;
+}
+
+a {
+  word-wrap: break-word;
+}
