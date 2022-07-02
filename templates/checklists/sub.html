@@ -50,8 +50,8 @@
             </svg>
             <div class="todo__text"> {{ action }}</div>
             </label>
-            <img class=" ml-2 mr-3" src="{% static 'checklists/images/outline_help_135156.png'%}" alt="" width="24" height="24"
-            onclick="detail_action('{{action_uri}}', this)">{% csrf_token %}
+            <img class="ml-2 mr-3" src= "{% static 'checklists/images/circle.png'%}"/ width = "24" height="24" onclick="detail_action('{{action_uri}}', this)">{% csrf_token %}
+            <img class=" ml-2 mr-3" src="{% static 'checklists/images/outline_help_135156.png'%}" alt="" width="24" height="24"  />
             </div>
         {% endfor %}
         {% endif %}

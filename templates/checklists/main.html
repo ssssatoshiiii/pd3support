@@ -89,7 +89,8 @@
               </svg>
               <div class="todo__text">  {{ action }} </div>
             </label>
-            <img class=" ml-2 mr-3" src="{% static 'checklists/images/outline_help_135156.png'%}" alt="" width="24" height="24" onclick="detail_action('{{action_uri}}', this)" />{% csrf_token %}
+            <img class="ml-2 mr-3" src= "{% static 'checklists/images/circle.png'%}"/ width = "24" height="24" onclick="detail_action('{{action_uri}}', this)">{% csrf_token %}
+            <img class=" ml-2 mr-3" src="{% static 'checklists/images/outline_help_135156.png'%}" alt="" width="24" height="24"  onclick = "show_action_supinfo('{{action_uri}}')"/>
           </div>
           {% endfor %}
         {% endif%}
@@ -122,15 +123,19 @@ function detail_action(uri, element){
     $('#action_list').append(response);
   })
 }
+
+function show_action_supinfo(uri){
+  console.log(uri);
+}
 </script>
 
 {% endblock %}
 
 {% block action_supinfo %}
-<div class="container-fluid" style="width:30%;float:right;background-color:blue;">
+<div class="container-fluid" style="width:30%;float:right;background-color:blanchedalmond;">
 
   <div class="container-fluid text-center">
-    <h1>あいうえお</h1>
+    <h1>選択中のアクション</h1>
   </div>
   <div class="container-fluid text-center">
     <h1>かきこ</h1>
