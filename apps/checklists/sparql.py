@@ -69,3 +69,68 @@ def get_detail_action(action):
 
     return results_value, results_uri
 
+def action_supinfo(uri):
+    #意図の取得
+    query_intention = """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+             PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+        SELECT ?intention
+        WHERE {
+        
+        <""" + uri + """> pd3:input ?input.
+        ?input pd3:arcType "intention";
+            pd3:value ?intention.
+        
+        }"""
+
+    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql.setQuery(query_intention)
+    sparql.setReturnFormat(JSON)
+    result = sparql.query().convert()["results"]["bindings"]
+    if(len(result)!= 0):
+        intention = result[0]["intention"]["value"]
+    else:
+        intention = ""
+
+    #知識道具の取得
+    query_toolknowledge = """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+             PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+        SELECT ?toolknowledge
+        WHERE {
+        
+        <""" + uri + """> pd3:input ?input.
+        ?input pd3:arcType "tool/knowledge";
+            pd3:value ?toolknowledge.
+        
+        }"""
+    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql.setQuery(query_toolknowledge)
+    sparql.setReturnFormat(JSON)
+    result = sparql.query().convert()["results"]["bindings"]
+    if(len(result)!= 0):
+        toolknowledge = result[0]["toolknowledge"]["value"]
+    else:
+        toolknowledge = ""
+
+    query_annotation = """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+             PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+        SELECT ?annotation
+        WHERE {
+        
+        <""" + uri + """> pd3:input ?input.
+        ?input pd3:arcType "annotation";
+            pd3:value ?annotation.
+        
+        }"""
+    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql.setQuery(query_annotation)
+    sparql.setReturnFormat(JSON)
+    result = sparql.query().convert()["results"]["bindings"]
+    if(len(result)!=0):
+        annotation = result[0]["annotation"]["value"]
+    else:
+        annotation = ""
+
+    return intention, toolknowledge, annotation

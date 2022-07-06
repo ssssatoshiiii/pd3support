@@ -142,4 +142,14 @@ def second_graph_list(request):
 
         return render(request, os.getcwd()+'/templates/checklists/sub.html', context)
 
+def action_supinfo_show(request):
+    if request.method == 'POST':
+        uri = request.POST.get('uri')
+        action = request.POST.get('action')
+        context = dict()
+        context['intention'], context['toolknowledge'], context['annotation'] = sparql.action_supinfo(uri)
+        context['action'] = action
+
+        return render(request, os.getcwd()+'/templates/checklists/action_supinfo.html', context)
+
 # Create your views here.
