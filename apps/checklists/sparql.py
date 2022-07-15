@@ -8,15 +8,18 @@ def get_graph():
 
     SELECT ?target (SAMPLE(?value1) AS ?value)  (COUNT (?inter_action) AS ?distance)
     WHERE{
-        ?start pd3:actionType "start";
+        GRAPH <http://digital-triplet.net:3030/test>{
+            ?start pd3:actionType "start";
         MINUS{
         ?start pd3:attribution ?o.
-    }
+        }
+        
         ?start (pd3:output/pd3:target)* ?inter_action.
         ?inter_action (pd3:output/pd3:target)+ ?target.
         ?target pd3:value ?value1.
         MINUS{
             ?target pd3:actionType "end".
+        }
         }
     }
     GROUP BY ?target
@@ -44,6 +47,7 @@ def get_detail_action(action):
 
         SELECT ?target ?value
         WHERE {
+            GRAPH<http://digital-triplet.net:3030/test>{
         
         <""" + action + """> pd3:expansion/pd3:member ?start.
         ?start pd3:actionType "start".
@@ -53,7 +57,7 @@ def get_detail_action(action):
         MINUS{
             ?target pd3:actionType "end".
         }
-        
+        }
         }"""
     sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
     sparql.setQuery(query)
@@ -76,11 +80,13 @@ def action_supinfo(uri):
 
         SELECT ?intention
         WHERE {
+            GRAPH <http://digital-triplet.net:3030/test>{
         
         <""" + uri + """> pd3:input ?input.
         ?input pd3:arcType "intention";
             pd3:value ?intention.
         
+        }
         }"""
 
     sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
@@ -98,11 +104,11 @@ def action_supinfo(uri):
 
         SELECT ?toolknowledge
         WHERE {
-        
+        GRAPH <http://digital-triplet.net:3030/test>{
         <""" + uri + """> pd3:input ?input.
         ?input pd3:arcType "tool/knowledge";
             pd3:value ?toolknowledge.
-        
+        }
         }"""
     sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
     sparql.setQuery(query_toolknowledge)
@@ -118,11 +124,12 @@ def action_supinfo(uri):
 
         SELECT ?annotation
         WHERE {
+            GRAPH<http://digital-triplet.net:3030/test>{
         
         <""" + uri + """> pd3:input ?input.
         ?input pd3:arcType "annotation";
             pd3:value ?annotation.
-        
+        }
         }"""
     sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
     sparql.setQuery(query_annotation)

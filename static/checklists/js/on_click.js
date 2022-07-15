@@ -25,8 +25,8 @@ const swalWithBootstrapButtons = Swal.mixin({
     
   })
 
-function popup(value) {
-  var value = { value: value };
+function popup(action, uri) {
+  var value = { action: action, uri: uri };
   $.ajax({
     type: 'POST',
     url: 'swal_ajax',

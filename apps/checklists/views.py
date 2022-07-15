@@ -97,14 +97,15 @@ def swal_ajax(request):
 
     elif request.method == 'POST':  # POSTの処理
         print("post_request")
-        param = request.POST.get("value")  # POSTパラメータ
-        value_list = str(param).split('_')
-        index = int(value_list[0])
-        contents_id = value_list[1].strip('][').split(', ')
-        custom_execution_contents_id = int(contents_id[index])
+        action = request.POST.get("action")  # POSTパラメータ
+        uri = request.POST.get("uri")
+        # value_list = str(param).split('_')
+        # index = int(value_list[0])
+        # contents_id = value_list[1].strip('][').split(', ')
+        # custom_execution_contents_id = int(contents_id[index])
         # model = DAO.DAO().LstUserCustomExecutionContents
         # column = [model.custom_execution_contents_id]
-        target_element = [custom_execution_contents_id]
+        # target_element = [custom_execution_contents_id]
         # records = DAO.DAO().method.select_where_and(DAO.DAO().session,
         #                                             model, column, target_element)
         # title = records[0].custom_execution_contents_title
@@ -115,14 +116,14 @@ def swal_ajax(request):
         # reference_list.append(records[0].reference_3)
         # reference_list.append(records[0].reference_4)
         # reference_list.append(records[0].reference_5)
-        references = ''
-        for i in reference_list:
-            if not i == None:
-                references = references + '<a href = "'+i + \
-                    '" target = "_blank" rel = "noopener noreferrer" > 関連-URL&nbsp;:&nbsp;' + \
-                    i+'</a >&nbsp;&nbsp;'
+        references = 'あいうえお'
+        # for i in reference_list:
+        #     if not i == None:
+        #         references = references + '<a href = "'+i + \
+        #             '" target = "_blank" rel = "noopener noreferrer" > 関連-URL&nbsp;:&nbsp;' + \
+        #             i+'</a >&nbsp;&nbsp;'
         result = dict()
-        result["title"] = "title"
+        result["title"] = action
         result["detail"] = "detail"
         result["references"] = references
 
