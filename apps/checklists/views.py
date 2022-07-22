@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 import os
 import sys
+import time
 
 @login_required
 def graphlist(request):
@@ -26,6 +27,20 @@ def graphlist(request):
     #過去事例の参照の際に使いそう、過去事例の参照可能なアクションを表示
     contents_AM_id = [1,2,4]
     context['contents_AM_id'] =contents_AM_id
+
+    if request.method == 'GET':
+        uri = request.GET.get("uri")
+        added_action = request.GET.get("added_action")
+        above_below = request.GET.get("above_below")
+        if(uri != None and "above" in request.GET):
+            index = context['actions_uri'].index(uri)
+            context['actions_uri'].insert(index, uri + str(time.time))
+            context['actions'].insert(index, added_action)
+        elif(uri!= None and "below" in request.GET):
+            index = context['actions_uri'].index(uri) + 1
+            context['actions_uri'].insert(index, uri + str(time.time))
+            context['actions'].insert(index, added_action)
+
 
 
     return render(request, os.getcwd()+'/templates/checklists/main.html', context)
@@ -99,23 +114,9 @@ def swal_ajax(request):
         print("post_request")
         action = request.POST.get("action")  # POSTパラメータ
         uri = request.POST.get("uri")
-        # value_list = str(param).split('_')
-        # index = int(value_list[0])
-        # contents_id = value_list[1].strip('][').split(', ')
-        # custom_execution_contents_id = int(contents_id[index])
-        # model = DAO.DAO().LstUserCustomExecutionContents
-        # column = [model.custom_execution_contents_id]
-        # target_element = [custom_execution_contents_id]
-        # records = DAO.DAO().method.select_where_and(DAO.DAO().session,
-        #                                             model, column, target_element)
-        # title = records[0].custom_execution_contents_title
-        # detail = records[0].details
+
         reference_list = []
-        # reference_list.append(records[0].reference_1)
-        # reference_list.append(records[0].reference_2)
-        # reference_list.append(records[0].reference_3)
-        # reference_list.append(records[0].reference_4)
-        # reference_list.append(records[0].reference_5)
+
         references = 'あいうえお'
         # for i in reference_list:
         #     if not i == None:

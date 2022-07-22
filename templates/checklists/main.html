@@ -66,15 +66,15 @@
           <circle id="todo__circle" cx="13.5" cy="12.5" r="10"></circle>
         </defs>
       </svg>
-      <div class="todo-list my-custom-board">
+      <div class="todo-list my-custom-board" >
         {% if contents_AM_None %}<div class="todo__text d-flex justify-content-center mt-4">{{ contents_AM_None }}
         </div>
         {% else %}
           {% for action,action_uri in actions|zip:actions_uri %}
-          <div class="d-flex flex-row bd-highlight align-items-center m-0 p-0">
+          <div class="d-flex flex-row bd-highlight align-items-center m-0 p-0" id="{{action_uri}}">
             <label class="todo">
               {% if forloop.counter in checked_AM %}
-              <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}" onclick="buttonClick(this.id)"
+              <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}" onclick="buttonClick(this.id)" 
                 checked="checked" />{% csrf_token %} 
               {% else %}
               <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}"
@@ -87,15 +87,36 @@
                 <use xlink:href="#todo__check" class="todo__check"></use>
                 <use xlink:href="#todo__circle" class="todo__circle"></use>
               </svg>
-              <div class="todo__text">  {{ action }} </div>
+              <div class="todo__text">  {{ action }} {{test}}</div>
             </label>
             <img class="ml-0 mr-0" src= "{% static 'checklists/images/circle.png'%}"/ width = "24" height="24" onclick="detail_action('{{action_uri}}', this)" />{% csrf_token %}
             <img class="ml-0 mr-0" src="{% static 'checklists/images/outline_help_135156.png'%}" alt="" width="24" height="24"  onclick = "show_action_supinfo('{{action}}','{{action_uri}}')"/>
             <img class="ml-1 mr-0" src="{% static 'checklists/images/folder.png'%}" alt="" width="20" height="20" onclick="popup('{{action}}', '{{action_uri}}')" />
+            <img class="ml-0 mr-0" src="{% static 'checklists/images/icon_135090_256.png'%}" alt="" width="24" height="24" onclick="add_action_form(this.parentNode.id)"/>
           </div>
           {% endfor %}
         {% endif%}
       </div>
+      <div id ="contextmenu" ></div>
+      <script>
+        function add_action_form(uri){
+          $('#contextmenu').append('<form method="GET"> {% csrf_token %} <input type="hidden" name="uri" value= '+ uri + ' /> <input type="text" name="added_action" /> <button name = "above" type="submit">上にアクションを追加</button> <button name="below" type="submit">下にアクションを追加</button> </form>')
+        }
+        // window.onload = function(){
+        //   p = document.getElementById('todo-list');
+        //   p.addEventListener('contextmenu', function(e){
+        //     document.getElementById('contextmenu').style.display="block";
+        //     console.log(p.querySelector('.todo').querySelector('.todo__text').textContent);
+        //   });
+        // }
+
+        function add_action_above(){
+          alert('above');
+        }
+        function add_action_below(){
+          alert('below');
+        }
+      </script>
     </div>
   </div>
 </div>
