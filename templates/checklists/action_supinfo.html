@@ -2,6 +2,8 @@
 {% load boost %}
 
 <div class="container-fluid text-center">
+    <h5>詳細表示</h5>
+    <h6>選択中のアクション</h6>
     <h6 style="background-color: white; overflow:scroll;">{{action}}</h6>
     <h6>意図</h6>
     <h6 style="background-color: white; overflow:scroll;">{{intention}}</h6>
@@ -10,4 +12,40 @@
     <h6>注釈</h6>
     <h6 style="background-color: white; overflow:scroll;">{{annotation}}</h6>
 </div>
+<div class="container-fluid text-center">
+    <form method="POST">
+        {% csrf_token %}
+    <h5>作業記録</h5>
+    <h6>実施アクション</h6>
+    <input type= "text" style="background-color: white; overflow:scroll;" name="action" value='{{action}}'></input>
+    <h6>意図</h6>
+    <input type= "text" style="background-color: white; overflow:scroll;"></input>
+    <h6>知識・道具</h6>
+    <input type= "text" style="background-color: white; overflow:scroll;"></input>
+    <h6>注釈</h6>
+    <input type= "text" style="background-color: white; overflow:scroll;"></input>
+    <input type="button" value="登録" onclick = "add_LLD(this, '{{uri}}')"/>
+    </form>
+</div>
+<script>
+    function add_LLD(tag, uri){
+        action = tag.parentNode.children[3].value;
+        intention = tag.parentNode.children[5].value;
+        toolknowledge = tag.parentNode.children[7].value;
+        annotation = tag.parentNode.children[9].value;
+
+        data = {uri:uri, action:action, intention:intention, toolknowledge:toolknowledge, annotation:annotation}
+
+        $.ajax({
+            type: 'POST',
+            url: 'add_LLD',
+            data: data,
+            dataType: 'text',
+        })
+        .done(function(response){
+            console.log(tag)
+            tag.parentNode.append(response);
+        })
+    }
+</script>
 

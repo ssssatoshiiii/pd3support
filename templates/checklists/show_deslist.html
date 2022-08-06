@@ -1,0 +1,197 @@
+<!-- テンプレートの継承 -->
+{% extends "common/base.html" %}
+{% load static %}
+{% load boost %}
+
+<!-- タイトル名 -->
+{% block title %}
+チェックリスト
+{% endblock %}
+
+<!--追加CSS-->
+{% block CSS %}
+<link rel="stylesheet" type="text/css" href="{% static 'checklists/css/checkbox.css'%}">
+<link rel="stylesheet" type="text/css" href="{% static 'checklists/css/board_size.css'%}">
+<link rel="stylesheet" type="text/css" href="{% static 'checklists/css/on_click.css'%}">
+{% endblock %}
+
+<!-- 追加JS -->
+{% block JS %}
+<script type="text/javascript" src="{% static 'checklists/js/ajax_setting.js'%}"></script>
+<script type="text/javascript" src="{% static 'checklists/js/on_click.js'%}"></script>
+{% endblock %}
+
+{% block Title %}
+<div class="container-fluid mt-1 pr-5">
+  <li  class="d-flex align-items-center justify-content-end">
+    <a href="checklists_edit" rel="noopener noreferrer">
+      <img  src="{% static 'checklists/images/outline_settings.png'%}" alt="" width="30" height="30">
+      <font size="3" color="#135156"><strong>編集</strong></font>
+    </a>
+  </li>
+</div>
+<div class="container text-center">
+  <p class="mt-3 mb-2">
+    <font color="#135156"><strong>プロセス記述選択画面</strong></font>
+  </p>
+</div>
+{% endblock %}
+
+{% block layer_list %}
+
+<div class="col-md-6 col-sm-6 col-lg-6 pl-0 pr-0 pt-3 pb-3 m-0" style="width: 100%;">
+  <div class="row p-0 m-0" >
+    <div class="container text-center">
+      <p class="mb-3">
+        <font color="#135156"><strong>参照する汎化プロセスモデル</strong></font>
+      </p>
+    </div>
+    <div class="col-md-1 col-sm-1 col-lg-1 p-0 m-0" ></div>
+    <div class="col-md-10 col-sm-10 col-lg-10 p-0 m-0" id ="action_list_layer_1">
+      <svg viewBox="0 0 0 0" style="position: absolute; z-index: -1; opacity: 0;">
+        <defs>
+          <!-- 箱_色 cssのstrokeも合わせる-->
+          <linearGradient id="boxGradient" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="25" y2="25">
+            <stop offset="0%" stop-color="#1AFF1A" />
+            <stop offset="100%" stop-color="#54C3F1" />
+          </linearGradient>
+          <!-- 線_色 cssのstrokeも合わせる-->
+          <linearGradient id="lineGradient">
+            <stop offset="0%" stop-color="#54C3F1" />
+            <stop offset="100%" stop-color="#1AFF1A" />
+          </linearGradient>
+          <path id="todo__line" stroke="url(#lineGradient)" d="M21 12.3h168v0.1z"></path>
+          <path id="todo__box" stroke="url(#boxGradient)"
+            d="M21 12.7v5c0 1.3-1 2.3-2.3 2.3H8.3C7 20 6 19 6 17.7V7.3C6 6 7 5 8.3 5h10.4C20 5 21 6 21 7.3v5.4"></path>
+          <path id="todo__check" stroke="url(#boxGradient)" d="M10 13l2 2 5-5"></path>
+          <circle id="todo__circle" cx="13.5" cy="12.5" r="10"></circle>
+        </defs>
+      </svg>
+      <div class="todo-list my-custom-board" >
+        {% if contents_AM_None %}<div class="todo__text d-flex justify-content-center mt-4">{{ contents_AM_None }}
+        </div>
+        {% else %}
+          {% for GPM_title,GPM_graph in GPM_titles|zip:GPM_graphs %}
+          <div class="d-flex flex-row bd-highlight align-items-center m-0 p-0" id="{{action_uri}}">
+            <label class="todo">
+              {% if forloop.counter in checked_AM %}
+              <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}" onclick="show_selecteddescription('{{GPM_graph}}', '{{GPM_title}}', 'GPM')" 
+                checked="checked" />{% csrf_token %} 
+              {% else %}
+              <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}"
+                onclick="show_selecteddescription('{{GPM_graph}}', '{{GPM_title}}', 'GPM')" />{% csrf_token %}
+              {% endif%}
+              <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 25"
+                class="todo__icon">
+                <use xlink:href="#todo__line" class="todo__line"></use>
+                <use xlink:href="#todo__box" class="todo__box"></use>
+                <use xlink:href="#todo__check" class="todo__check"></use>
+                <use xlink:href="#todo__circle" class="todo__circle"></use>
+              </svg>
+              <div class="todo__text">  {{ GPM_title }} </div>
+            </label>
+            <form method='POST'>
+              {% csrf_token %}
+              <input type="image" class="ml-0 mr-0" src= "{% static 'checklists/images/circle.png'%}"/ width = "24" height="24">
+              <input type="hidden" name="action_uri" value='{{action_uri}}' >
+            </form>
+           </div>
+          {% endfor %}
+        {% endif%}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-md-0 col-sm-0 col-lg-0 p-0 m-0"></div>
+
+
+<div class="col-md-6 col-sm-6 col-lg-6 pl-0 pr-0 pt-3 pb-3 m-0" style="width: 100%;">
+  <div class="row p-0 m-0" >
+    <div class="container text-center">
+      <p class="mb-3">
+        <font color="#135156"><strong>編集するログレベルの記述</strong></font>
+      </p>
+    </div>
+    <div class="col-md-1 col-sm-1 col-lg-1 p-0 m-0" ></div>
+    <div class="col-md-10 col-sm-10 col-lg-10 p-0 m-0" id ="action_list_layer_1">
+      <svg viewBox="0 0 0 0" style="position: absolute; z-index: -1; opacity: 0;">
+        <defs>
+          <!-- 箱_色 cssのstrokeも合わせる-->
+          <linearGradient id="boxGradient" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="25" y2="25">
+            <stop offset="0%" stop-color="#1AFF1A" />
+            <stop offset="100%" stop-color="#54C3F1" />
+          </linearGradient>
+          <!-- 線_色 cssのstrokeも合わせる-->
+          <linearGradient id="lineGradient">
+            <stop offset="0%" stop-color="#54C3F1" />
+            <stop offset="100%" stop-color="#1AFF1A" />
+          </linearGradient>
+          <path id="todo__line" stroke="url(#lineGradient)" d="M21 12.3h168v0.1z"></path>
+          <path id="todo__box" stroke="url(#boxGradient)"
+            d="M21 12.7v5c0 1.3-1 2.3-2.3 2.3H8.3C7 20 6 19 6 17.7V7.3C6 6 7 5 8.3 5h10.4C20 5 21 6 21 7.3v5.4"></path>
+          <path id="todo__check" stroke="url(#boxGradient)" d="M10 13l2 2 5-5"></path>
+          <circle id="todo__circle" cx="13.5" cy="12.5" r="10"></circle>
+        </defs>
+      </svg>
+      <div class="todo-list my-custom-board" >
+        {% if contents_AM_None %}<div class="todo__text d-flex justify-content-center mt-4">{{ contents_AM_None }}
+        </div>
+        {% else %}
+          {% for LLD_title,LLD_graph in LLD_titles|zip:LLD_graphs %}
+          <div class="d-flex flex-row bd-highlight align-items-center m-0 p-0" id="{{action_uri}}">
+            <label class="todo">
+              {% if forloop.counter in checked_AM %}
+              <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}" onclick="show_selecteddescription('{{LLD_graph}}', '{{LLD_title}}', 'LLD')" 
+                checked="checked" />{% csrf_token %} 
+              {% else %}
+              <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}"
+                onclick="show_selecteddescription('{{LLD_graph}}', '{{LLD_title}}', 'LLD')" />{% csrf_token %}
+              {% endif%}
+              <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 25"
+                class="todo__icon">
+                <use xlink:href="#todo__line" class="todo__line"></use>
+                <use xlink:href="#todo__box" class="todo__box"></use>
+                <use xlink:href="#todo__check" class="todo__check"></use>
+                <use xlink:href="#todo__circle" class="todo__circle"></use>
+              </svg>
+              <div class="todo__text">  {{ LLD_title }} </div>
+            </label>
+            <form method='POST'>
+              {% csrf_token %}
+              <input type="image" class="ml-0 mr-0" src= "{% static 'checklists/images/circle.png'%}"/ width = "24" height="24">
+              <input type="hidden" name="action_uri" value='{{action_uri}}' >
+            </form>
+          </div>
+          {% endfor %}
+        {% endif%}
+      </div>
+    </div>
+  </div>
+  <form method='POST'>
+    {% csrf_token %}
+    <label> ログレベルの記述の新規登録 </label>
+    <input type="text" name="added_lld_title" />
+    <input type="submit" value="追加"/>
+  </form>
+</div>
+<div class="col-md-0 col-sm-0 col-lg-0 p-0 m-0"></div>
+
+{% endblock %}
+
+{% block action_supinfo %}
+<div class="container-fluid text-center" style="width:30%;float:right;background-color:blanchedalmond;">
+  <div class="container-fluid text-center" style="display:flex;" >
+    <form action="{% url 'checklists:top' %}" method="POST" class="container-fluid text-center" id = "selected_description">{% csrf_token %}
+      <label id = 'selected_GPM'> 選択中の汎化プロセスモデル </label>
+      <label id = 'selected_LLD'>  選択中のログレベルの記述  </label>
+    </form>
+  </div>
+</div>
+{% endblock%}
+
+
+
+
+
+
+

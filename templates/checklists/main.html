@@ -32,17 +32,18 @@
 </div>
 <div class="container text-center">
   <p class="mt-3 mb-2">
-    <font color="#135156"><strong>プロセス記述表示画面</strong></font>
+    <font color="#135156"><strong>プロセス記述表示画面{{GPM_URI}}</strong></font>
   </p>
 </div>
 {% endblock %}
 
 {% block layer_list %}
-<div class="col-md-4 col-sm-4 col-lg-4 pl-0 pr-0 pt-3 pb-3 m-0" style="width: 100%;">
+{% for actions, actions_uri in alllayer_actions|zip:alllayer_actions_uri %}
+<div class="col-md-4 col-sm-4 col-lg-3 pl-0 pr-0 pt-3 pb-3 m-0" style="width: 100%;">
   <div class="row p-0 m-0" >
     <div class="container text-center">
       <p class="mb-3">
-        <font color="#135156"><strong>1</strong></font>
+        <font color="#135156"><strong>アクションリスト</strong></font>
       </p>
     </div>
     <div class="col-md-1 col-sm-1 col-lg-1 p-0 m-0" ></div>
@@ -87,50 +88,54 @@
                 <use xlink:href="#todo__check" class="todo__check"></use>
                 <use xlink:href="#todo__circle" class="todo__circle"></use>
               </svg>
-              <div class="todo__text">  {{ action }} {{test}}</div>
+              <div class="todo__text">  {{ action }} </div>
             </label>
-            <img class="ml-0 mr-0" src= "{% static 'checklists/images/circle.png'%}"/ width = "24" height="24" onclick="detail_action('{{action_uri}}', this)" />{% csrf_token %}
-            <img class="ml-0 mr-0" src="{% static 'checklists/images/outline_help_135156.png'%}" alt="" width="24" height="24"  onclick = "show_action_supinfo('{{action}}','{{action_uri}}')"/>
+            <form method='POST'>
+              {% csrf_token %}
+              <input type="image" class="ml-0 mr-0" src= "{% static 'checklists/images/circle.png'%}"/ width = "24" height="24">
+              <input type="hidden" name="action_uri" value='{{action_uri}}' >
+              <input type="hidden" name="gpm_graph_uri" value='{{gpm_graph_uri}}'>
+            </form>
+            <img class="ml-0 mr-0" src="{% static 'checklists/images/outline_help_135156.png'%}" alt="" width="24" height="24"  onclick = "show_action_supinfo('{{action}}','{{action_uri}}', '{{gpm_graph_uri}}')"/>
             <img class="ml-1 mr-0" src="{% static 'checklists/images/folder.png'%}" alt="" width="20" height="20" onclick="popup('{{action}}', '{{action_uri}}')" />
-            <img class="ml-0 mr-0" src="{% static 'checklists/images/icon_135090_256.png'%}" alt="" width="24" height="24" onclick="add_action_form(this.parentNode.id)"/>
+            <img class="ml-0 mr-0" src="{% static 'checklists/images/icon_135090_256.png'%}" alt="" width="24" height="24" onclick="add_action_form(this.parentNode.id, '{{action}}')"/>
           </div>
           {% endfor %}
         {% endif%}
       </div>
-      <div id ="contextmenu" ></div>
-      <script>
-        function add_action_form(uri){
-          $('#contextmenu').append('<form method="GET"> {% csrf_token %} <input type="hidden" name="uri" value= '+ uri + ' /> <input type="text" name="added_action" /> <button name = "above" type="submit">上にアクションを追加</button> <button name="below" type="submit">下にアクションを追加</button> </form>')
-        }
-        // window.onload = function(){
-        //   p = document.getElementById('todo-list');
-        //   p.addEventListener('contextmenu', function(e){
-        //     document.getElementById('contextmenu').style.display="block";
-        //     console.log(p.querySelector('.todo').querySelector('.todo__text').textContent);
-        //   });
-        // }
-
-        function add_action_above(){
-          alert('above');
-        }
-        function add_action_below(){
-          alert('below');
-        }
-      </script>
     </div>
   </div>
 </div>
-<div class="col-md-1 col-sm-1 col-lg-1 p-0 m-0" id = "06271321"></div>
+<div class="col-md-0 col-sm-0 col-lg-0 p-0 m-0"></div>
+{% endfor %}
 
+<div id ="contextmenu" ></div>
 <script>
+  function add_action_form(uri, action){
+    console.log(action)
+    $('#contextmenu').append('<form method="POST"> {% csrf_token %} <input type="hidden" name="uri" value= '+ uri + ' /> <input type="text" name="added_action" /> <button name = "above" type="submit">' + action +'の上にアクションを追加</button> <button name="below" type="submit">' + action +'下にアクションを追加</button> </form>')
+  }
+  function add_action_above(){
+    alert('above');
+  }
+  function add_action_below(){
+    alert('below');
+  }
+
+  function buttonClick2(id){
+    console.log(id);
+  }
+
+
 </script>
+
 
 {% endblock %}
 
 {% block action_supinfo %}
 <div class="container-fluid text-center" style="width:30%;float:right;background-color:blanchedalmond;">
-  <h5>選択中のアクション</h5>
-  <div class="container-fluid text-center" id = "action_supinfo" >
+  <h5>アクションの詳細</h5>
+  <div class="container-fluid text-center" style="display:flex;" id = "action_supinfo" >
   </div>
 </div>
 {% endblock%}

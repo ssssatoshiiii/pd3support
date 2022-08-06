@@ -1,5 +1,41 @@
+function show_selecteddescription(graph, title, epType){
+
+  //選択された記述を表示
+  if(epType == 'GPM'){
+    $('#selected_GPM').children('input').remove();
+    $('#selected_GPM').append("<input type='hidden' name='gpm_graph_uri' value=" + graph + ">" + title + "</label>");
+  }
+  else if(epType == 'LLD'){
+    $('#selected_LLD').children('input').remove();
+    $('#selected_LLD').append("<input type='hidden' name='lld_graph_uri' value =" + graph + ">" + title + "</label>");
+  }
+
+  // var value = {graph: graph, epType: epType};
+  // console.log(value);
+
+  // $.ajax({
+  //   type: 'POST',
+  //   url: '../graph_uri',
+  //   data: value,
+  //   dataType: 'text',
+  //   })
+  //   .done(function(){
+  //       console.log('success');
+  //   })
+  //   .always(function(){
+  //     console.log('test');
+  //   })
+
+
+  if($('#selected_GPM').children().length >0 && $('#selected_LLD').children().length >0){
+    console.log('yes');
+    $('#selected_description').append("<input type='submit' value='プロセスを開始する'>");
+  }
+}
+
 
 function buttonClick(id_value) {
+  //console.log('buttonclick');
   var value = { value: id_value };
   // ajax
   $.ajax({
@@ -11,9 +47,13 @@ function buttonClick(id_value) {
     // サーバから返送データを受け取る
     success: function (dataset) {
       dataset = dataset;
-      // console.log("T")
+      //console.log("T")
       }
     })
+}
+
+function buttonClick1(id_value){
+  console.log('test')
 }
 
 const swalWithBootstrapButtons = Swal.mixin({
@@ -65,9 +105,6 @@ function popup(action, uri) {
   })
 }
 
-function test() {
-  alert("yeah");
-}
 
 function detail_action(uri, element){
  
@@ -93,8 +130,8 @@ function detail_action(uri, element){
 }
 
 
-function show_action_supinfo(action,uri){
-  data = {action:action, uri:uri}
+function show_action_supinfo(action,uri, gpm_graph_uri){
+  data = {action:action, uri:uri, gpm_graph_uri: gpm_graph_uri}
   $.ajax({
     type: 'POST',
     url:'action_supinfo_show',
