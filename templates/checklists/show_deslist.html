@@ -74,13 +74,8 @@
           {% for GPM_title,GPM_graph in GPM_titles|zip:GPM_graphs %}
           <div class="d-flex flex-row bd-highlight align-items-center m-0 p-0" id="{{action_uri}}">
             <label class="todo">
-              {% if forloop.counter in checked_AM %}
-              <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}" onclick="show_selecteddescription('{{GPM_graph}}', '{{GPM_title}}', 'GPM')" 
-                checked="checked" />{% csrf_token %} 
-              {% else %}
               <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}"
                 onclick="show_selecteddescription('{{GPM_graph}}', '{{GPM_title}}', 'GPM')" />{% csrf_token %}
-              {% endif%}
               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 25"
                 class="todo__icon">
                 <use xlink:href="#todo__line" class="todo__line"></use>
@@ -92,7 +87,6 @@
             </label>
             <form method='POST'>
               {% csrf_token %}
-              <input type="image" class="ml-0 mr-0" src= "{% static 'checklists/images/circle.png'%}"/ width = "24" height="24">
               <input type="hidden" name="action_uri" value='{{action_uri}}' >
             </form>
            </div>
@@ -140,13 +134,8 @@
           {% for LLD_title,LLD_graph in LLD_titles|zip:LLD_graphs %}
           <div class="d-flex flex-row bd-highlight align-items-center m-0 p-0" id="{{action_uri}}">
             <label class="todo">
-              {% if forloop.counter in checked_AM %}
-              <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}" onclick="show_selecteddescription('{{LLD_graph}}', '{{LLD_title}}', 'LLD')" 
-                checked="checked" />{% csrf_token %} 
-              {% else %}
               <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}"
                 onclick="show_selecteddescription('{{LLD_graph}}', '{{LLD_title}}', 'LLD')" />{% csrf_token %}
-              {% endif%}
               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 25"
                 class="todo__icon">
                 <use xlink:href="#todo__line" class="todo__line"></use>
@@ -158,7 +147,6 @@
             </label>
             <form method='POST'>
               {% csrf_token %}
-              <input type="image" class="ml-0 mr-0" src= "{% static 'checklists/images/circle.png'%}"/ width = "24" height="24">
               <input type="hidden" name="action_uri" value='{{action_uri}}' >
             </form>
           </div>

@@ -74,13 +74,13 @@ def get_graph(gpm_graph_uri):
 
 
 
-def get_detail_action(action):
+def get_detail_action(action, gpm_graph_uri):
     query = """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
              PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
         SELECT ?target ?value
         WHERE {
-            GRAPH<http://digital-triplet.net:3030/test>{
+            GRAPH<""" + str(gpm_graph_uri) + """>{
         
         <""" + action + """> pd3:expansion/pd3:member ?start.
         ?start pd3:actionType "start".
@@ -106,14 +106,14 @@ def get_detail_action(action):
 
     return results_value, results_uri
 
-def action_supinfo(uri, gpm_graph_uri):
+def action_supinfo(uri, graph_uri):
     #意図の取得
     query_intention = """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
              PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
         SELECT ?intention
         WHERE {
-            GRAPH <""" + gpm_graph_uri +""">{
+            GRAPH <""" + graph_uri +""">{
         
         <""" + uri + """> pd3:input ?input.
         ?input pd3:arcType "intention";
@@ -137,7 +137,7 @@ def action_supinfo(uri, gpm_graph_uri):
 
         SELECT ?toolknowledge
         WHERE {
-        GRAPH <http://digital-triplet.net:3030/test>{
+        GRAPH <""" + graph_uri + """>{
         <""" + uri + """> pd3:input ?input.
         ?input pd3:arcType "tool/knowledge";
             pd3:value ?toolknowledge.
@@ -157,7 +157,7 @@ def action_supinfo(uri, gpm_graph_uri):
 
         SELECT ?annotation
         WHERE {
-            GRAPH<http://digital-triplet.net:3030/test>{
+            GRAPH<""" + graph_uri + """>{
         
         <""" + uri + """> pd3:input ?input.
         ?input pd3:arcType "annotation";
@@ -172,8 +172,28 @@ def action_supinfo(uri, gpm_graph_uri):
         annotation = result[0]["annotation"]["value"]
     else:
         annotation = ""
+    
+    query_output = """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+             PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-    return intention, toolknowledge, annotation
+        SELECT ?output
+        WHERE {
+            GRAPH<""" + graph_uri + """>{
+        
+        <""" + uri + """> pd3:output ?output_uri.
+        ?output_uri pd3:value ?output.
+        }
+        }"""
+    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql.setQuery(query_output)
+    sparql.setReturnFormat(JSON)
+    result = sparql.query().convert()["results"]["bindings"]
+    if(len(result)!=0):
+        output = result[0]["output"]["value"]
+    else:
+        output = ""
+
+    return intention, toolknowledge, annotation, output
 
 def get_hier_actions(uri, gpm_graph_uri):
     query= """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
@@ -199,3 +219,36 @@ def get_hier_actions(uri, gpm_graph_uri):
         results.append(converted_result["contractedActionUri"]["value"])
 
     return results
+
+def get_lld_action(action_uri, gpm_graph_uri):
+    print(gpm_graph_uri)
+    print(action_uri)
+    query="""PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+    
+    SELECT ?lld_action_uri ?lld_action
+    WHERE{
+        GRAPH <""" + str(gpm_graph_uri) + """>{
+            <""" + action_uri + """> pd3:isUsedBy ?lld_action_uri.
+        }
+        GRAPH ?g{
+            ?lld_action_uri pd3:value ?lld_action.
+        }
+    }
+    """
+
+    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+
+    converted_results = sparql.query().convert()["results"]["bindings"]
+    print('lld0')
+    print(converted_results)
+    results_action_uri =[]
+    results_action = []
+    for converted_result in converted_results:
+        results_action_uri.append(converted_result["lld_action_uri"]["value"])
+        results_action.append(converted_result["lld_action"]["value"])
+    print(results_action)
+    print(results_action_uri)
+
+    return results_action_uri, results_action

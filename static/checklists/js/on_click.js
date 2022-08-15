@@ -2,29 +2,15 @@ function show_selecteddescription(graph, title, epType){
 
   //選択された記述を表示
   if(epType == 'GPM'){
-    $('#selected_GPM').children('input').remove();
-    $('#selected_GPM').append("<input type='hidden' name='gpm_graph_uri' value=" + graph + ">" + title + "</label>");
+    $('#selected_GPM').children().remove();
+    $('#selected_GPM').append("<input id='selected_GPM_title' type='hidden' name='gpm_graph_uri' value=" + graph + ">");
+    $('#selected_GPM').append("<label>" + title + "</>")
   }
   else if(epType == 'LLD'){
-    $('#selected_LLD').children('input').remove();
-    $('#selected_LLD').append("<input type='hidden' name='lld_graph_uri' value =" + graph + ">" + title + "</label>");
+    $('#selected_LLD').children().remove();
+    $('#selected_LLD').append("<input type='hidden' name='lld_graph_uri' value =" + graph + ">");
+    $('#selected_LLD').append("<label>" + title + "</>")
   }
-
-  // var value = {graph: graph, epType: epType};
-  // console.log(value);
-
-  // $.ajax({
-  //   type: 'POST',
-  //   url: '../graph_uri',
-  //   data: value,
-  //   dataType: 'text',
-  //   })
-  //   .done(function(){
-  //       console.log('success');
-  //   })
-  //   .always(function(){
-  //     console.log('test');
-  //   })
 
 
   if($('#selected_GPM').children().length >0 && $('#selected_LLD').children().length >0){
@@ -130,8 +116,8 @@ function detail_action(uri, element){
 }
 
 
-function show_action_supinfo(action,uri, gpm_graph_uri){
-  data = {action:action, uri:uri, gpm_graph_uri: gpm_graph_uri}
+function show_action_supinfo(action,uri, gpm_graph_uri, lld_graph_uri){
+  data = {action:action, uri:uri, gpm_graph_uri: gpm_graph_uri, lld_graph_uri:lld_graph_uri}
   $.ajax({
     type: 'POST',
     url:'action_supinfo_show',
@@ -145,3 +131,18 @@ function show_action_supinfo(action,uri, gpm_graph_uri){
   
 }
 
+function test(action){
+  console.log(action);
+  data = {action:action}
+  $.ajax({
+    type: 'POST',
+    url:'show_pastLLD',
+    data: data,
+    dataType: 'text',
+  })
+  .done(function(response){
+    console.log('test');
+    open('show_pastLLD');
+  })
+
+}

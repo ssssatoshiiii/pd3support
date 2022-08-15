@@ -28,6 +28,9 @@
       <img  src="{% static 'checklists/images/outline_settings.png'%}" alt="" width="30" height="30">
       <font size="3" color="#135156"><strong>編集</strong></font>
     </a>
+    <a href="show_pastLLD" target="_blank">
+      <strong>test</strong>
+    </a>
   </li>
 </div>
 <div class="container text-center">
@@ -96,8 +99,8 @@
               <input type="hidden" name="action_uri" value='{{action_uri}}' >
               <input type="hidden" name="gpm_graph_uri" value='{{gpm_graph_uri}}'>
             </form>
-            <img class="ml-0 mr-0" src="{% static 'checklists/images/outline_help_135156.png'%}" alt="" width="24" height="24"  onclick = "show_action_supinfo('{{action}}','{{action_uri}}', '{{gpm_graph_uri}}')"/>
-            <img class="ml-1 mr-0" src="{% static 'checklists/images/folder.png'%}" alt="" width="20" height="20" onclick="popup('{{action}}', '{{action_uri}}')" />
+            <img class="ml-0 mr-0" src="{% static 'checklists/images/outline_help_135156.png'%}" alt="" width="24" height="24"  onclick = "show_action_supinfo('{{action}}','{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
+            <img class="ml-1 mr-0" src="{% static 'checklists/images/folder.png'%}" alt="" width="20" height="20" onclick="test('{{action}}')" />
             <img class="ml-0 mr-0" src="{% static 'checklists/images/icon_135090_256.png'%}" alt="" width="24" height="24" onclick="add_action_form(this.parentNode.id, '{{action}}')"/>
           </div>
           {% endfor %}
@@ -133,7 +136,7 @@
 {% endblock %}
 
 {% block action_supinfo %}
-<div class="container-fluid text-center" style="width:30%;float:right;background-color:blanchedalmond;">
+<div class="container-fluid text-center" style="width:30%;float:right;background-color:blanchedalmond;overflow:scroll;">
   <h5>アクションの詳細</h5>
   <div class="container-fluid text-center" style="display:flex;" id = "action_supinfo" >
   </div>

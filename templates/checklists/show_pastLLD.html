@@ -1,0 +1,28 @@
+<!-- テンプレートの継承 -->
+{% extends "common/base.html" %}
+{% load static %}
+
+{% block Title %}
+<div class="login title">
+  <b>過去事例表示</b>
+</div>
+{% endblock %}
+
+{% block three_column %}
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid text-center">
+  <h6>選択中のアクション</h6>
+  <h6 style="background-color: white; overflow:scroll;">{{action}}</h6>
+  <h6>意図</h6>
+  <h6 style="background-color: white; overflow:scroll;">intention</h6>
+  <h6>知識・道具</h6>
+  <h6 style="background-color: white; overflow:scroll;">toolknowledge</h6>
+  <h6>注釈</h6>
+  <h6 style="background-color: white; overflow:scroll;">annotation</h6>
+  <h6>出力</h6>
+  <h6 style="background-color: white; overflow:scroll;">output</h6>
+</div>
+{% endblock %}
