@@ -19,6 +19,12 @@ function show_selecteddescription(graph, title, epType){
   }
 }
 
+function select_LLD(lld_graph_uri, lld_graph_title){
+  console.log(lld_graph_title);
+  $('#selected_description').append("<input type='hidden' name='lld_graph_uri' value=" + lld_graph_uri+">")
+  $('#selected_description').append("<label>"+ lld_graph_title + "</label>");
+  $('#selected_description').append("<input type='submit' value='プロセスを開始する'>")
+}
 
 function buttonClick(id_value) {
   //console.log('buttonclick');
@@ -116,8 +122,8 @@ function detail_action(uri, element){
 }
 
 
-function show_action_supinfo(action,uri, gpm_graph_uri, lld_graph_uri){
-  data = {action:action, uri:uri, gpm_graph_uri: gpm_graph_uri, lld_graph_uri:lld_graph_uri}
+function show_action_supinfo(action_uri, gpm_graph_uri, lld_graph_uri){
+  data = {action_uri:action_uri, gpm_graph_uri: gpm_graph_uri, lld_graph_uri:lld_graph_uri}
   $.ajax({
     type: 'POST',
     url:'action_supinfo_show',

@@ -43,7 +43,7 @@
   <div class="row p-0 m-0" >
     <div class="container text-center">
       <p class="mb-3">
-        <font color="#135156"><strong>参照する汎化プロセスモデル</strong></font>
+        <font color="#135156"><strong>Step1 参照する汎化プロセスモデルを選ぶ</strong></font>
       </p>
     </div>
     <div class="col-md-1 col-sm-1 col-lg-1 p-0 m-0" ></div>
@@ -68,14 +68,16 @@
         </defs>
       </svg>
       <div class="todo-list my-custom-board" >
-        {% if contents_AM_None %}<div class="todo__text d-flex justify-content-center mt-4">{{ contents_AM_None }}
-        </div>
-        {% else %}
           {% for GPM_title,GPM_graph in GPM_titles|zip:GPM_graphs %}
           <div class="d-flex flex-row bd-highlight align-items-center m-0 p-0" id="{{action_uri}}">
             <label class="todo">
-              <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}"
-                onclick="show_selecteddescription('{{GPM_graph}}', '{{GPM_title}}', 'GPM')" />{% csrf_token %}
+              <div class="todo__text">{{GPM_title}}</div>
+              <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="selected_GPM_graph" value="{{GPM_graph}}" >
+                <input type="hidden" name="selected_GPM_title" value="{{GPM_title}}" >
+                <input type="submit" value="選択">
+              </form>
               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 25"
                 class="todo__icon">
                 <use xlink:href="#todo__line" class="todo__line"></use>
@@ -83,15 +85,9 @@
                 <use xlink:href="#todo__check" class="todo__check"></use>
                 <use xlink:href="#todo__circle" class="todo__circle"></use>
               </svg>
-              <div class="todo__text">  {{ GPM_title }} </div>
             </label>
-            <form method='POST'>
-              {% csrf_token %}
-              <input type="hidden" name="action_uri" value='{{action_uri}}' >
-            </form>
            </div>
           {% endfor %}
-        {% endif%}
       </div>
     </div>
   </div>
@@ -103,7 +99,7 @@
   <div class="row p-0 m-0" >
     <div class="container text-center">
       <p class="mb-3">
-        <font color="#135156"><strong>編集するログレベルの記述</strong></font>
+        <font color="#135156"><strong>Step2 編集するログレベルの記述を選ぶ</strong></font>
       </p>
     </div>
     <div class="col-md-1 col-sm-1 col-lg-1 p-0 m-0" ></div>
@@ -128,14 +124,13 @@
         </defs>
       </svg>
       <div class="todo-list my-custom-board" >
-        {% if contents_AM_None %}<div class="todo__text d-flex justify-content-center mt-4">{{ contents_AM_None }}
-        </div>
-        {% else %}
           {% for LLD_title,LLD_graph in LLD_titles|zip:LLD_graphs %}
           <div class="d-flex flex-row bd-highlight align-items-center m-0 p-0" id="{{action_uri}}">
             <label class="todo">
+              <div class="todo__text">  {{ LLD_title }} </div>
+              <button type="button" onclick="select_LLD('{{LLD_graph}}', '{{LLD_title}}', '{{selected_GPM_graph}}')">選択</button>
               <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}"
-                onclick="show_selecteddescription('{{LLD_graph}}', '{{LLD_title}}', 'LLD')" />{% csrf_token %}
+                onclick="show_selecteddescription('{{LLD_graph}}', '{{LLD_title}}')" />{% csrf_token %}
               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 25"
                 class="todo__icon">
                 <use xlink:href="#todo__line" class="todo__line"></use>
@@ -143,7 +138,6 @@
                 <use xlink:href="#todo__check" class="todo__check"></use>
                 <use xlink:href="#todo__circle" class="todo__circle"></use>
               </svg>
-              <div class="todo__text">  {{ LLD_title }} </div>
             </label>
             <form method='POST'>
               {% csrf_token %}
@@ -151,7 +145,6 @@
             </form>
           </div>
           {% endfor %}
-        {% endif%}
       </div>
     </div>
   </div>
@@ -159,6 +152,8 @@
     {% csrf_token %}
     <label> ログレベルの記述の新規登録 </label>
     <input type="text" name="added_lld_title" />
+    <input type="hidden" name="selected_GPM_graph" value="{{selected_GPM_graph}}" />
+    <input type="hidden" name="selected_GPM_title" value="{{selected_GPM_title}}" />
     <input type="submit" value="追加"/>
   </form>
 </div>
@@ -171,6 +166,10 @@
   <div class="container-fluid text-center" style="display:flex;" >
     <form action="{% url 'checklists:top' %}" method="POST" class="container-fluid text-center" id = "selected_description">{% csrf_token %}
       <label id = 'selected_GPM'> 選択中の汎化プロセスモデル </label>
+      {% if selected_GPM_title %}
+      <input id='selected_GPM_title' type='hidden' name='gpm_graph_uri' value= '{{selected_GPM_graph}}'>
+      <lable>{{selected_GPM_title}}</lable>
+      {% endif %}
       <label id = 'selected_LLD'>  選択中のログレベルの記述  </label>
     </form>
   </div>

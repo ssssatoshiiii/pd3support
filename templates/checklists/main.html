@@ -28,9 +28,6 @@
       <img  src="{% static 'checklists/images/outline_settings.png'%}" alt="" width="30" height="30">
       <font size="3" color="#135156"><strong>編集</strong></font>
     </a>
-    <a href="show_pastLLD" target="_blank">
-      <strong>test</strong>
-    </a>
   </li>
 </div>
 <div class="container text-center">
@@ -98,9 +95,15 @@
               <input type="image" class="ml-0 mr-0" src= "{% static 'checklists/images/circle.png'%}"/ width = "24" height="24">
               <input type="hidden" name="action_uri" value='{{action_uri}}' >
               <input type="hidden" name="gpm_graph_uri" value='{{gpm_graph_uri}}'>
+              <input type="hidden" name="lld_graph_uri" value='{{lld_graph_uri}}'>
             </form>
-            <img class="ml-0 mr-0" src="{% static 'checklists/images/outline_help_135156.png'%}" alt="" width="24" height="24"  onclick = "show_action_supinfo('{{action}}','{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
-            <img class="ml-1 mr-0" src="{% static 'checklists/images/folder.png'%}" alt="" width="20" height="20" onclick="test('{{action}}')" />
+            <img class="ml-0 mr-0" src="{% static 'checklists/images/outline_help_135156.png'%}" alt="" width="24" height="24"  onclick = "show_action_supinfo('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
+            <form action="{%url 'checklists:show_pastLLD' %}" method='POST' target="_blank">
+              {% csrf_token %}
+              <input type="image" class="ml-0 mr-0" src="{% static 'checklists/images/folder.png'%}" width="20" height="20">
+              <input type="hidden" name="action_uri" value='{{action_uri}}'>
+              <input type="hidden" name="gpm_graph_uri" value='{{gpm_graph_uri}}'>
+            </form>
             <img class="ml-0 mr-0" src="{% static 'checklists/images/icon_135090_256.png'%}" alt="" width="24" height="24" onclick="add_action_form(this.parentNode.id, '{{action}}')"/>
           </div>
           {% endfor %}
@@ -114,19 +117,15 @@
 
 <div id ="contextmenu" ></div>
 <script>
-  function add_action_form(uri, action){
-    console.log(action)
-    $('#contextmenu').append('<form method="POST"> {% csrf_token %} <input type="hidden" name="uri" value= '+ uri + ' /> <input type="text" name="added_action" /> <button name = "above" type="submit">' + action +'の上にアクションを追加</button> <button name="below" type="submit">' + action +'下にアクションを追加</button> </form>')
-  }
-  function add_action_above(){
-    alert('above');
-  }
-  function add_action_below(){
-    alert('below');
-  }
-
-  function buttonClick2(id){
-    console.log(id);
+  function add_action_form(action_uri, action){
+    // $('#contextmenu').children().remove();
+    // $('#contextmenu').append('<form method="POST"> {% csrf_token %} <input type="hidden" name="action_uri" value= '+ action_uri + ' /> <input type="text" name="added_action" /> <button name = "above" type="submit">' + action +'の上にアクションを追加</button><button name="below" type="submit">' + action +'の下にアクションを追加</button> </form>')
+    $('#contextmenu').append('<form id = "contextmenu_form" method="POST"> {% csrf_token %} <input type="hidden" name="action_uri" value= '+ action_uri + ' />' + '</form>');
+    $('#contextmenu_form').append('<input type="text" name="added_action" />');
+    $('#contextmenu_form').append('<input type="hidden" name="gpm_graph_uri" value="{{gpm_graph_uri}}"  >');
+    $('#contextmenu_form').append('<input type="hidden" name="lld_graph_uri" value="{{lld_graph_uri}}"  >');
+    $('#contextmenu_form').append('<button name = "above" type="submit">' + action +'の上にアクションを追加</button>');
+    $('#contextmenu_form').append('<button name="below" type="submit">' + action +'の下にアクションを追加</button>')
   }
 
 

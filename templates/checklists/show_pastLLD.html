@@ -13,16 +13,33 @@
 
 
 {% block content %}
-<div class="container-fluid text-center">
-  <h6>選択中のアクション</h6>
-  <h6 style="background-color: white; overflow:scroll;">{{action}}</h6>
-  <h6>意図</h6>
-  <h6 style="background-color: white; overflow:scroll;">intention</h6>
-  <h6>知識・道具</h6>
-  <h6 style="background-color: white; overflow:scroll;">toolknowledge</h6>
-  <h6>注釈</h6>
-  <h6 style="background-color: white; overflow:scroll;">annotation</h6>
-  <h6>出力</h6>
-  <h6 style="background-color: white; overflow:scroll;">output</h6>
+<div class="container-fluid text-center" style="width:100%;float:right;background-color:blanchedalmond;overflow:scroll;">
+  <h5>アクションの詳細</h5>
+  <div class="container-fluid text-center" style="display:flex;" id = "action_supinfo" >
+    {% for lld_action in lld_actions %}
+    <div class="container-fluid text-center">
+        <h5>詳細表示</h5>
+    {% for lld_action_elem in lld_action %}
+        {% if forloop.counter0 == 1 %}
+        <h6>アクション</h6>
+        {% elif forloop.counter0 == 2 %}
+        <h6>意図</h6>
+        {% elif forloop.counter0 == 3 %}
+        <h6>知識・道具</h6>
+        {% elif forloop.counter0 == 4 %}
+        <h6>注釈</h6>
+        {% elif forloop.counter0 == 5 %}
+        <h6>導出根拠</h6>
+        {% elif forloop.counter0 == 6 %}
+        <h6>出力</h6>
+        {% endif %}
+        {% if forloop.counter0 != 0 %}
+        <h6 style="background-color: white; overflow:scroll;">{{lld_action_elem}} </h6>
+        {% endif %}
+    {% endfor %}
+    </div>
+    {% endfor %}
 </div>
+</div>
+
 {% endblock %}

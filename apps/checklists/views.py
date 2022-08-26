@@ -16,16 +16,25 @@ def show_deslist(request):
 
     #GPMのグラフのURIとGPMの記述のURIは共通
     context = dict()
-    context['GPM_graphs'], context['GPM_descriptions_uri'], context['GPM_titles'] = sparql.get_deslist("GPM")
-    context['LLD_graphs'], context['LLD_descriptions_uri'], context['LLD_titles'] = sparql.get_deslist("LLD")
+    context['GPM_graphs'], context['GPM_titles'] = sparql.get_deslist("GPM")
+    context['LLD_graphs']=[]
+    context['LLD_descriptions_uri']=[]
+    context['LLD_titles']=[]
+    
 
     #新規の記述の登録操作があった場合、ここでfusekiに追加する
     if(request.method == 'POST'):
-        print(request.POST.get('added_lld_title'))
-        added_lld_title = request.POST.get('added_lld_title')
-        if(not added_lld_title in context['LLD_titles']):
-            sparql_update.add_LLDgraph_tofuseki(added_lld_title)
-            context['LLD_graphs'], context['LLD_descriptions_uri'], context['LLD_titles'] = sparql.get_deslist("LLD")
+        if "selected_GPM_graph" in request.POST:
+            context['selected_GPM_title']=request.POST.get('selected_GPM_title')
+            selected_GPM_graph = request.POST.get('selected_GPM_graph')
+            context['selected_GPM_graph']=selected_GPM_graph
+            
+            if "added_lld_title" in request.POST:
+                added_lld_title = request.POST.get('added_lld_title')
+                sparql_update.add_LLDgraph_tofuseki(added_lld_title, selected_GPM_graph)
+            
+            context['LLD_graphs'], LLD_title = sparql.get_lld_list(selected_GPM_graph)
+            context['LLD_titles'] = LLD_title
 
     return render(request, os.getcwd()+'/templates/checklists/show_deslist.html', context)
 
@@ -34,14 +43,33 @@ def show_deslist(request):
 def graphlist(request):
 
     gpm_graph_uri = request.POST.get('gpm_graph_uri')
-    print(gpm_graph_uri)
     lld_graph_uri = request.POST.get('lld_graph_uri')
-    print(lld_graph_uri)
+
+    if request.method == 'POST':
+        if "added_action" in request.POST and "action_uri" in request.POST:
+            added_action = request.POST.get("added_action")
+            action_uri = request.POST.get("action_uri")
+
+            if("above" in request.POST):
+                print("above")
+                sparql_update.add_LLDaction_tofuseki(added_action, action_uri, lld_graph_uri, "above")
+            elif("below" in request.POST):
+                print("below")
+                sparql_update.add_LLDaction_tofuseki(added_action, action_uri, lld_graph_uri, "below")
+            print(added_action)
+            # for actions_uri in context['alllayer_actions_uri']:
+            #     if(uri in actions_uri):
+            #         if("above" in request.POST):
+            #             index = actions_uri.index(uri)
+            #         elif("below" in request.POST):
+            #             index = actions_uri.index(uri) + 1
+            #         actions_uri.insert(index, uri+str(time.time))
+            #         actions.insert(index, added_action)
 
     context = dict()
     context['gpm_graph_uri'] = gpm_graph_uri
     context['lld_graph_uri'] = lld_graph_uri
-    actions, actions_uri = sparql.get_graph(gpm_graph_uri)
+    actions, actions_uri = sparql.get_graph(lld_graph_uri)
     context['alllayer_actions'] = []
     context['alllayer_actions'].append(actions)
     context['alllayer_actions_uri']=[]
@@ -60,33 +88,18 @@ def graphlist(request):
     context['contents_AM_id'] =contents_AM_id
 
 
-    if request.method == 'POST':
+    if request.method == 'POST' :
         if "action_uri" in request.POST:
             #アクションを獲得したら、そのアクションから順番に一番上の層まで遡り、アクションを入手する
             uri = request.POST.get("action_uri")
-            hier_actions = sparql.get_hier_actions(uri, gpm_graph_uri)
+            hier_actions = sparql.get_hier_actions(uri, lld_graph_uri)
 
             #各層の上のアクションから、それを展開したコンテナのアクション列を順番に表示
             for each_action in hier_actions:
-                print('hiera')
-                print(each_action)
-                actions, actions_uri = sparql.get_detail_action(each_action, gpm_graph_uri)
+                actions, actions_uri = sparql.get_detail_action(each_action, lld_graph_uri)
                 context['alllayer_actions'].append(actions)
                 context['alllayer_actions_uri'].append(actions_uri)
 
-        if "added_action" in request.POST:
-            uri = request.POST.get("uri")
-            added_action = request.POST.get("added_action")
-            print(added_action)
-            above_below = request.POST.get("above_below")
-            for actions_uri in context['alllayer_actions_uri']:
-                if(uri in actions_uri):
-                    if("above" in request.POST):
-                        index = actions_uri.index(uri)
-                    elif("below" in request.POST):
-                        index = actions_uri.index(uri) + 1
-                    actions_uri.insert(index, uri+str(time.time))
-                    actions.insert(index, added_action)
 
     return render(request, os.getcwd()+'/templates/checklists/main.html', context)
 
@@ -175,78 +188,44 @@ def swal_ajax(request):
 
         return JsonResponse(result)
 
-# def second_graph_list(request):
-#     if request.method == 'POST' :
-#         uri = request.POST.get('uri')
-#         actions, actions_uri = sparql.get_detail_action(uri)
-#         context = dict()
-#         context['actions'] =actions
-#         context['actions_uri'] = actions_uri
-
-#         #アクションの表の数を代入
-#         action_list_number = request.POST.get('action_list_number')
-#         context['action_list_number'] = int(action_list_number) +1
-
-#         if request.method == 'GET':
-#             print('yes')
-#             uri = request.GET.get("uri")
-#             added_action = request.GET.get("added_action")
-#             above_below = request.GET.get("above_below")
-#             if(uri != None and "above" in request.GET):
-#                 index = context['actions_uri'].index(uri)
-#                 context['actions_uri'].insert(index, uri + str(time.time))
-#                 context['actions'].insert(index, added_action)
-#             elif(uri!= None and "below" in request.GET):
-#                 index = context['actions_uri'].index(uri) + 1
-#                 context['actions_uri'].insert(index, uri + str(time.time))
-#                 context['actions'].insert(index, added_action)
-
-#         return render(request, os.getcwd()+'/templates/checklists/sub.html', context)
-
 def action_supinfo_show(request):
     if request.method == 'POST':
         context = dict()
 
         #GPMのsupinfoの情報の取得
-        #actionのURI
-        uri = request.POST.get('uri')
-        #actionのvalue
-        action = request.POST.get('action')
+        #元となるLLDのactionのURI
+        action_uri = request.POST.get('action_uri')
         gpm_graph_uri = request.POST.get('gpm_graph_uri')
+
         context['gpm_graph_uri'] = gpm_graph_uri
         lld_graph_uri = request.POST.get('lld_graph_uri')
-        context['lld_graph_uri'] = lld_graph_uri
 
-        context['intention'], context['toolknowledge'], context['annotation'], context['output']= sparql.action_supinfo(uri, gpm_graph_uri)
-        context['action'] = action
-        context['uri'] = uri
+        context['lld_graph_uri'] = lld_graph_uri
+        gpm_action_uri = sparql.get_gpm_action(action_uri, gpm_graph_uri)
+
+        gpm_action, gpm_intention, gpm_toolknowledge, gpm_annotation, gpm_rationale, gpm_output = sparql.action_supinfo(gpm_action_uri, gpm_graph_uri)
+        context['gpm_action'] = gpm_action['action_value']
+        context['gpm_intention'] = gpm_intention['intention_value']
+        context['gpm_toolknowledge'] = gpm_toolknowledge['toolknowledge_value']
+        context['gpm_annotation'] = gpm_annotation['annotation_value']
+        context['gpm_rationale'] = gpm_rationale['rationale_value'] 
+        context['gpm_output'] = gpm_output['output_value']
+        context['action_uri'] = action_uri
 
         #記入したLLDのsupinfoの情報の取得
-        #isUsedByのアクションの取得
-        lld_actions_uri, lld_actions_value = sparql.get_lld_action(uri, gpm_graph_uri)
-        context['lld_actions'] = []
-        for i in range(len(lld_actions_uri)):
-            context['lld_actions'].append([lld_actions_uri[i], lld_actions_value[i]])
-  
-
-        for i in range(len(lld_actions_uri)):
-            print('test1')
-            print(lld_graph_uri)
-            lld_intention, lld_toolknowledge, lld_annotation, lld_output = sparql.action_supinfo(lld_actions_uri[i], lld_graph_uri)
-            print(lld_intention)
-            context['lld_actions'][i].append(lld_intention)
-            context['lld_actions'][i].append(lld_toolknowledge)
-            context['lld_actions'][i].append(lld_annotation)
-            context['lld_actions'][i].append(lld_output)
-        print('test')
-        print(context['lld_actions'])
+        lld_action, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output = sparql.action_supinfo(action_uri, lld_graph_uri)
+        context['lld_action'] = lld_action['action_value'] 
+        context['lld_intention'] = lld_intention['intention_value'] 
+        context['lld_toolknowledge'] = lld_toolknowledge['toolknowledge_value']
+        context['lld_annotation'] = lld_annotation['annotation_value']
+        context['lld_rationale'] = lld_rationale['rationale_value']
+        context['lld_output'] = lld_output['output_value']
 
         return render(request, os.getcwd()+'/templates/checklists/action_supinfo.html', context)
 
 def add_LLD(request):
     if request.method == 'POST':
-        
-        action_uri = request.POST.get('uri')
+        action_uri = request.POST.get('action_uri')
         gpm_graph_uri = request.POST.get('gpm_graph_uri')
         lld_graph_uri = request.POST.get('lld_graph_uri')
 
@@ -254,17 +233,32 @@ def add_LLD(request):
         intention = request.POST.get('intention')
         toolknowledge = request.POST.get('toolknowledge')
         annotation = request.POST.get('annotation')
+        rationale = request.POST.get('rationale')
         output = request.POST.get('output')
 
-        sparql_update.add_LLD_tofuseki(action_uri, action, intention, toolknowledge, annotation, output, gpm_graph_uri, lld_graph_uri)
+        sparql_update.add_LLD_tofuseki(action_uri, action, intention, toolknowledge, annotation, rationale, output, gpm_graph_uri, lld_graph_uri)
 
     return HttpResponse('登録しました！')
 # Create your views here.
 
 def show_pastLLD(request):
     context = {}
-    action = request.POST.get('action')
-    print(action)
-    context['action'] = action 
+    action_uri = request.POST.get('action_uri')
+    gpm_graph_uri = request.POST.get('gpm_graph_uri')
+    graph_uri, lld_actions_uri = sparql.get_lld_action2(action_uri, gpm_graph_uri)
+    print(lld_actions_uri)
+
+    context['lld_actions']=[]
+    
+    for i in range(len(lld_actions_uri)):
+        context['lld_actions'].append([lld_actions_uri[i]])
+        lld_action_value, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output = sparql.action_supinfo(lld_actions_uri[i],graph_uri[i] )
+        context['lld_actions'][i].append(lld_action_value)
+        context['lld_actions'][i].append(lld_intention)
+        context['lld_actions'][i].append(lld_toolknowledge)
+        context['lld_actions'][i].append(lld_annotation)
+        context['lld_actions'][i].append(lld_rationale)
+        context['lld_actions'][i].append(lld_output)
+    print(context['lld_actions'])
 
     return render(request, os.getcwd()+'/templates/checklists/show_pastLLD.html', context)

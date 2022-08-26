@@ -4,67 +4,49 @@
 <div class="container-fluid text-center">
     <h5>詳細表示</h5>
     <h6>選択中のアクション</h6>
-    <h6 style="background-color: white; overflow:scroll;">{{action}}</h6>
+    <h6 style="background-color: white; overflow:scroll;">{{gpm_action}}</h6>
     <h6>意図</h6>
-    <h6 style="background-color: white; overflow:scroll;">{{intention}}</h6>
+    <h6 style="background-color: white; overflow:scroll;">{{gpm_intention}}</h6>
     <h6>知識・道具</h6>
-    <h6 style="background-color: white; overflow:scroll;">{{toolknowledge}}</h6>
+    <h6 style="background-color: white; overflow:scroll;">{{gpm_toolknowledge}}</h6>
     <h6>注釈</h6>
-    <h6 style="background-color: white; overflow:scroll;">{{annotation}}</h6>
+    <h6 style="background-color: white; overflow:scroll;">{{gpm_annotation}}</h6>
     <h6>出力</h6>
-    <h6 style="background-color: white; overflow:scroll;">{{output}}</h6>
+    <h6 style="background-color: white; overflow:scroll;">{{gpm_output}}</h6>
 </div>
 
-{% for lld_action in lld_actions %}
-<div class="container-fluid text-center">
-    <h5>詳細表示</h5>
-{% for lld_action_elem in lld_action %}
-    {% if forloop.counter0 == 1 %}
-    <h6>アクション</h6>
-    {% elif forloop.counter0 == 2 %}
-    <h6>意図</h6>
-    {% elif forloop.counter0 == 3 %}
-    <h6>知識・道具</h6>
-    {% elif forloop.counter0 == 4 %}
-    <h6>注釈</h6>
-    {% elif forloop.counter0 == 5 %}
-    <h6>出力</h6>
-    {% endif %}
-    {% if forloop.counter0 != 0 %}
-    <h6 style="background-color: white; overflow:scroll;">{{lld_action_elem}} </h6>
-    {% endif %}
-{% endfor %}
-</div>
-
-{% endfor %}
 
 
 <div class="container-fluid text-center">
     <form method="POST">
         {% csrf_token %}
-    <h5>作業記録</h5>
+    <h5>現在の記録</h5>
     <h6>実施アクション</h6>
-    <input type= "text" style="background-color: white; overflow:scroll;" name="action" value='{{action}}'></input>
+    <input type= "text" style="background-color: white; overflow:scroll;" name="lld_action" value='{{lld_action}}'></input>
     <h6>意図</h6>
-    <input type= "text" style="background-color: white; overflow:scroll;"></input>
+    <input type= "text" style="background-color: white; overflow:scroll;" name="lld_intention" value="{{lld_intention}}"></input>
     <h6>知識・道具</h6>
-    <input type= "text" style="background-color: white; overflow:scroll;"></input>
+    <input type= "text" style="background-color: white; overflow:scroll;" name="lld_toolknowledge" value="{{lld_toolknowledge}}"></input>
     <h6>注釈</h6>
-    <input type= "text" style="background-color: white; overflow:scroll;"></input>
+    <input type= "text" style="background-color: white; overflow:scroll;" name="lld_annotation" value="{{lld_annotation}}"></input>
+    <h6>導出根拠</h6>
+    <input type="text" style="background-color: white; overflow:scroll;" name="lld_rationale" value="{{lld_rationale}}"></input>
     <h6>出力</h6>
-    <input type= "text" style="background-color: white; overflow:scroll;"></input>
-    <input type="button" value="登録" onclick = "add_LLD(this, '{{uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
+    <input type= "text" style="background-color: white; overflow:scroll;" name="lld_output" value="{{lld_output}}"></input>
+    <input type="button" value="登録" onclick = "add_LLD(this, '{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
     </form>
 </div>
 <script>
-    function add_LLD(tag, uri, gpm_graph_uri, lld_graph_uri){
+    function add_LLD(tag, action_uri, gpm_graph_uri, lld_graph_uri){
+        console.log('test');
         action = tag.parentNode.children[3].value;
         intention = tag.parentNode.children[5].value;
         toolknowledge = tag.parentNode.children[7].value;
         annotation = tag.parentNode.children[9].value;
-        output = tag.parentNode.children[11].value;
+        rationale = tag.parentNode.children[11].value;
+        output = tag.parentNode.children[13].value;
 
-        data = {uri:uri, action:action, intention:intention, toolknowledge:toolknowledge, annotation:annotation, output:output, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri}
+        data = {action_uri:action_uri, action:action, intention:intention, toolknowledge:toolknowledge, annotation:annotation, rationale:rationale, output:output, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri}
 
         $.ajax({
             type: 'POST',
