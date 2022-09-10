@@ -1,68 +1,72 @@
 {% load static %}
 {% load boost %}
 
-<div class="col-md-4 col-sm-4 col-lg-4 pl-0 pr-0 pt-3 pb-3 m-0" style="width: 100%;" >
-  <div class="row p-0 m-0">
+{% for actions, actions_uri in alllayer_actions|zip:alllayer_actions_uri %}
+<div class="pl-1 pr-3 pt-3 pb-0 m-0" style="width:100%;">
+  <div class="row p-0 m-0"  >
     <div class="container text-center">
       <p class="mb-3">
-        <font color="#135156"><strong>{{action_list_number}}</strong></font>
+        <font color="#135156"><strong>アクションリスト</strong></font>
       </p>
     </div>
-  <div class="col-md-1 col-sm-1 col-lg-1 p-0 m-0"></div>
-    <div class="col-md-10 col-sm-10 col-lg-10 p-0 m-0"  id = "action_list_layer_{{action_list_number}}">
+    <div class="p-0 m-0" style="width:100%;" id ="action_list_layer_1">
       <svg viewBox="0 0 0 0" style="position: absolute; z-index: -1; opacity: 0;">
         <defs>
-            <!-- 箱_色 cssのstrokeも合わせる-->
-            <linearGradient id="boxGradient" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="25" y2="25">
+          <!-- 箱_色 cssのstrokeも合わせる-->
+          <linearGradient id="boxGradient" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="25" y2="25">
             <stop offset="0%" stop-color="#1AFF1A" />
             <stop offset="100%" stop-color="#54C3F1" />
-            </linearGradient>
-            <!-- 線_色 cssのstrokeも合わせる-->
-            <linearGradient id="lineGradient">
+          </linearGradient>
+          <!-- 線_色 cssのstrokeも合わせる-->
+          <linearGradient id="lineGradient">
             <stop offset="0%" stop-color="#54C3F1" />
             <stop offset="100%" stop-color="#1AFF1A" />
-            </linearGradient>
-            <path id="todo__line" stroke="url(#lineGradient)" d="M21 12.3h168v0.1z"></path>
-            <path id="todo__box" stroke="url(#boxGradient)"
+          </linearGradient>
+          <path id="todo__line" stroke="url(#lineGradient)" d="M21 12.3h168v0.1z"></path>
+          <path id="todo__box" stroke="url(#boxGradient)"
             d="M21 12.7v5c0 1.3-1 2.3-2.3 2.3H8.3C7 20 6 19 6 17.7V7.3C6 6 7 5 8.3 5h10.4C20 5 21 6 21 7.3v5.4"></path>
-            <path id="todo__check" stroke="url(#boxGradient)" d="M10 13l2 2 5-5"></path>
-            <circle id="todo__circle" cx="13.5" cy="12.5" r="10"></circle>
+          <path id="todo__check" stroke="url(#boxGradient)" d="M10 13l2 2 5-5"></path>
+          <circle id="todo__circle" cx="13.5" cy="12.5" r="10"></circle>
         </defs>
       </svg>
-      <div class="todo-list my-custom-board" >
-        {% if contents_PM_None %}<div class="todo__text d-flex justify-content-center mt-4">{{ contents_PM_None }}
-        </div>
-        {% else %}
+      <div class="todo-list my-custom-board" style="width:100%;">
         {% for action,action_uri in actions|zip:actions_uri %}
-            <div class="d-flex flex-row bd-highlight align-items-center m-0 p-0" id = "{{action_uri}}">
-            <label class="todo">
-            {% if forloop.counter in checked_PM %}
-            <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_PM_id }}" onclick="buttonClick(this.id)" checked="checked"/>{% csrf_token %}
-            {% else %}
-            <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_PM_id }}" onclick="buttonClick(this.id)"/>{% csrf_token %}
-            {% endif%}
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 25"
+          <div class="align-items-center m-0 p-0 todo" style="width:30%;" id="{{action_uri}}">
+            <label class="todo" id="{{action_uri}}_" style="height:70%;">
+              {% if forloop.counter in checked_AM %}
+              <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}" onclick="buttonClick(this.id)" 
+                checked="checked" />{% csrf_token %} 
+              {% else %}
+              <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}"
+                onclick="buttonClick(this.id)" />{% csrf_token %}
+              {% endif%}
+              <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 25"
                 class="todo__icon">
                 <use xlink:href="#todo__line" class="todo__line"></use>
                 <use xlink:href="#todo__box" class="todo__box"></use>
                 <use xlink:href="#todo__check" class="todo__check"></use>
                 <use xlink:href="#todo__circle" class="todo__circle"></use>
-            </svg>
-            <div class="todo__text"> {{ action }}</div>
+              </svg>
+              <div class="todo__text">{{forloop.counter}}.  {{ action }} </div>
             </label>
-            <img class="ml-0 mr-0" src= "{% static 'checklists/images/circle.png'%}"/ width = "24" height="24" onclick="detail_action('{{action_uri}}', this)">{% csrf_token %}
-            <img class=" ml-0 mr-0" src="{% static 'checklists/images/outline_help_135156.png'%}" alt="" width="24" height="24"  onclick = "show_action_supinfo('{{action}}','{{action_uri}}')"/>
-            <img class="ml-0 mr-0" src="{% static 'checklists/images/folder.png'%}" alt="" width="20" height="20" onclick="popup('{{action}}', '{{action_uri}}')">
-            <img class="ml-0 mr-0" src="{% static 'checklists/images/icon_135090_256.png'%}" alt="" width="24" height="24" onclick="add_action_form(this.parentNode.id, '{{action}}')"/>
+            <div class="d-flex flex-row bd-highlight mt-2 pl-5">
+              <img id='{{action_uri}}_test1' class="ml-0 mr-0" src="{% static 'checklists/images/circle.png'%}" width ="24" height="24" onclick = "second('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')">
+              <img id='{{action_uri}}_test' class="ml-0 mr-0 mt-0" src="{% static 'checklists/images/information.png'%}" alt="" width="22" height="22"  onclick = "edit_action('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
+              <form action="{%url 'checklists:show_pastLLD' %}" method='POST' target="_blank">
+                {% csrf_token %}
+                <input type="image" class="ml-0 mr-0" src="{% static 'checklists/images/database.png'%}" width="24" height="24">
+                <input type="hidden" name="action_uri" value='{{action_uri}}'>
+                <input type="hidden" name="gpm_graph_uri" value='{{gpm_graph_uri}}'>
+              </form>
+              <img class="ml-0 mr-0" src="{% static 'checklists/images/icon_135090_256.png'%}" alt="" width="22" height="22" onclick="add_action_form(this.parentNode.id, '{{action}}')"/>
             </div>
-        {% endfor %}
-        {% endif %}
+          </div>
+          {% endfor %}
       </div>
     </div>
   </div>
 </div>
-<div class="col-md-1 col-sm-1 col-lg-1 p-0 m-0"></div>
-
+{% endfor %}
 
 
 

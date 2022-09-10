@@ -1,0 +1,24 @@
+{% load static %}
+{% load boost %}
+
+<div class="text-center" id="LLDedit" style="display:flex;overflow:auto;background-color:aliceblue;margin-bottom:3.5rem; ">
+    <div class="container-fluid text-center">
+        <form method="POST">
+            {% csrf_token %}
+        <h6>現在の記録</h6>
+        <h6>実施アクション</h6>
+        <textarea rows="5" style="background-color: white; overflow:auto; width:100%;" name="lld_action"> {{lld_action}}</textarea>
+        <h6>意図</h6>
+        <textarea rows="5" style="background-color: white; overflow:auto; width:100%;" name="lld_intention"> {{lld_intention}}</textarea>
+        <h6>知識・道具</h6>
+        <textarea rows="5" style="background-color: white; overflow:auto; width:100%;" name="lld_toolknowledge"> {{lld_toolknowledge}}</textarea>
+        <h6>注釈</h6>
+        <textarea rows="5" style="background-color: white; overflow:auto; width:100%;" name="lld_annotation"> {{lld_annotation}}</textarea>
+        <h6>導出根拠</h6>
+        <textarea rows="5" style="background-color: white; overflow:auto; width:100%;" name="lld_rationale">{{lld_rationale}}</textarea>
+        <h6>出力</h6>
+        <textarea rows="5" style="background-color: white; overflow:auto; width:100%;" name="lld_output"> {{lld_output}}</textarea>
+        <input type="button" value="登録して次のアクションへ" onclick = "add_LLD(this, '{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
+        </form>
+    </div>
+</div>

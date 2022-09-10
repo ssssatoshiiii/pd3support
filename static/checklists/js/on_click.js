@@ -122,8 +122,8 @@ function detail_action(uri, element){
 }
 
 
-function show_action_supinfo(action_uri, gpm_graph_uri, lld_graph_uri){
-  data = {action_uri:action_uri, gpm_graph_uri: gpm_graph_uri, lld_graph_uri:lld_graph_uri}
+function show_action_supinfo(action_uri, gpm_graph_uri, lld_graph_uri, option){
+  data = {action_uri:action_uri, gpm_graph_uri: gpm_graph_uri, lld_graph_uri:lld_graph_uri, option:option}
   $.ajax({
     type: 'POST',
     url:'action_supinfo_show',
@@ -131,24 +131,99 @@ function show_action_supinfo(action_uri, gpm_graph_uri, lld_graph_uri){
     dataType: 'text',
   })
   .done(function(response){
-    $('#action_supinfo').children('div').remove();
-    $('#action_supinfo').append(response);
+    $('#action_supinfo').prepend(response);
   })
-  
 }
 
-function test(action){
-  console.log(action);
-  data = {action:action}
+// function test(action){
+//   console.log(action);
+//   data = {action:action}
+//   $.ajax({
+//     type: 'POST',
+//     url:'show_pastLLD',
+//     data: data,
+//     dataType: 'text',
+//   })
+//   .done(function(response){
+//     console.log('test');
+//     open('show_pastLLD');
+//   })
+// }
+
+function escapeSelectorString(val){
+  return val.replace(/[ !"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, "\\$&");
+}
+
+function add_action_form(action_uri, action){
+  $('#contextmenu').children().remove();
+  // $('#contextmenu').append('<form method="POST"> {% csrf_token %} <input type="hidden" name="action_uri" value= '+ action_uri + ' /> <input type="text" name="added_action" /> <button name = "above" type="submit">' + action +'の上にアクションを追加</button><button name="below" type="submit">' + action +'の下にアクションを追加</button> </form>')
+  $('#contextmenu').append('<form id = "contextmenu_form" method="POST"> {% csrf_token %} <input type="hidden" name="action_uri" value= '+ action_uri + ' />' + '</form>');
+  $('#contextmenu_form').append('<input type="text" name="added_action" />');
+  $('#contextmenu_form').append('<input type="hidden" name="gpm_graph_uri" value="{{gpm_graph_uri}}"  >');
+  $('#contextmenu_form').append('<input type="hidden" name="lld_graph_uri" value="{{lld_graph_uri}}"  >');
+  $('#contextmenu_form').append('<button name = "above" type="submit">' + action +'の上にアクションを追加</button>');
+  $('#contextmenu_form').append('<button name="below" type="submit">' + action +'の下にアクションを追加</button>');
+}
+
+function second(action_uri, gpm_graph_uri, lld_graph_uri){
+  // tag.parentNode.children[0].children[3].style.color = '#0000ff';
+  data = {action_uri: action_uri, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri, response:"http"}
   $.ajax({
     type: 'POST',
-    url:'show_pastLLD',
+    url:'second',
     data: data,
     dataType: 'text',
   })
   .done(function(response){
-    console.log('test');
-    open('show_pastLLD');
+    //アクションリストの追加
+    l = $('#action_list').children().length-1
+    for(let i = 0; i<l; i++){
+      $('#action_list').children().eq(-1).remove();
+    }
+    $('#action_list').append(response);
+
+    data1 = {action_uri: action_uri, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri, response:'json'}
+    $.ajax({
+      type: 'POST',
+      url:'second',
+      data: data1,
+      dataType: 'text',
+    })
+    .done(function(response){
+      //アクションの詳細表示の追加
+      $(".todo").css('background-color', '#ffffff');
+      let objData = JSON.parse(response);
+      let hier_actions = objData.hier_actions;
+
+      $('#action_supinfo').children('div').not('#LLDedit').remove();
+      for(let i=0; i<hier_actions.length; i++){
+        // $("#"+escapeSelectorString(String(hier_actions[hier_actions.length-1-i]))).css('background-color', '#ffebcd');
+        // $("#"+escapeSelectorString(String(hier_actions[hier_actions.length-1-i]))+"_").css('background-color', '#ffebcd');
+        show_action_supinfo(hier_actions[hier_actions.length-1-i], gpm_graph_uri, lld_graph_uri, "GPM");
+      }
+   })
+   })
+}
+
+function edit_action(action_uri, gpm_graph_uri, lld_graph_uri){
+
+  $('#action_supinfo').children('div').remove();
+  data = {action_uri: action_uri, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri}
+  $.ajax({
+    type: 'POST',
+    url:'edit_action',
+    data: data,
+    dataType: 'text',
+  })
+  .done(function(response){
+    second(action_uri, gpm_graph_uri, lld_graph_uri);
+    $('#edit_LLDinfo').children('div').remove();
+    $('#edit_LLDinfo').append(response);
+    $('.todo__text').css('color', '#2b2b2b');
+    // console.log($("#"+escapeSelectorString(String(action_uri))).find(".todo__text"));
+    // console.log(action_uri);
+    // console.log(document.getElementById(String(action_uri)+"_"));
+    $("#"+escapeSelectorString(String(action_uri))).find(".todo__text").css('color', '#f0f8ff');
   })
 
 }

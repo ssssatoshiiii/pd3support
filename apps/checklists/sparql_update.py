@@ -241,16 +241,15 @@ def add_LLDaction_tofuseki(added_action, base_action_uri, lld_graph_uri, flag):
 
     elif(flag == "below"):
         outflows_uri = sparql.get_output_flow(base_action_uri, lld_graph_uri)
-        nextactions_uri = sparql.get_nextaction(base_action_uri, lld_graph_uri)
+        nextactions_uri = sparql.get_nextaction1(base_action_uri, lld_graph_uri)
 
         for i in range(len(outflows_uri)):
             delete_data.append([URIRef(outflows_uri[i]), pd3.target, URIRef(nextactions_uri[i])])
             delete_data.append([URIRef(nextactions_uri[i]), pd3.input, URIRef(outflows_uri[i])])
             flow_data.append([URIRef(outflows_uri[i]), pd3.target, URIRef(added_action_uri)])
             flow_data.append([URIRef(added_action_uri), pd3.input, URIRef(outflows_uri[i])])
-    
-        new_data += [[URIRef(added_flow_uri), pd3.target, URIRef(nextactions_uri[i])],
-            [URIRef(nextactions_uri[i]), pd3.input, URIRef(added_flow_uri)]]
+            new_data += [[URIRef(added_flow_uri), pd3.target, URIRef(nextactions_uri[i])],
+                [URIRef(nextactions_uri[i]), pd3.input, URIRef(added_flow_uri)]]
 
     
     supinfo_data = [[URIRef(added_intention_uri), rdf.type, pd3.SupFlow],

@@ -24,10 +24,6 @@
 {% block Title %}
 <div class="container-fluid mt-1 pr-5">
   <li  class="d-flex align-items-center justify-content-end">
-    <a href="checklists_edit" rel="noopener noreferrer">
-      <img  src="{% static 'checklists/images/outline_settings.png'%}" alt="" width="30" height="30">
-      <font size="3" color="#135156"><strong>編集</strong></font>
-    </a>
   </li>
 </div>
 <div class="container text-center">
@@ -39,15 +35,14 @@
 
 {% block layer_list %}
 {% for actions, actions_uri in alllayer_actions|zip:alllayer_actions_uri %}
-<div class="col-md-4 col-sm-4 col-lg-3 pl-0 pr-0 pt-3 pb-3 m-0" style="width: 100%;">
-  <div class="row p-0 m-0" >
+<div class="pl-1 pr-3 pt-1 pb-0 m-0" style="width:100%;">
+  <div class="row p-0 m-0" style="width:100%;">
     <div class="container text-center">
       <p class="mb-3">
         <font color="#135156"><strong>アクションリスト</strong></font>
       </p>
     </div>
-    <div class="col-md-1 col-sm-1 col-lg-1 p-0 m-0" ></div>
-    <div class="col-md-10 col-sm-10 col-lg-10 p-0 m-0" id ="action_list_layer_1">
+    <div class="p-0 m-0" style="width:100%;" id ="action_list_layer_1">
       <svg viewBox="0 0 0 0" style="position: absolute; z-index: -1; opacity: 0;">
         <defs>
           <!-- 箱_色 cssのstrokeも合わせる-->
@@ -68,12 +63,9 @@
         </defs>
       </svg>
       <div class="todo-list my-custom-board" >
-        {% if contents_AM_None %}<div class="todo__text d-flex justify-content-center mt-4">{{ contents_AM_None }}
-        </div>
-        {% else %}
           {% for action,action_uri in actions|zip:actions_uri %}
-          <div class="d-flex flex-row bd-highlight align-items-center m-0 p-0" id="{{action_uri}}">
-            <label class="todo">
+          <div class="align-items-center m-0 p-0 todo" style="width:30%;" id="{{action_uri}}">
+            <label class="todo" id="{{action_uri}}_" style="height:70%;">
               {% if forloop.counter in checked_AM %}
               <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}" onclick="buttonClick(this.id)" 
                 checked="checked" />{% csrf_token %} 
@@ -88,58 +80,75 @@
                 <use xlink:href="#todo__check" class="todo__check"></use>
                 <use xlink:href="#todo__circle" class="todo__circle"></use>
               </svg>
-              <div class="todo__text">  {{ action }} </div>
+              <div class="todo__text">  {{forloop.counter}}. {{ action }} </div>
             </label>
-            <form method='POST'>
-              {% csrf_token %}
-              <input type="image" class="ml-0 mr-0" src= "{% static 'checklists/images/circle.png'%}"/ width = "24" height="24">
-              <input type="hidden" name="action_uri" value='{{action_uri}}' >
-              <input type="hidden" name="gpm_graph_uri" value='{{gpm_graph_uri}}'>
-              <input type="hidden" name="lld_graph_uri" value='{{lld_graph_uri}}'>
-            </form>
-            <img class="ml-0 mr-0" src="{% static 'checklists/images/outline_help_135156.png'%}" alt="" width="24" height="24"  onclick = "show_action_supinfo('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
-            <form action="{%url 'checklists:show_pastLLD' %}" method='POST' target="_blank">
-              {% csrf_token %}
-              <input type="image" class="ml-0 mr-0" src="{% static 'checklists/images/folder.png'%}" width="20" height="20">
-              <input type="hidden" name="action_uri" value='{{action_uri}}'>
-              <input type="hidden" name="gpm_graph_uri" value='{{gpm_graph_uri}}'>
-            </form>
-            <img class="ml-0 mr-0" src="{% static 'checklists/images/icon_135090_256.png'%}" alt="" width="24" height="24" onclick="add_action_form(this.parentNode.id, '{{action}}')"/>
+            <div class="d-flex flex-row bd-highlight mt-2 pl-5" >
+              <img id='{{action_uri}}_test1' class="ml-0 mr-0" src="{% static 'checklists/images/circle.png'%}" width ="24" height="24" onclick = "second('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')">
+              <img id='{{action_uri}}_test' class="ml-0 mr-0 mt-0" src="{% static 'checklists/images/information.png'%}" alt="" width="22" height="22"  onclick = "edit_action('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
+              <form action="{%url 'checklists:show_pastLLD' %}" method='POST' target="_blank">
+                {% csrf_token %}
+                <input type="image" class="ml-0 mr-0" src="{% static 'checklists/images/database.png'%}" width="24" height="24">
+                <input type="hidden" name="action_uri" value='{{action_uri}}'>
+                <input type="hidden" name="gpm_graph_uri" value='{{gpm_graph_uri}}'>
+              </form>
+              <img class="ml-0 mr-0" src="{% static 'checklists/images/icon_135090_256.png'%}" alt="" width="22" height="22" onclick="add_action_form(this.parentNode.id, '{{action}}')"/>
+            </div>
           </div>
           {% endfor %}
-        {% endif%}
       </div>
     </div>
   </div>
 </div>
-<div class="col-md-0 col-sm-0 col-lg-0 p-0 m-0"></div>
 {% endfor %}
 
 <div id ="contextmenu" ></div>
 <script>
-  function add_action_form(action_uri, action){
-    // $('#contextmenu').children().remove();
-    // $('#contextmenu').append('<form method="POST"> {% csrf_token %} <input type="hidden" name="action_uri" value= '+ action_uri + ' /> <input type="text" name="added_action" /> <button name = "above" type="submit">' + action +'の上にアクションを追加</button><button name="below" type="submit">' + action +'の下にアクションを追加</button> </form>')
-    $('#contextmenu').append('<form id = "contextmenu_form" method="POST"> {% csrf_token %} <input type="hidden" name="action_uri" value= '+ action_uri + ' />' + '</form>');
-    $('#contextmenu_form').append('<input type="text" name="added_action" />');
-    $('#contextmenu_form').append('<input type="hidden" name="gpm_graph_uri" value="{{gpm_graph_uri}}"  >');
-    $('#contextmenu_form').append('<input type="hidden" name="lld_graph_uri" value="{{lld_graph_uri}}"  >');
-    $('#contextmenu_form').append('<button name = "above" type="submit">' + action +'の上にアクションを追加</button>');
-    $('#contextmenu_form').append('<button name="below" type="submit">' + action +'の下にアクションを追加</button>')
+    function sample(){
+    var canvas = document.getElementById('action_supinfo');
+    console.log(canvas);
+    if(canvas.getContext){
+      var context = canvas.getContext('2d');
+      context.fillRect(20,40,50,100);
+    }
   }
-
-
 </script>
 
 
 {% endblock %}
 
 {% block action_supinfo %}
-<div class="container-fluid text-center" style="width:30%;float:right;background-color:blanchedalmond;overflow:scroll;">
-  <h5>アクションの詳細</h5>
-  <div class="container-fluid text-center" style="display:flex;" id = "action_supinfo" >
+<div class="container-fluid text-center" style="width:30%;float:left;">
+  <h5 style="margin-bottom:1.3rem;">アクションの詳細</h5>
+  <div class="container-fluid text-center" id = "action_supinfo" >
+    <!--
+    <canvas id="rectangle" width="100" height="100"></canvas>
+    <canvas id="rectangle1" width="100" height="100"></canvas>
+    <script type="text/javascript">
+      onload = function(){
+        var rect_canvas = document.getElementById("rectangle");
+        var rect_ctx = rect_canvas.getContext("2d");
+        rect_ctx.beginPath();
+        // 四角を描く
+        rect_ctx.strokeStyle="red";
+        rect_ctx.strokeRect(20, 20, 60, 60);
+        rect_ctx.strokeStyle="blue";
+        rect_ctx.strokeRect(60,60,30, 30);
+
+        var rect_canvas1 = document.getElementById("rectangle1");
+        var rect_ctx1 = rect_canvas1.getContext("2d");
+        rect_ctx1.beginPath();
+        // 四角を描く
+        rect_ctx1.strokeRect(20, 20, 60, 60);
+      }
+    </script>
+  -->
   </div>
 </div>
+<div class="container-fluid text-center" style="width:30%;float:right;">
+  <h5 style="margin-bottom:1.3rem">作業記録</h5>
+  <div class="container-fluid text-center" id="edit_LLDinfo"></div>
+</div>
+
 {% endblock%}
 
 

@@ -44,6 +44,7 @@ def graphlist(request):
 
     gpm_graph_uri = request.POST.get('gpm_graph_uri')
     lld_graph_uri = request.POST.get('lld_graph_uri')
+    print(gpm_graph_uri, lld_graph_uri)
 
     if request.method == 'POST':
         if "added_action" in request.POST and "action_uri" in request.POST:
@@ -57,27 +58,17 @@ def graphlist(request):
                 print("below")
                 sparql_update.add_LLDaction_tofuseki(added_action, action_uri, lld_graph_uri, "below")
             print(added_action)
-            # for actions_uri in context['alllayer_actions_uri']:
-            #     if(uri in actions_uri):
-            #         if("above" in request.POST):
-            #             index = actions_uri.index(uri)
-            #         elif("below" in request.POST):
-            #             index = actions_uri.index(uri) + 1
-            #         actions_uri.insert(index, uri+str(time.time))
-            #         actions.insert(index, added_action)
 
     context = dict()
     context['gpm_graph_uri'] = gpm_graph_uri
     context['lld_graph_uri'] = lld_graph_uri
     actions, actions_uri = sparql.get_graph(lld_graph_uri)
+    print(actions)
+    print(actions_uri)
     context['alllayer_actions'] = []
     context['alllayer_actions'].append(actions)
     context['alllayer_actions_uri']=[]
     context['alllayer_actions_uri'].append(actions_uri)
-
-
-    # checked_AM = [1,3]
-    # context['checked_AM'] = checked_AM
 
     contents_anytime = list()
     contents_anytime.append('t')
@@ -87,24 +78,63 @@ def graphlist(request):
     contents_AM_id = [1,2,4]
     context['contents_AM_id'] =contents_AM_id
 
+    #今は使っていない、コンテナの展開をajaxにしたため、使わなくなった
+    # if request.method == 'POST' :
+    #     if "action_uri" in request.POST:
+    #         #アクションを獲得したら、そのアクションから順番に一番上の層まで遡り、アクションを入手する
+    #         uri = request.POST.get("action_uri")
+    #         hier_actions = sparql.get_hier_actions(uri, lld_graph_uri)
+    #         #hier_actionsをハイライトするため
+    #         context['alllayer_hier_actions_uri'] = hier_actions
+    #         print(hier_actions)
 
-    if request.method == 'POST' :
-        if "action_uri" in request.POST:
-            #アクションを獲得したら、そのアクションから順番に一番上の層まで遡り、アクションを入手する
-            uri = request.POST.get("action_uri")
-            hier_actions = sparql.get_hier_actions(uri, lld_graph_uri)
-
-            #各層の上のアクションから、それを展開したコンテナのアクション列を順番に表示
-            for each_action in hier_actions:
-                actions, actions_uri = sparql.get_detail_action(each_action, lld_graph_uri)
-                context['alllayer_actions'].append(actions)
-                context['alllayer_actions_uri'].append(actions_uri)
-
+    #         #各層の上のアクションから、それを展開したコンテナのアクション列を順番に表示
+    #         for each_action in hier_actions:
+    #             actions, actions_uri = sparql.get_detail_action(each_action, lld_graph_uri)
+    #             if(len(actions)!= 0):
+    #                 context['alllayer_actions'].append(actions)
+    #                 context['alllayer_actions_uri'].append(actions_uri)
 
     return render(request, os.getcwd()+'/templates/checklists/main.html', context)
 
+def second_list(request):
+    if request.method == 'POST' :
+        print('test')
+        print(request.POST)
+        if "action_uri" in request.POST:
+            print('test1')
+            context = dict()
+            context['alllayer_actions'] = []
+            context['alllayer_actions_uri'] = []
+            #アクションを獲得したら、そのアクションから順番に一番上の層まで遡り、アクションを入手する
+            lld_graph_uri = request.POST.get("lld_graph_uri")
+            gpm_graph_uri = request.POST.get("gpm_graph_uri")
+            context['lld_graph_uri'] = lld_graph_uri
+            context['gpm_graph_uri'] = gpm_graph_uri
+
+            uri = request.POST.get("action_uri")
+            hier_actions = sparql.get_hier_actions(uri, lld_graph_uri)
+            #hier_actionsをハイライトするため
+            context['alllayer_hier_actions_uri'] = hier_actions
+            print('hier')
+            print(hier_actions)
 
 
+            response = request.POST.get("response")
+            if(response=="http"):
+
+                #各層の上のアクションから、それを展開したコンテナのアクション列を順番に表示
+                for each_action in hier_actions:
+                    actions, actions_uri = sparql.get_detail_action(each_action, lld_graph_uri)
+                    if(len(actions)!= 0):
+                        context['alllayer_actions'].append(actions)
+                        context['alllayer_actions_uri'].append(actions_uri)
+
+                return render(request, os.getcwd()+'/templates/checklists/sub.html', context)
+            elif(response=="json"):
+                result = dict()
+                result['hier_actions'] = hier_actions
+                return JsonResponse(result)
 
 def exec_ajax(request):
     """
@@ -196,6 +226,7 @@ def action_supinfo_show(request):
         #元となるLLDのactionのURI
         action_uri = request.POST.get('action_uri')
         gpm_graph_uri = request.POST.get('gpm_graph_uri')
+        context['action_uri'] = action_uri
 
         context['gpm_graph_uri'] = gpm_graph_uri
         lld_graph_uri = request.POST.get('lld_graph_uri')
@@ -203,14 +234,39 @@ def action_supinfo_show(request):
         context['lld_graph_uri'] = lld_graph_uri
         gpm_action_uri = sparql.get_gpm_action(action_uri, gpm_graph_uri)
 
-        gpm_action, gpm_intention, gpm_toolknowledge, gpm_annotation, gpm_rationale, gpm_output = sparql.action_supinfo(gpm_action_uri, gpm_graph_uri)
-        context['gpm_action'] = gpm_action['action_value']
-        context['gpm_intention'] = gpm_intention['intention_value']
-        context['gpm_toolknowledge'] = gpm_toolknowledge['toolknowledge_value']
-        context['gpm_annotation'] = gpm_annotation['annotation_value']
-        context['gpm_rationale'] = gpm_rationale['rationale_value'] 
-        context['gpm_output'] = gpm_output['output_value']
+        #GPMのsupinfoの情報取得
+        if(gpm_action_uri != ''):
+            gpm_action, gpm_intention, gpm_toolknowledge, gpm_annotation, gpm_rationale, gpm_output = sparql.action_supinfo(gpm_action_uri, gpm_graph_uri)
+            context['gpm_action'] = gpm_action['action_value']
+            context['gpm_intention'] = gpm_intention['intention_value']
+            context['gpm_toolknowledge'] = gpm_toolknowledge['toolknowledge_value']
+            context['gpm_annotation'] = gpm_annotation['annotation_value']
+            context['gpm_rationale'] = gpm_rationale['rationale_value'] 
+            context['gpm_output'] = gpm_output['output_value']
+
+        option = request.POST.get('option')
+        print(option)
+        if(option == "LLD"):
+            #記入したLLDのsupinfoの情報の取得
+            lld_action, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output = sparql.action_supinfo(action_uri, lld_graph_uri)
+            context['lld_action'] = lld_action['action_value'] 
+            context['lld_intention'] = lld_intention['intention_value'] 
+            context['lld_toolknowledge'] = lld_toolknowledge['toolknowledge_value']
+            context['lld_annotation'] = lld_annotation['annotation_value']
+            context['lld_rationale'] = lld_rationale['rationale_value']
+            context['lld_output'] = lld_output['output_value']
+
+        return render(request, os.getcwd()+'/templates/checklists/action_supinfo.html', context)
+
+def edit_action(request):
+    if request.method == 'POST':
+        context = dict()
+        action_uri = request.POST.get('action_uri')
+        gpm_graph_uri = request.POST.get('gpm_graph_uri')
         context['action_uri'] = action_uri
+        context['gpm_graph_uri'] = gpm_graph_uri
+        lld_graph_uri = request.POST.get('lld_graph_uri')
+        context['lld_graph_uri'] = lld_graph_uri
 
         #記入したLLDのsupinfoの情報の取得
         lld_action, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output = sparql.action_supinfo(action_uri, lld_graph_uri)
@@ -221,14 +277,15 @@ def action_supinfo_show(request):
         context['lld_rationale'] = lld_rationale['rationale_value']
         context['lld_output'] = lld_output['output_value']
 
-        return render(request, os.getcwd()+'/templates/checklists/action_supinfo.html', context)
+        return render(request, os.getcwd()+'/templates/checklists/edit_action.html', context)
+
+
 
 def add_LLD(request):
     if request.method == 'POST':
         action_uri = request.POST.get('action_uri')
         gpm_graph_uri = request.POST.get('gpm_graph_uri')
         lld_graph_uri = request.POST.get('lld_graph_uri')
-
         action = request.POST.get('action')
         intention = request.POST.get('intention')
         toolknowledge = request.POST.get('toolknowledge')
@@ -238,27 +295,42 @@ def add_LLD(request):
 
         sparql_update.add_LLD_tofuseki(action_uri, action, intention, toolknowledge, annotation, rationale, output, gpm_graph_uri, lld_graph_uri)
 
-    return HttpResponse('登録しました！')
+        print(action_uri)
+        next_action_uri = sparql.get_nextaction(action_uri, lld_graph_uri)
+        print('next')
+        print(next_action_uri)
+        
+        # actions, actions_uri = sparql.get_detail_action(next_action_uri, lld_graph_uri)
+        # while len(actions_uri) != 0:
+        #     expanded_actions.append(actions_uri[0])
+        #     actions, actions_uri = sparql.get_detail_action(actions_uri[0], lld_graph_uri)
+        # print(expanded_actions)
+
+        result = dict()
+        result['next_action_uri']= next_action_uri
+
+    return JsonResponse(result)
 # Create your views here.
+
 
 def show_pastLLD(request):
     context = {}
     action_uri = request.POST.get('action_uri')
     gpm_graph_uri = request.POST.get('gpm_graph_uri')
-    graph_uri, lld_actions_uri = sparql.get_lld_action2(action_uri, gpm_graph_uri)
-    print(lld_actions_uri)
-
-    context['lld_actions']=[]
-    
+    context['gpm_graph_uri'] = gpm_graph_uri
+    gpm_action_uri = sparql.get_gpm_action(action_uri, gpm_graph_uri)
+    graph_uri, lld_actions_uri = sparql.get_lld_action2(gpm_action_uri, gpm_graph_uri)
+ 
+    context['lld_actions']=[]   
     for i in range(len(lld_actions_uri)):
-        context['lld_actions'].append([lld_actions_uri[i]])
+        context['lld_actions'].append([graph_uri[i]])
         lld_action_value, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output = sparql.action_supinfo(lld_actions_uri[i],graph_uri[i] )
-        context['lld_actions'][i].append(lld_action_value)
-        context['lld_actions'][i].append(lld_intention)
-        context['lld_actions'][i].append(lld_toolknowledge)
-        context['lld_actions'][i].append(lld_annotation)
-        context['lld_actions'][i].append(lld_rationale)
-        context['lld_actions'][i].append(lld_output)
-    print(context['lld_actions'])
+        context['lld_actions'][i].append(sparql.get_graph_title(graph_uri[i]))
+        context['lld_actions'][i].append(lld_action_value['action_value'])
+        context['lld_actions'][i].append(lld_intention['intention_value'])
+        context['lld_actions'][i].append(lld_toolknowledge['toolknowledge_value'])
+        context['lld_actions'][i].append(lld_annotation['annotation_value'])
+        context['lld_actions'][i].append(lld_rationale['rationale_value'])
+        context['lld_actions'][i].append(lld_output['output_value'])
 
     return render(request, os.getcwd()+'/templates/checklists/show_pastLLD.html', context)

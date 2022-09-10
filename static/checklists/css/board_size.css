@@ -1,6 +1,9 @@
 /* board_size設定 */
 .my-custom-board {
   position: relative;
-  height: calc(55vh);
+  height: 300px;
+  width: 100%;
+  white-space: nowrap;
   overflow: auto;
 }
+

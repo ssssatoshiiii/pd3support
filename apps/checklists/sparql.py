@@ -150,7 +150,6 @@ def get_graph(gpm_graph_uri):
         MINUS{
         ?start pd3:attribution ?o.
         }
-        
         ?start (pd3:output/pd3:target)* ?inter_action.
         ?inter_action (pd3:output/pd3:target)+ ?target.
         ?target pd3:value ?value1.
@@ -165,7 +164,6 @@ def get_graph(gpm_graph_uri):
     
     sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
     sparql.setQuery(query)
-
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()
     results_uri = list()
@@ -173,12 +171,8 @@ def get_graph(gpm_graph_uri):
     for result in converted_results["results"]["bindings"]:
         results_uri.append(str(result['target']['value']))
         results_value.append(str(result['value']['value']))
-    
-    print(results_value)
 
     return results_value,results_uri
-
-
 
 def get_detail_action(action, gpm_graph_uri):
     query = """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
@@ -187,7 +181,6 @@ def get_detail_action(action, gpm_graph_uri):
         SELECT ?target ?value
         WHERE {
             GRAPH<""" + str(gpm_graph_uri) + """>{
-        
         <""" + action + """> pd3:expansion/pd3:member ?start.
         ?start pd3:actionType "start".
         
@@ -222,7 +215,6 @@ def action_supinfo(action_uri, graph_uri):
             SELECT ?value
             WHERE {
                 GRAPH <""" + graph_uri +""">{
-            
             <""" + action_uri + """> pd3:value ?value.
             }
             }"""
@@ -242,11 +234,9 @@ def action_supinfo(action_uri, graph_uri):
         SELECT ?intention_uri ?intention_value
         WHERE {
             GRAPH <""" + graph_uri +""">{
-        
         <""" + action_uri + """> pd3:input ?intention_uri.
         ?intention_uri pd3:arcType "intention";
             pd3:value ?intention_value.
-        
         }
         }"""
 
@@ -266,11 +256,9 @@ def action_supinfo(action_uri, graph_uri):
         SELECT ?toolknowledge_uri ?toolknowledge_value
         WHERE {
             GRAPH <""" + graph_uri +""">{
-        
         <""" + action_uri + """> pd3:input ?toolknowledge_uri.
         ?toolknowledge_uri pd3:arcType "tool/knowledge";
             pd3:value ?toolknowledge_value.
-        
         }
         }"""
 
@@ -289,12 +277,10 @@ def action_supinfo(action_uri, graph_uri):
 
         SELECT ?annotation_uri ?annotation_value
         WHERE {
-            GRAPH <""" + graph_uri +""">{
-        
+            GRAPH <""" + graph_uri +""">{   
         <""" + action_uri + """> pd3:input ?annotation_uri.
         ?annotation_uri pd3:arcType "annotation";
             pd3:value ?annotation_value.
-        
         }
         }"""
 
@@ -317,8 +303,7 @@ def action_supinfo(action_uri, graph_uri):
         
         <""" + action_uri + """> pd3:input ?rationale_uri.
         ?rationale_uri pd3:arcType "rationale";
-            pd3:value ?rationale_value.
-        
+            pd3:value ?rationale_value.   
         }
         }"""
 
@@ -381,10 +366,9 @@ def get_hier_actions(uri, gpm_graph_uri):
 
     return results
 
+
 #現在作成中のログレベルの記述に紐づいたGPMのアクションを取得
 def get_gpm_action(action_uri, gpm_graph_uri):
-
-    print(type(action_uri))
     query="""PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
     
     SELECT ?gpm_action_uri
@@ -394,18 +378,19 @@ def get_gpm_action(action_uri, gpm_graph_uri):
         }
     }
     """
-
     sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
-
     converted_results = sparql.query().convert()["results"]["bindings"]
-    return converted_results[0]['gpm_action_uri']["value"]
+    if(len(converted_results)!= 0):
+        return converted_results[0]['gpm_action_uri']["value"]
+    else:
+        return ''
+
 
 #GPMのアクションと紐づいたアクションを全て取得
 def get_lld_action2(action_uri, gpm_graph_uri):
     query="""PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
-    
     SELECT ?g ?lld_action_uri
     WHERE{
         GRAPH ?g{
@@ -419,14 +404,13 @@ def get_lld_action2(action_uri, gpm_graph_uri):
     sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
-
     converted_results = sparql.query().convert()["results"]["bindings"]
     results_graph_uri = []
     results_action_uri =[]
     for converted_result in converted_results:
         results_graph_uri.append(converted_result["g"]["value"])
         results_action_uri.append(converted_result["lld_action_uri"]["value"])
-    print(results_action_uri)
+    # print(results_action_uri)
 
     return results_graph_uri, results_action_uri
 
@@ -474,33 +458,86 @@ def get_output_flow(action_uri, graph_uri):
         results.append(converted_result["output"]["value"])
     return results
 
-#アクションの次のアクションのURIを取得
+#次に実施するアクションのURIを取得
 def get_nextaction(action_uri, graph_uri):
-    query = """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
-    PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
-    
-    SELECT ?nextaction
-    WHERE{
-        GRAPH<""" + graph_uri + """>{
-            <""" + action_uri + """> pd3:output ?output.
-            ?output rdf:type pd3:Flow.
-            ?output pd3:target ?nextaction.
+    query = """
+    PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+    PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+    SELECT ?nextaction (COUNT (?upper) AS ?distance)
+    WHERE
+    {GRAPH <"""+ graph_uri +"""> {
+    {<"""+ action_uri +"""> pd3:output/pd3:target ?nextaction.
+    FILTER NOT EXISTS {?nextaction pd3:actionType "end"}
+    FILTER NOT EXISTS {?nextaction pd3:expansion ?o2}}
+    UNION
+    {<"""+ action_uri +"""> pd3:output/pd3:target ?o.
+    ?o (pd3:expansion/pd3:member)+ ?start.
+    ?start pd3:actionType "start";
+    pd3:output/pd3:target ?nextaction.
+    FILTER NOT EXISTS {?nextaction pd3:expansion ?o3}}
+    UNION
+    {<"""+ action_uri +"""> pd3:output/pd3:target ?end.
+    ?end pd3:actionType "end".
+    ?end (pd3:attribution/pd3:contraction)* ?upper1.
+    ?upper1 (pd3:attribution/pd3:contraction)+ ?upper.
+    ?upper pd3:output/pd3:target ?nextaction.
+    FILTER NOT EXISTS {?nextaction pd3:actionType "end"}
+    FILTER NOT EXISTS {?nextaction pd3:expansion ?o4}
+    }
+    UNION{<"""+ action_uri +"""> pd3:output/pd3:target ?end1.
+    ?end1 pd3:actionType "end".
+    ?end1 (pd3:attribution/pd3:contraction)* ?upper1.
+    ?upper1 (pd3:attribution/pd3:contraction)+ ?upper.
+    ?upper pd3:output/pd3:target ?upper_nextaction.
+    FILTER NOT EXISTS {?nextaction pd3:actionType "end"}
+        ?upper_nextaction (pd3:expansion/pd3:member)+ ?start1.
+        ?start1 pd3:actionType "start";
+                pd3:output/pd3:target ?nextaction.
+        FILTER NOT EXISTS {?nextaction pd3:expansion ?o5}
         }
-    }"""
+    }}
+    GROUP BY ?nextaction
+    ORDER BY ?distance
+    """
+    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    converted_results = sparql.query().convert()["results"]["bindings"]
+    results = []
+    if(len(converted_results) != 0):
+        return converted_results[0]['nextaction']['value']
+    else:
+        return ''
+
+
+def get_nextaction1(action_uri, graph_uri):
+    query = """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+    PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+    SELECT ?nextaction
+    WHERE
+    {GRAPH <"""+ graph_uri + """> {
+        <"""+ action_uri +"""> pd3:output ?output.
+        ?output rdf:type pd3:Flow.
+        ?output pd3:target ?nextaction.
+        
+    }}
+    """
     sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
     results = []
     for converted_result in converted_results:
-        results.append(converted_result["nextaction"]["value"])
+        results.append(converted_result['nextaction']['value'])
     return results
 
 #コンテナのURIを取得
 def get_container(action_uri, graph_uri):
     query = """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
     PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
-    
+
     SELECT ?container
     WHERE{
         GRAPH<""" + graph_uri + """>{
@@ -515,5 +552,24 @@ def get_container(action_uri, graph_uri):
     converted_results = sparql.query().convert()["results"]["bindings"]
     if(len(converted_results) != 0):
         return converted_results[0]["container"]["value"]
+    else:
+        return ''
+
+#ログレベルの記述のタイトルを獲得
+def get_graph_title(graph_uri):
+    query = """PREFIX dcterms:<http://purl.org/dc/terms/>
+    SELECT ?title
+    WHERE{
+        GRAPH<"""+ graph_uri +""">{
+            <"""+ graph_uri +"""> dcterms:title ?title.
+        }
+    }
+    """
+    sparql =  SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    converted_results = sparql.query().convert()["results"]["bindings"]
+    if(len(converted_results) != 0):
+        return converted_results[0]["title"]["value"]
     else:
         return ''
