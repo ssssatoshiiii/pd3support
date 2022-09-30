@@ -1,24 +1,86 @@
 {% load static %}
 {% load boost %}
 
-<div class="text-center" id="LLDedit" style="display:flex;overflow:auto;background-color:aliceblue;margin-bottom:3.5rem; ">
-    <div class="container-fluid text-center">
-        <form method="POST">
-            {% csrf_token %}
-        <h6>現在の記録</h6>
-        <h6>実施アクション</h6>
-        <textarea rows="5" style="background-color: white; overflow:auto; width:100%;" name="lld_action"> {{lld_action}}</textarea>
-        <h6>意図</h6>
-        <textarea rows="5" style="background-color: white; overflow:auto; width:100%;" name="lld_intention"> {{lld_intention}}</textarea>
-        <h6>知識・道具</h6>
-        <textarea rows="5" style="background-color: white; overflow:auto; width:100%;" name="lld_toolknowledge"> {{lld_toolknowledge}}</textarea>
-        <h6>注釈</h6>
-        <textarea rows="5" style="background-color: white; overflow:auto; width:100%;" name="lld_annotation"> {{lld_annotation}}</textarea>
-        <h6>導出根拠</h6>
-        <textarea rows="5" style="background-color: white; overflow:auto; width:100%;" name="lld_rationale">{{lld_rationale}}</textarea>
-        <h6>出力</h6>
-        <textarea rows="5" style="background-color: white; overflow:auto; width:100%;" name="lld_output"> {{lld_output}}</textarea>
-        <input type="button" value="登録して次のアクションへ" onclick = "add_LLD(this, '{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
-        </form>
-    </div>
+<div class="text-center" id="LLDedit" style="display:flex;overflow:auto;background-color:aliceblue;margin-bottom:3.5rem; border:3px double #0067c0">
+    <form method="POST">
+        {% csrf_token %}
+        <table style="width:100%;-ms-writing-mode: tb-lr;writing-mode: vertical-lr;" border="1">
+            <tr style="width:4%;">
+                <th> </th>
+                <th>実施アクション</th>
+                <th>意図</th>
+                <th>知識・道具</th>
+                <th>注釈</th>
+                <th>導出根拠</th>
+                <th>出力</th>
+            </tr>
+            <tr style="width:48%;">
+                <th style="writing-mode: lr-tb;">詳細情報</th>
+                <th><textarea rows="4" style="overflow:auto;width:21.5%;" readonly> {{gpm_action}}</textarea></th>
+                <th><textarea rows="4" style="overflow:auto;width:21.5%;" readonly> {{gpm_intention}}</textarea></th>
+                <th><textarea rows="4" style="overflow:auto;width:21.5%;" readonly> {{gpm_toolknowledge}}</textarea></th>
+                <th><textarea rows="4" style="overflow:auto;width:21.5%;" readonly> {{gpm_annotation}}</textarea></th>
+                <th><textarea rows="4" style="overflow:auto;width:21.5%;" readonly> </textarea></th>
+                <th><textarea rows="4" style="overflow:auto;width:21.5%;" readonly> {{gpm_output}}</textarea></th>
+            </tr>
+            <tr style="width:48%;"> 
+                <th style="writing-mode: lr-tb;">現在の記録</th>
+                <th><textarea rows="4" style="overflow:auto;width:21.5%;" name="lld_action"> {{lld_action}}</textarea></th>
+                <th><textarea rows="4" style="overflow:auto;width:21.5%;" name="lld_intention"> {{lld_intention}}</textarea></th>
+                <th><textarea rows="4" style="overflow:auto;width:21.5%;" name="lld_toolknowledge"> {{lld_toolknowledge}}</textarea></th>
+                <th><textarea rows="4" style="overflow:auto;width:21.5%;" name="lld_annotation"> {{lld_annotation}}</textarea></th>
+                <th><textarea rows="4" style="overflow:auto;width:21.5%;" name="lld_rationale">{{lld_rationale}} </textarea></th>
+                <th><textarea rows="4" style="overflow:auto;width:21.5%;" name="lld_output"> {{lld_output}}</textarea></th>
+            </tr>
+        </table>
+        <input type="button" value="登録して次のアクションへ" onclick = "add_LLD_gonext(lld_action, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output, '{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
+        <input type="hidden" name="chosen_action_uri" value="{{action_uri}}" >
+    </form>
 </div>
+<script>
+    function add_LLD_gonext(action, intention, toolknowledge, annotation, rationale, output, action_uri, gpm_graph_uri, lld_graph_uri, lld_action){
+        data = {action_uri:action_uri, action:action.value, intention:intention.value, toolknowledge:toolknowledge.value, annotation:annotation.value, rationale:rationale.value, output:output.value, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri}
+
+        $.ajax({
+            type: 'POST',
+            url: 'add_LLD',
+            data: data,
+            dataType: 'text',
+        })
+        .done(function(response){
+            let objData = JSON.parse(response);
+            let next_action_uri = objData.next_action_uri;
+            let loopcondition = objData.loopcondition
+            let loopnext = objData.loopnext
+            for(let i = 0; i < loopcondition.length; i++){
+                loopcondition[i] = loopcondition[i].replace("[loop]", "")+ " 該当する場合は"+ i + "を入力"
+            }
+
+            if(loopcondition.length != 0){
+                var condition_result = prompt(loopcondition+"\n 上記条件に該当しない場合は"+ loopcondition.length+"を入力");
+                if(condition_result < loopcondition.length && condition_result >= 0){
+                    data1 = {action_uri: action_uri, loopnext: loopnext[condition_result], gpm_graph_uri: gpm_graph_uri, lld_graph_uri:lld_graph_uri}
+                    $.ajax({
+                        type: 'POST',
+                        url: 'loop_add',
+                        data: data1,
+                        dataType: 'text',
+                    })
+                    .done(function(response){
+                        second(next_action_uri, gpm_graph_uri, lld_graph_uri)
+                        edit_action(next_action_uri, gpm_graph_uri, lld_graph_uri)
+                    })
+                }
+                else if(condition_result == loopcondition.length){
+                    second(next_action_uri, gpm_graph_uri, lld_graph_uri)
+                    edit_action(next_action_uri, gpm_graph_uri, lld_graph_uri)
+                }
+            }
+            else{
+                second(next_action_uri, gpm_graph_uri, lld_graph_uri)
+                edit_action(next_action_uri, gpm_graph_uri, lld_graph_uri)
+            }
+
+        })
+    }
+</script>

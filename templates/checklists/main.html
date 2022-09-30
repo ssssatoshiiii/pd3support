@@ -39,7 +39,7 @@
   <div class="row p-0 m-0" style="width:100%;">
     <div class="container text-center">
       <p class="mb-3">
-        <font color="#135156"><strong>アクションリスト</strong></font>
+        <font color="#135156"><strong>アクションリスト（問題解決レイヤー）</strong></font>
       </p>
     </div>
     <div class="p-0 m-0" style="width:100%;" id ="action_list_layer_1">
@@ -64,9 +64,9 @@
       </svg>
       <div class="todo-list my-custom-board" >
           {% for action,action_uri in actions|zip:actions_uri %}
-          <div class="align-items-center m-0 p-0 todo" style="width:30%;" id="{{action_uri}}">
-            <label class="todo" id="{{action_uri}}_" style="height:70%;">
-              {% if forloop.counter in checked_AM %}
+          <div class="align-items-center m-0 p-0 todo" style="width:30%;">
+            <label class="todo" id="{{action_uri}}" style="height:70%;">
+              {% if forloop.counter0 in checklist %}
               <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}" onclick="buttonClick(this.id)" 
                 checked="checked" />{% csrf_token %} 
               {% else %}
@@ -82,16 +82,24 @@
               </svg>
               <div class="todo__text">  {{forloop.counter}}. {{ action }} </div>
             </label>
-            <div class="d-flex flex-row bd-highlight mt-2 pl-5" >
-              <img id='{{action_uri}}_test1' class="ml-0 mr-0" src="{% static 'checklists/images/circle.png'%}" width ="24" height="24" onclick = "second('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')">
-              <img id='{{action_uri}}_test' class="ml-0 mr-0 mt-0" src="{% static 'checklists/images/information.png'%}" alt="" width="22" height="22"  onclick = "edit_action('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
+            <div class="d-flex flex-row bd-highlight mt-2 pl-3" >
+              <img id='{{action_uri}}_test1' class="ml-0 mr-1" src="{% static 'checklists/images/dictionary.png'%}" width ="22" height="22" onclick = "second('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')">
+              <img id='{{action_uri}}_test' class="ml-0 mr-1 mt-0" src="{% static 'checklists/images/information.png'%}" alt="" width="22" height="22"  onclick = "edit_action('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
               <form action="{%url 'checklists:show_pastLLD' %}" method='POST' target="_blank">
                 {% csrf_token %}
-                <input type="image" class="ml-0 mr-0" src="{% static 'checklists/images/database.png'%}" width="24" height="24">
+                <input type="image" class="ml-0 mr-1" src="{% static 'checklists/images/database.png'%}" width="24" height="24">
                 <input type="hidden" name="action_uri" value='{{action_uri}}'>
                 <input type="hidden" name="gpm_graph_uri" value='{{gpm_graph_uri}}'>
               </form>
-              <img class="ml-0 mr-0" src="{% static 'checklists/images/icon_135090_256.png'%}" alt="" width="22" height="22" onclick="add_action_form(this.parentNode.id, '{{action}}')"/>
+              <!-- <img class="ml-0 mr-0" src="{% static 'checklists/images/icon_135090_256.png'%}" alt="" width="22" height="22" onclick="add_action_form(this.parentNode.id, '{{action}}')"/> -->
+              <form action="{%url 'checklists:add_action' %}" method='POST' width="200" height="200">
+                {% csrf_token %}
+                <input type="image" class="ml-0 mr-1" src="{% static 'checklists/images/icon_135090_256.png'%}" width="22" height="22">
+                <input type="hidden" name="action_uri" value='{{action_uri}}'>
+                <input type="hidden" name="action" value="{{action}}" >
+                <input type="hidden" name="gpm_graph_uri" value='{{gpm_graph_uri}}'>
+                <input type="hidden" name="lld_graph_uri" value="{{lld_graph_uri}}">
+              </form>
             </div>
           </div>
           {% endfor %}
@@ -101,51 +109,26 @@
 </div>
 {% endfor %}
 
-<div id ="contextmenu" ></div>
-<script>
-    function sample(){
-    var canvas = document.getElementById('action_supinfo');
-    console.log(canvas);
-    if(canvas.getContext){
-      var context = canvas.getContext('2d');
-      context.fillRect(20,40,50,100);
-    }
-  }
-</script>
+<!-- <div id ="contextmenu" >
+  <form method="POST">
+    {% csrf_token %}
+    <div id="contextmenu_form">
+    </div>
+  </form>
+</div> -->
+
 
 
 {% endblock %}
 
 {% block action_supinfo %}
-<div class="container-fluid text-center" style="width:30%;float:left;">
+<!-- <div class="container-fluid text-center" style="width:25%;float:left;">
   <h5 style="margin-bottom:1.3rem;">アクションの詳細</h5>
   <div class="container-fluid text-center" id = "action_supinfo" >
-    <!--
-    <canvas id="rectangle" width="100" height="100"></canvas>
-    <canvas id="rectangle1" width="100" height="100"></canvas>
-    <script type="text/javascript">
-      onload = function(){
-        var rect_canvas = document.getElementById("rectangle");
-        var rect_ctx = rect_canvas.getContext("2d");
-        rect_ctx.beginPath();
-        // 四角を描く
-        rect_ctx.strokeStyle="red";
-        rect_ctx.strokeRect(20, 20, 60, 60);
-        rect_ctx.strokeStyle="blue";
-        rect_ctx.strokeRect(60,60,30, 30);
-
-        var rect_canvas1 = document.getElementById("rectangle1");
-        var rect_ctx1 = rect_canvas1.getContext("2d");
-        rect_ctx1.beginPath();
-        // 四角を描く
-        rect_ctx1.strokeRect(20, 20, 60, 60);
-      }
-    </script>
-  -->
-  </div>
+  </div> -->
 </div>
-<div class="container-fluid text-center" style="width:30%;float:right;">
-  <h5 style="margin-bottom:1.3rem">作業記録</h5>
+<div class="container-fluid text-center" style="width:50%;float:right;">
+  <h5 style="margin-bottom:1.3rem">詳細情報・現在の記録</h5>
   <div class="container-fluid text-center" id="edit_LLDinfo"></div>
 </div>
 

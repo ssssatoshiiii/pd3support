@@ -1,0 +1,10 @@
+<form method="POST" action="{%url 'checklists:top' %}">
+    {% csrf_token %}
+    <label style="display:block;">アクションの追加</label>
+    <input type="hidden" name="action_uri" value="{{action_uri}}">
+    <textarea rows="5" cols="50" name="added_action" ></textarea>
+    <input type="hidden" name="gpm_graph_uri" value="{{gpm_graph_uri}}"  >
+    <input type="hidden" name="lld_graph_uri" value="{{lld_graph_uri}}"  >
+    <button class="mt-2" style="display:block;" name = "above" type="submit">「 {{action}} 」の前にアクションを追加</button>
+    <button class="mt-2" style="display:block;" name = "below" type="submit">「 {{action}} 」の後ろにアクションを追加</button>
+</form>

@@ -1,98 +1,21 @@
 {% load static %}
 {% load boost %}
 
-{% if lld_action %}
-<div class="text-center" id="LLD" style=height:300px;display:flex;overflow:auto;background-color:blanchedalmond;margin-bottom:3.5rem;">
-{% else %}
-<div class="text-center" id="GPM_supinfo" style="height:300px;display:flex;overflow:auto;background-color:blanchedalmond;margin-bottom:3.5rem;">
-{% endif %}
+<div class="text-center" id="GPM_supinfo" style="display:flex;overflow:auto;background-color:blanchedalmond;margin-bottom:3.5rem;border:3px double #0067c0;">
     <div class="container-fluid text-center">
         <h6>汎化プロセスモデルの詳細表示</h6>
         <h6>選択中のアクション</h6>
-        <h6 style="background-color: white; overflow:auto;">{{gpm_action}}</h6>
+        <textarea rows="4" style="background-color:blanchedalmond; overflow:auto;width:100%;" readonly>{{gpm_action}}</textarea>
         <h6>意図</h6>
-        <h6 style="background-color: white; overflow:auto;">{{gpm_intention}} </h6>
+        <textarea rows="4" style="background-color:blanchedalmond;overflow:auto;width:100%;" readonly>{{gpm_intention}} </textarea>
         <h6>知識・道具</h6>
-        <h6 style="background-color: white; overflow:auto;">{{gpm_toolknowledge}}</h6>
+        <textarea rows="4" style="background-color:blanchedalmond;overflow:auto;width:100%;" readonly>{{gpm_toolknowledge}}</textarea>
         <h6>注釈</h6>
-        <h6 style="background-color: white; overflow:auto;">{{gpm_annotation}}</h6>
+        <textarea rows="4" style="background-color:blanchedalmond; overflow:auto;width:100%; margin-bottom:8.4rem;" readonly>{{gpm_annotation}}</textarea>
         <h6>出力</h6>
-        <h6 style="background-color: white; overflow:auto;">{{gpm_output}}</h6>
+        <textarea rows="4" style="background-color:blanchedalmond;overflow:auto;width:100%; margin-bottom: 2rem;" readonly>{{gpm_output}}</textarea>
     </div>
-    {% if lld_action %}
-    <div class="container-fluid text-center">
-        <form method="POST">
-            {% csrf_token %}
-        <h6>現在の記録</h6>
-        <h6>実施アクション</h6>
-        <textarea rows="10" cols="60" style="background-color: white; overflow:scroll;" name="lld_action"> {{lld_action}}</textarea>
-        <h6>意図</h6>
-        <input type= "text" style="background-color: white; overflow:scroll;" name="lld_intention" value="{{lld_intention}}"></input>
-        <h6>知識・道具</h6>
-        <input type= "text" style="background-color: white; overflow:scroll;" name="lld_toolknowledge" value="{{lld_toolknowledge}}"></input>
-        <h6>注釈</h6>
-        <input type= "text" style="background-color: white; overflow:scroll;" name="lld_annotation" value="{{lld_annotation}}"></input>
-        <h6>導出根拠</h6>
-        <input type="text" style="background-color: white; overflow:scroll;" name="lld_rationale" value="{{lld_rationale}}"></input>
-        <h6>出力</h6>
-        <input type= "text" style="background-color: white; overflow:scroll;" name="lld_output" value="{{lld_output}}"></input>
-        <input type="button" value="登録して次のアクションへ" onclick = "add_LLD(this, '{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
-        </form>
-    </div>
-    {% endif %}
 </div>
 <div style="background-color:white"></div>
-<script>
-    function add_LLD(tag, action_uri, gpm_graph_uri, lld_graph_uri){
-        action = tag.parentNode.children[3].value;
-        intention = tag.parentNode.children[5].value;
-        toolknowledge = tag.parentNode.children[7].value;
-        annotation = tag.parentNode.children[9].value;
-        rationale = tag.parentNode.children[11].value;
-        output = tag.parentNode.children[13].value;
 
-        data = {action_uri:action_uri, action:action, intention:intention, toolknowledge:toolknowledge, annotation:annotation, rationale:rationale, output:output, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri}
-
-        $.ajax({
-            type: 'POST',
-            url: 'add_LLD',
-            data: data,
-            dataType: 'text',
-        })
-        .done(function(response){
-            let objData = JSON.parse(response);
-            console.log(objData);
-            let next_action_uri = objData.next_action_uri;
-
-            // for (let i = 0; i < expanded_actions.length; i++){
-            //     let test1 = document.getElementById(expanded_actions[i]+"_test1");
-            //     console.log(test1);
-            //     console.log(document.getElementById("action_list"));
-            //     test1.click();
-
-            // }
-
-
-            edit_action(next_action_uri, gpm_graph_uri, lld_graph_uri)
-            // data2 = {action_uri: next_action_uri, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri, response:'http'};
-            // console.log('data2');
-            // console.log(data2);
-            // $.ajax({
-            //     type:'POST',
-            //     url: 'second',
-            //     data:data2,
-            //     dataType: 'text',
-            // })
-            // .done(function(response){
-            //     l = $('#action_list').children().length-4
-            //     for(let i = 0; i<l; i++){
-            //         $('#action_list').children().eq(-1).remove();
-            //     }
-            //     $('#action_list').append(response);
-            //     let test = document.getElementById(expanded_actions[expanded_actions.length-1]+"_test");
-            //     test.click();
-            // })
-        })
-    }
-</script>
 

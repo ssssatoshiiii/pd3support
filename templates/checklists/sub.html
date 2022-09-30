@@ -1,12 +1,22 @@
 {% load static %}
 {% load boost %}
+{% load my_templatetag %}
 
 {% for actions, actions_uri in alllayer_actions|zip:alllayer_actions_uri %}
 <div class="pl-1 pr-3 pt-3 pb-0 m-0" style="width:100%;">
   <div class="row p-0 m-0"  >
     <div class="container text-center">
       <p class="mb-3">
-        <font color="#135156"><strong>アクションリスト</strong></font>
+        <font color="#135156"><strong>アクションリスト 
+          {% access_list alllayer_layertype forloop.counter0 as val %}
+          {% if val == 'topic' %}
+          （問題解決レイヤー）
+          {% elif val == 'info' %}
+          （情報操作レイヤー）
+          {% elif val == 'phys' %}
+          （物理操作レイヤー）
+          {% endif %}
+        </strong></font>
       </p>
     </div>
     <div class="p-0 m-0" style="width:100%;" id ="action_list_layer_1">
@@ -30,10 +40,11 @@
         </defs>
       </svg>
       <div class="todo-list my-custom-board" style="width:100%;">
+        {% access_list checklist forloop.counter0 as check %}
         {% for action,action_uri in actions|zip:actions_uri %}
-          <div class="align-items-center m-0 p-0 todo" style="width:30%;" id="{{action_uri}}">
-            <label class="todo" id="{{action_uri}}_" style="height:70%;">
-              {% if forloop.counter in checked_AM %}
+          <div class="align-items-center m-0 p-0 todo" style="width:30%;">
+            <label class="todo" id="{{action_uri}}" style="height:70%;">
+              {% if forloop.counter0 in check %}
               <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}" onclick="buttonClick(this.id)" 
                 checked="checked" />{% csrf_token %} 
               {% else %}
@@ -49,12 +60,12 @@
               </svg>
               <div class="todo__text">{{forloop.counter}}.  {{ action }} </div>
             </label>
-            <div class="d-flex flex-row bd-highlight mt-2 pl-5">
-              <img id='{{action_uri}}_test1' class="ml-0 mr-0" src="{% static 'checklists/images/circle.png'%}" width ="24" height="24" onclick = "second('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')">
-              <img id='{{action_uri}}_test' class="ml-0 mr-0 mt-0" src="{% static 'checklists/images/information.png'%}" alt="" width="22" height="22"  onclick = "edit_action('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
+            <div class="d-flex flex-row bd-highlight mt-2 pl-3">
+              <img id='{{action_uri}}_test1' class="ml-0 mr-1" src="{% static 'checklists/images/dictionary.png'%}" width ="22" height="22" onclick = "second('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')">
+              <img id='{{action_uri}}_test' class="ml-0 mr-1 mt-0" src="{% static 'checklists/images/information.png'%}" alt="" width="22" height="22"  onclick = "edit_action('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
               <form action="{%url 'checklists:show_pastLLD' %}" method='POST' target="_blank">
                 {% csrf_token %}
-                <input type="image" class="ml-0 mr-0" src="{% static 'checklists/images/database.png'%}" width="24" height="24">
+                <input type="image" class="ml-0 mr-1" src="{% static 'checklists/images/database.png'%}" width="24" height="24">
                 <input type="hidden" name="action_uri" value='{{action_uri}}'>
                 <input type="hidden" name="gpm_graph_uri" value='{{gpm_graph_uri}}'>
               </form>

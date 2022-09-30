@@ -27,7 +27,7 @@ function select_LLD(lld_graph_uri, lld_graph_title){
 }
 
 function buttonClick(id_value) {
-  //console.log('buttonclick');
+  console.log('buttonclick');
   var value = { value: id_value };
   // ajax
   $.ajax({
@@ -38,6 +38,7 @@ function buttonClick(id_value) {
 
     // サーバから返送データを受け取る
     success: function (dataset) {
+      console.log(dataset);
       dataset = dataset;
       //console.log("T")
       }
@@ -131,38 +132,31 @@ function show_action_supinfo(action_uri, gpm_graph_uri, lld_graph_uri, option){
     dataType: 'text',
   })
   .done(function(response){
-    $('#action_supinfo').prepend(response);
+    $('#action_supinfo').children('div').remove();
+    $('#action_supinfo').append(response);
   })
 }
 
-// function test(action){
-//   console.log(action);
-//   data = {action:action}
-//   $.ajax({
-//     type: 'POST',
-//     url:'show_pastLLD',
-//     data: data,
-//     dataType: 'text',
-//   })
-//   .done(function(response){
-//     console.log('test');
-//     open('show_pastLLD');
-//   })
-// }
 
 function escapeSelectorString(val){
-  return val.replace(/[ !"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, "\\$&");
+  if(val != null){
+    return val.replace(/[ !"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, "\\$&");
+  }
+  else{
+    return val;
+  }
 }
 
 function add_action_form(action_uri, action){
-  $('#contextmenu').children().remove();
-  // $('#contextmenu').append('<form method="POST"> {% csrf_token %} <input type="hidden" name="action_uri" value= '+ action_uri + ' /> <input type="text" name="added_action" /> <button name = "above" type="submit">' + action +'の上にアクションを追加</button><button name="below" type="submit">' + action +'の下にアクションを追加</button> </form>')
-  $('#contextmenu').append('<form id = "contextmenu_form" method="POST"> {% csrf_token %} <input type="hidden" name="action_uri" value= '+ action_uri + ' />' + '</form>');
-  $('#contextmenu_form').append('<input type="text" name="added_action" />');
+
+  $('#contextmenu_form').children().remove();
+  $('#contextmenu_form').append('<label class="mt-3">アクションの追加</label>')
+  $('#contextmenu_form').append('<input type="hidden" name="action_uri" value= '+ action_uri + ' />' );
+  $('#contextmenu_form').append('<input type="text" style="width:100%;" name="added_action" />');
   $('#contextmenu_form').append('<input type="hidden" name="gpm_graph_uri" value="{{gpm_graph_uri}}"  >');
   $('#contextmenu_form').append('<input type="hidden" name="lld_graph_uri" value="{{lld_graph_uri}}"  >');
-  $('#contextmenu_form').append('<button name = "above" type="submit">' + action +'の上にアクションを追加</button>');
-  $('#contextmenu_form').append('<button name="below" type="submit">' + action +'の下にアクションを追加</button>');
+  $('#contextmenu_form').append('<button class="mt-1" name = "above" type="submit">' + '「'+ action + '」' +'の前にアクションを追加</button>');
+  $('#contextmenu_form').append('<button class="mt-1" name="below" type="submit">' + '「'+ action +'」'+ 'の後ろにアクションを追加</button>');
 }
 
 function second(action_uri, gpm_graph_uri, lld_graph_uri){
@@ -182,6 +176,13 @@ function second(action_uri, gpm_graph_uri, lld_graph_uri){
     }
     $('#action_list').append(response);
 
+    // //編集中のアクションについて、枠線を変える
+    // var chosen_action_uri = $('input[name^="chosen_action_uri"]').val();
+    // if(chosen_action_uri!= null){
+    //   $('#'+escapeSelectorString(chosen_action_uri)).css('border', '3px double #0067c0');
+    // }
+
+
     data1 = {action_uri: action_uri, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri, response:'json'}
     $.ajax({
       type: 'POST',
@@ -194,20 +195,22 @@ function second(action_uri, gpm_graph_uri, lld_graph_uri){
       $(".todo").css('background-color', '#ffffff');
       let objData = JSON.parse(response);
       let hier_actions = objData.hier_actions;
+      console.log(hier_actions);
 
-      $('#action_supinfo').children('div').not('#LLDedit').remove();
+      // $('#action_supinfo').children('div').not('#LLDedit').remove();
       for(let i=0; i<hier_actions.length; i++){
         // $("#"+escapeSelectorString(String(hier_actions[hier_actions.length-1-i]))).css('background-color', '#ffebcd');
-        // $("#"+escapeSelectorString(String(hier_actions[hier_actions.length-1-i]))+"_").css('background-color', '#ffebcd');
-        show_action_supinfo(hier_actions[hier_actions.length-1-i], gpm_graph_uri, lld_graph_uri, "GPM");
+        $("#"+escapeSelectorString(String(hier_actions[i]))).css('background-color', '#adff2f');
+        // show_action_supinfo(hier_actions[hier_actions.length-1-i], gpm_graph_uri, lld_graph_uri, "GPM");
       }
+      let chosen_action_uri = $('input[name="chosen_action_uri"]').val();
+      $("#"+escapeSelectorString(String(chosen_action_uri))).css('border', '3px double #0067c0')
    })
    })
 }
 
 function edit_action(action_uri, gpm_graph_uri, lld_graph_uri){
 
-  $('#action_supinfo').children('div').remove();
   data = {action_uri: action_uri, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri}
   $.ajax({
     type: 'POST',
@@ -216,14 +219,13 @@ function edit_action(action_uri, gpm_graph_uri, lld_graph_uri){
     dataType: 'text',
   })
   .done(function(response){
-    second(action_uri, gpm_graph_uri, lld_graph_uri);
+    show_action_supinfo(action_uri, gpm_graph_uri, lld_graph_uri, "GPM");
     $('#edit_LLDinfo').children('div').remove();
     $('#edit_LLDinfo').append(response);
-    $('.todo__text').css('color', '#2b2b2b');
-    // console.log($("#"+escapeSelectorString(String(action_uri))).find(".todo__text"));
-    // console.log(action_uri);
-    // console.log(document.getElementById(String(action_uri)+"_"));
-    $("#"+escapeSelectorString(String(action_uri))).find(".todo__text").css('color', '#f0f8ff');
+    // $('.todo__text').css('color', '#2b2b2b');
+    // $("#"+escapeSelectorString(String(action_uri))).find(".todo__text").css('color', '#f0f8ff');
+    $('.todo').css('border', 'none');
+    $("#"+escapeSelectorString(String(action_uri))).css('border', '3px double #0067c0');
   })
 
 }
