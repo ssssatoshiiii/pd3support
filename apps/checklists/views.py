@@ -64,8 +64,6 @@ def graphlist(request):
     context['gpm_graph_uri'] = gpm_graph_uri
     context['lld_graph_uri'] = lld_graph_uri
     actions, actions_uri = sparql.get_graph(lld_graph_uri)
-    print(actions)
-    print(actions_uri)
     context['alllayer_actions'] = []
     context['alllayer_actions'].append(actions)
     context['alllayer_actions_uri']=[]
@@ -126,8 +124,6 @@ def second_list(request):
             hier_actions = sparql.get_hier_actions(uri, lld_graph_uri)
             #hier_actionsをハイライトするため
             context['alllayer_hier_actions_uri'] = hier_actions
-            print('hier')
-            print(hier_actions)
 
 
             response = request.POST.get("response")
@@ -148,8 +144,6 @@ def second_list(request):
 
                         context['alllayer_actions'].append(actions)
                         context['alllayer_actions_uri'].append(actions_uri)
-                        print('check')
-                        print(checklist)
                         context['checklist'].append(checklist)
                 
                 return render(request, os.getcwd()+'/templates/checklists/sub.html', context)
@@ -329,9 +323,16 @@ def add_LLD(request):
 
         sparql_update.add_LLD_tofuseki(action_uri, action, intention, toolknowledge, annotation, rationale, output, gpm_graph_uri, lld_graph_uri)
         sparql_update.add_done_action(action_uri, lld_graph_uri)
+        done_hieractions = sparql.get_done_hieraction(action_uri, lld_graph_uri)
+        print("だーんひえらる")
+        print(done_hieractions)
 
-        print(action_uri)
+        for done_hieraction in done_hieractions:
+            sparql_update.add_done_action(done_hieraction, lld_graph_uri)
+
         next_action_uri = sparql.get_nextaction(action_uri, lld_graph_uri)
+        print('ねくすと')
+        print(next_action_uri)
 
         #条件文と次のアクションを保存する
         loopcondition, loopnext = sparql.get_nextloop(action_uri, lld_graph_uri)

@@ -580,14 +580,7 @@ def get_nextaction(action_uri, graph_uri):
     WHERE
     {GRAPH <"""+ graph_uri +"""> {
     {<"""+ action_uri +"""> pd3:output/pd3:target ?nextaction.
-    FILTER NOT EXISTS {?nextaction pd3:actionType "end"}
-    FILTER NOT EXISTS {?nextaction pd3:expansion ?o2}}
-    UNION
-    {<"""+ action_uri +"""> pd3:output/pd3:target ?o.
-    ?o (pd3:expansion/pd3:member)+ ?start.
-    ?start pd3:actionType "start";
-    pd3:output/pd3:target ?nextaction.
-    FILTER NOT EXISTS {?nextaction pd3:expansion ?o3}}
+    FILTER NOT EXISTS {?nextaction pd3:actionType "end"}}
     UNION
     {<"""+ action_uri +"""> pd3:output/pd3:target ?end.
     ?end pd3:actionType "end".
@@ -595,19 +588,7 @@ def get_nextaction(action_uri, graph_uri):
     ?upper1 (pd3:attribution/pd3:contraction)+ ?upper.
     ?upper pd3:output/pd3:target ?nextaction.
     FILTER NOT EXISTS {?nextaction pd3:actionType "end"}
-    FILTER NOT EXISTS {?nextaction pd3:expansion ?o4}
     }
-    UNION{<"""+ action_uri +"""> pd3:output/pd3:target ?end1.
-    ?end1 pd3:actionType "end".
-    ?end1 (pd3:attribution/pd3:contraction)* ?upper1.
-    ?upper1 (pd3:attribution/pd3:contraction)+ ?upper.
-    ?upper pd3:output/pd3:target ?upper_nextaction.
-    FILTER NOT EXISTS {?nextaction pd3:actionType "end"}
-        ?upper_nextaction (pd3:expansion/pd3:member)+ ?start1.
-        ?start1 pd3:actionType "start";
-                pd3:output/pd3:target ?nextaction.
-        FILTER NOT EXISTS {?nextaction pd3:expansion ?o5}
-        }
     }}
     GROUP BY ?nextaction
     ORDER BY ?distance
@@ -616,9 +597,37 @@ def get_nextaction(action_uri, graph_uri):
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
-    results = []
     if(len(converted_results) != 0):
-        return converted_results[0]['nextaction']['value']
+        nextaction = converted_results[0]['nextaction']['value']
+        tmp = nextaction
+        while(tmp != ""):
+            nextaction = tmp
+            query1 = """
+            PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+            PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+            SELECT ?nextaction1 
+            WHERE
+            {
+                GRAPH<"""+graph_uri +""">{
+                    <"""+ nextaction +"""> pd3:expansion/pd3:member ?start.
+                    ?start pd3:actionType "start";
+                        pd3:output/pd3:target ?nextaction1.
+                }
+            }
+            
+            """
+            sparql1 = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+            sparql1.setQuery(query1)
+            sparql1.setReturnFormat(JSON)
+            converted_results1 = sparql1.query().convert()["results"]["bindings"]
+            
+            if(len(converted_results1) != 0):
+                tmp = converted_results1[0]['nextaction1']['value']
+            else:
+                tmp = ''
+
+        return nextaction
     else:
         return ''
 
@@ -766,6 +775,30 @@ def get_done_action(action_uri, graph_uri):
         return converted_results[0]["done"]["value"]
     else:
         return 'notdone'
+
+#実行チェックをつけた後に、それが最後のアクションの場合、上のアクションを取得
+def get_done_hieraction(action_uri, graph_uri):
+    query= """PREFIX dcterms:<http://purl.org/dc/terms/>
+    PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+
+    SELECT ?done_action
+    WHERE{
+        GRAPH<"""+graph_uri+""">{
+            <"""+action_uri+"""> (pd3:attribution/pd3:contraction)* ?last_action.
+            ?last_action pd3:output/pd3:target ?end.
+            ?end pd3:actionType "end".
+            ?last_action pd3:attribution/pd3:contraction ?done_action.
+        }
+    }
+    """
+    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    converted_results = sparql.query().convert()["results"]["bindings"]
+    results = []
+    for converted_result in converted_results:
+        results.append(converted_result["done_action"]["value"])
+    return results
 
 def get_forloop(action_uri, loopnext, graph_uri):
     query = """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>

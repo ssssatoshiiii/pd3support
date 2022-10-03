@@ -7,3 +7,7 @@
   overflow: auto;
 }
 
+/* textarea {
+  resize: none;
+  width:48%;
+} */
