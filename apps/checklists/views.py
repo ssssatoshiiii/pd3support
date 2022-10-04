@@ -353,6 +353,8 @@ def show_pastLLD(request):
     context['gpm_graph_uri'] = gpm_graph_uri
     gpm_action_uri = sparql.get_gpm_action(action_uri, gpm_graph_uri)
     graph_uri, lld_actions_uri = sparql.get_lld_action2(gpm_action_uri, gpm_graph_uri)
+    print('ひーはー')
+    print(graph_uri)
  
     context['lld_actions']=[]   
     for i in range(len(lld_actions_uri)):
