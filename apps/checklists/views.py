@@ -149,6 +149,9 @@ def second_list(request):
                 return render(request, os.getcwd()+'/templates/checklists/sub.html', context)
             elif(response=="json"):
                 result = dict()
+                actions, actions_uri = sparql.get_detail_action(hier_actions[-1], lld_graph_uri)
+                if(len(actions) == 0):
+                    hier_actions.pop(-1)
                 result['hier_actions'] = hier_actions
                 return JsonResponse(result)
 
