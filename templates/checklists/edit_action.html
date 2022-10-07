@@ -1,44 +1,65 @@
 {% load static %}
 {% load boost %}
 
-<div  id="LLDedit" style="display:flex;overflow:auto;background-color:aliceblue;margin-bottom:3.5rem; border:3px double #0067c0">
-    <form method="POST">
+<div  id="LLDedit" style="width:100%;display:flex;overflow:auto;background-color:aliceblue;margin-bottom:3.5rem; border:3px double #0067c0">
+    <form  style="width:100%;" method="POST">
         {% csrf_token %}
-        <table style="width:140%;-ms-writing-mode: tb-lr;writing-mode: vertical-lr; table-layout: fixed;" border="1">
-            <tr style="width:4%;">
-                <th> </th>
-                <th>実施アクション</th>
-                <th>意図</th>
-                <th>知識・道具</th>
-                <th>注釈</th>
-                <th>導出根拠</th>
-                <th>出力</th>
+        <table style="width:100%; table-layout: fixed;" border="1">
+            <tr>
+                <th style="width:5%;"></th>
+                <th style="width:15%;">詳細情報</th>
+                <th style="width:80%;">現在の記録</th>
             </tr>
-            <tr style="width:48%;">
-                <th style="writing-mode: lr-tb;">詳細情報</th>
-                <th><textarea rows="4" style="background-color:aliceblue;overflow:auto;;" readonly>{{gpm_action}}</textarea></th>
-                <th><textarea rows="4" style="background-color:aliceblue;overflow:auto;" readonly>{{gpm_intention}}</textarea></th>
-                <th><textarea rows="4" style="background-color:aliceblue;overflow:auto;" readonly>{{gpm_toolknowledge}}</textarea></th>
-                <th><textarea rows="4" style="background-color:aliceblue;overflow:auto;" readonly>{{gpm_annotation}}</textarea></th>
-                <th><textarea rows="4" style="background-color:aliceblue;overflow:auto;" readonly></textarea></th>
-                <th><textarea rows="4" style="background-color:aliceblue;overflow:auto;" readonly>{{gpm_output}}</textarea></th>
+            <tr>
+                <th style="writing-mode:tb-rl;">実施アクション</th>
+                <td><textarea rows="5" style="background-color:aliceblue;overflow:auto;" readonly>{{gpm_action}}</textarea></td>
+                <td><textarea rows="5" style="overflow:auto;" name="lld_action">{{lld_action}}</textarea></td>
             </tr>
-            <tr style="width:48%;"> 
-                <th style="writing-mode: lr-tb;">現在の記録</th>
-                <th><textarea rows="4" style="overflow:auto;" name="lld_action">{{lld_action}}</textarea></th>
-                <th><textarea rows="4" style="overflow:auto;" name="lld_intention">{{lld_intention}}</textarea></th>
-                <th><textarea rows="4" style="overflow:auto;" name="lld_toolknowledge">{{lld_toolknowledge}}</textarea></th>
-                <th><textarea rows="4" style="overflow:auto;" name="lld_annotation">{{lld_annotation}}</textarea></th>
-                <th><textarea rows="4" style="overflow:auto;" name="lld_rationale">{{lld_rationale}}</textarea></th>
-                <th><textarea rows="4" style="overflow:auto;" name="lld_output">{{lld_output}}</textarea></th>
+            <tr>
+                <th style="writing-mode:tb-rl;">意図</th>
+                <td><textarea rows="5" style="background-color:aliceblue;overflow:auto;" readonly>{{gpm_intention}}</textarea></td>
+                <td><textarea rows="5" style="overflow:auto;" name="lld_intention">{{lld_intention}}</textarea></td>
+            </tr>
+            <tr>
+                <th style="writing-mode:tb-rl;">知識・道具</th>
+                <td><textarea rows="5" style="background-color:aliceblue;overflow:auto;" readonly>{{gpm_toolknowledge}}</textarea></td>
+                <td><textarea rows="5" style="overflow:auto;" name="lld_toolknowledge">{{lld_toolknowledge}}</textarea></td>
+            </tr>
+            <tr>
+                <th style="writing-mode:tb-rl;">注釈</th>
+                <td><textarea rows="5" style="background-color:aliceblue;overflow:auto;" readonly>{{gpm_annotation}}</textarea></td>
+                <td><textarea rows="5" style="overflow:auto;" name="lld_annotation">{{lld_annotation}}</textarea></td>
+            </tr>
+            <tr>
+                <th style="writing-mode:tb-rl;">導出根拠</th>
+                <td><textarea rows="5" style="background-color:aliceblue;overflow:auto;" readonly></textarea></td>
+                <td><textarea rows="5" style="overflow:auto;" name="lld_rationale">{{lld_rationale}}</textarea></td>
+            </tr>
+            <tr>
+                <th style="writing-mode:tb-rl;">出力</th>
+                <td><textarea rows="5" style="background-color:aliceblue;overflow:auto;" readonly>{{gpm_output}}</textarea></td>
+                <td><textarea rows="5" style="overflow:auto;" name="lld_output">{{lld_output}}</textarea></td>
             </tr>
         </table>
-        <input type="button" style="float:right" value="登録して次のアクションへ" onclick = "add_LLD_gonext(lld_action, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output, '{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
+        <div class="container text-center" style="display:flex;justify-content: space-evenly;">
+            <input type="button" value="一時登録" onclick = "add_LLD_stay(lld_action, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output, '{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
+            <input type="button" value="登録して次のアクションへ" onclick = "add_LLD_gonext(lld_action, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output, '{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
+        </div>
         <input type="hidden" name="chosen_action_uri" value="{{action_uri}}" >
     </form>
 </div>
 <script>
-    function add_LLD_gonext(action, intention, toolknowledge, annotation, rationale, output, action_uri, gpm_graph_uri, lld_graph_uri, lld_action){
+    function add_LLD_stay(action, intention, toolknowledge, annotation, rationale, output, action_uri, gpm_graph_uri, lld_graph_uri){
+        data = {action_uri:action_uri, action:action.value, intention:intention.value, toolknowledge:toolknowledge.value, annotation:annotation.value, rationale:rationale.value, output:output.value, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri}
+        $.ajax({
+            type: 'POST',
+            url: 'add_LLD',
+            data: data,
+            dataType: 'text',
+        })
+    }
+
+    function add_LLD_gonext(action, intention, toolknowledge, annotation, rationale, output, action_uri, gpm_graph_uri, lld_graph_uri){
         data = {action_uri:action_uri, action:action.value, intention:intention.value, toolknowledge:toolknowledge.value, annotation:annotation.value, rationale:rationale.value, output:output.value, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri}
 
         $.ajax({

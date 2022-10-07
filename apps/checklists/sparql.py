@@ -776,7 +776,7 @@ def get_done_action(action_uri, graph_uri):
     else:
         return 'notdone'
 
-#実行チェックをつけた後に、それが最後のアクションの場合、上のアクションを取得
+#実行チェックをつけた後に、その階層のアクションを全て実行したの場合、上のアクションを取得
 def get_done_hieraction(action_uri, graph_uri):
     query= """PREFIX dcterms:<http://purl.org/dc/terms/>
     PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
@@ -820,3 +820,21 @@ def get_forloop(action_uri, loopnext, graph_uri):
     converted_results = sparql.query().convert()["results"]["bindings"]
     if(len(converted_results) != 0):
         return converted_results[0]["container"]["value"], converted_results[0]["flow"]["value"], converted_results[0]["action"]["value"], converted_results[0]["gpm_start_action"]["value"], converted_results[0]["gpm_end_flow"]["value"]
+
+def get_expansion(action_uri, graph_uri):
+    query = """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+    SELECT ?container
+    WHERE{
+        GRAPH<"""+graph_uri+""">{
+            <"""+action_uri+"""> pd3:expansion ?container.
+        }
+    }
+    """
+    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    converted_results = sparql.query().convert()["results"]["bindings"]
+    if(len(converted_results) != 0):
+        return converted_results[0]["container"]["value"]
+    else:
+        return ''

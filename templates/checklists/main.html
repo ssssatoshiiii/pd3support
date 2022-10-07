@@ -68,10 +68,10 @@
             <label class="todo" id="{{action_uri}}" style="height:70%;">
               {% if forloop.counter0 in checklist %}
               <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}" onclick="buttonClick(this.id)" 
-                checked="checked" />{% csrf_token %} 
+                checked="checked" disabled/>{% csrf_token %} 
               {% else %}
               <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}"
-                onclick="buttonClick(this.id)" />{% csrf_token %}
+                onclick="buttonClick(this.id)" disabled/>{% csrf_token %}
               {% endif%}
               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 25"
                 class="todo__icon">
@@ -83,7 +83,9 @@
               <div class="todo__text">  {{forloop.counter}}. {{ action }} </div>
             </label>
             <div class="d-flex flex-row bd-highlight mt-2 pl-3" >
+              {% if forloop.counter0 in expansionlist %}
               <img id='{{action_uri}}_test1' class="ml-0 mr-1" src="{% static 'checklists/images/dictionary.png'%}" width ="22" height="22" onclick = "second('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')">
+              {% endif %}
               <img id='{{action_uri}}_test' class="ml-0 mr-1 mt-0" src="{% static 'checklists/images/information.png'%}" alt="" width="22" height="22"  onclick = "edit_action('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
               <form action="{%url 'checklists:show_pastLLD' %}" method='POST' target="_blank">
                 {% csrf_token %}

@@ -69,6 +69,12 @@ def graphlist(request):
     context['alllayer_actions_uri']=[]
     context['alllayer_actions_uri'].append(actions_uri)
 
+    expansionlist=[]
+    for i in range(len(actions_uri)):
+        if(sparql.get_expansion(actions_uri[i], lld_graph_uri) != ''):
+            expansionlist.append(i)
+    context['expansionlist']=expansionlist
+
     checklist =[]
     for i in range(len(actions_uri)):
         if(sparql.get_done_action(actions_uri[i], lld_graph_uri) == "done"):
@@ -114,6 +120,7 @@ def second_list(request):
             context['alllayer_actions_uri'] = []
             context['alllayer_layertype'] = []
             context['checklist'] = []
+            context['expansionlist'] = []
             #アクションを獲得したら、そのアクションから順番に一番上の層まで遡り、アクションを入手する
             lld_graph_uri = request.POST.get("lld_graph_uri")
             gpm_graph_uri = request.POST.get("gpm_graph_uri")
@@ -133,9 +140,13 @@ def second_list(request):
                 for each_action in hier_actions:
                     actions, actions_uri = sparql.get_detail_action(each_action, lld_graph_uri)
                     checklist =[]
+                    expansionlist = []
                     for i in range(len(actions_uri)):
                         if(sparql.get_done_action(actions_uri[i], lld_graph_uri) == "done"):
                             checklist.append(i)
+                    for i in range(len(actions_uri)):
+                        if(sparql.get_expansion(actions_uri[i], lld_graph_uri) != ''):
+                            expansionlist.append(i)
                     
                     if(len(actions)!= 0):
                         #layerを取得
@@ -145,6 +156,7 @@ def second_list(request):
                         context['alllayer_actions'].append(actions)
                         context['alllayer_actions_uri'].append(actions_uri)
                         context['checklist'].append(checklist)
+                        context['expansionlist'].append(expansionlist)
                 
                 return render(request, os.getcwd()+'/templates/checklists/sub.html', context)
             elif(response=="json"):
@@ -356,21 +368,39 @@ def show_pastLLD(request):
     context['gpm_graph_uri'] = gpm_graph_uri
     gpm_action_uri = sparql.get_gpm_action(action_uri, gpm_graph_uri)
     graph_uri, lld_actions_uri = sparql.get_lld_action2(gpm_action_uri, gpm_graph_uri)
-    print('ひーはー')
-    print(graph_uri)
  
-    context['lld_actions']=[]   
+    context['lld_graphs'] = []   
+    context['lld_titles'] = []
+    context['lld_descriptions'] = []
+    context['lld_actions'] = []
+    context['lld_intentions'] = []
+    context['lld_toolknowledges'] = []
+    context['lld_annotations'] = []
+    context['lld_rationales'] = []
+    context['lld_outputs'] = []
+
     for i in range(len(lld_actions_uri)):
-        context['lld_actions'].append([graph_uri[i]])
-        lld_action_value, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output = sparql.action_supinfo(lld_actions_uri[i],graph_uri[i] )
-        context['lld_actions'][i].append(sparql.get_graph_title(graph_uri[i]))
-        context['lld_actions'][i].append(sparql.get_graph_description(graph_uri[i]))
-        context['lld_actions'][i].append(lld_action_value['action_value'])
-        context['lld_actions'][i].append(lld_intention['intention_value'])
-        context['lld_actions'][i].append(lld_toolknowledge['toolknowledge_value'])
-        context['lld_actions'][i].append(lld_annotation['annotation_value'])
-        context['lld_actions'][i].append(lld_rationale['rationale_value'])
-        context['lld_actions'][i].append(lld_output['output_value'])
+        # context['lld_actions'].append([graph_uri[i]])
+        # lld_action_value, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output = sparql.action_supinfo(lld_actions_uri[i],graph_uri[i] )
+        # context['lld_actions'][i].append(sparql.get_graph_title(graph_uri[i]))
+        # context['lld_actions'][i].append(sparql.get_graph_description(graph_uri[i]))
+        # context['lld_actions'][i].append(lld_action_value['action_value'])
+        # context['lld_actions'][i].append(lld_intention['intention_value'])
+        # context['lld_actions'][i].append(lld_toolknowledge['toolknowledge_value'])
+        # context['lld_actions'][i].append(lld_annotation['annotation_value'])
+        # context['lld_actions'][i].append(lld_rationale['rationale_value'])
+        # context['lld_actions'][i].append(lld_output['output_value'])
+        
+        context['lld_graphs'].append(graph_uri[i])
+        lld_action_value, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output = sparql.action_supinfo(lld_actions_uri[i],graph_uri[i])
+        context['lld_titles'].append(sparql.get_graph_title(graph_uri[i]))
+        context['lld_descriptions'].append(sparql.get_graph_description(graph_uri[i]))
+        context['lld_actions'].append(lld_action_value['action_value'])
+        context['lld_intentions'].append(lld_intention['intention_value'])
+        context['lld_toolknowledges'].append(lld_toolknowledge['toolknowledge_value'])
+        context['lld_annotations'].append(lld_annotation['annotation_value'])
+        context['lld_rationales'].append(lld_rationale['rationale_value'])
+        context['lld_outputs'].append(lld_output['output_value'])
 
     return render(request, os.getcwd()+'/templates/checklists/show_pastLLD.html', context)
 
