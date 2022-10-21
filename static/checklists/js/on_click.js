@@ -1,31 +1,3 @@
-function show_selecteddescription(graph, title, epType){
-
-  //選択された記述を表示
-  if(epType == 'GPM'){
-    $('#selected_GPM').children().remove();
-    $('#selected_GPM').append("<input id='selected_GPM_title' type='hidden' name='gpm_graph_uri' value=" + graph + ">");
-    $('#selected_GPM').append("<label>" + title + "</>")
-  }
-  else if(epType == 'LLD'){
-    $('#selected_LLD').children().remove();
-    $('#selected_LLD').append("<input type='hidden' name='lld_graph_uri' value =" + graph + ">");
-    $('#selected_LLD').append("<label>" + title + "</>")
-  }
-
-
-  if($('#selected_GPM').children().length >0 && $('#selected_LLD').children().length >0){
-    console.log('yes');
-    $('#selected_description').append("<input type='submit' value='プロセスを開始する'>");
-  }
-}
-
-function select_LLD(lld_graph_uri, lld_graph_title){
-  console.log(lld_graph_title);
-  $('#selected_description').append("<input type='hidden' name='lld_graph_uri' value=" + lld_graph_uri+">")
-  $('#selected_description').append("<label>"+ lld_graph_title + "</label>");
-  $('#selected_description').append("<input type='submit' value='プロセスを開始する'>")
-}
-
 function buttonClick(id_value) {
   console.log('buttonclick');
   var value = { value: id_value };
@@ -43,10 +15,6 @@ function buttonClick(id_value) {
       //console.log("T")
       }
     })
-}
-
-function buttonClick1(id_value){
-  console.log('test')
 }
 
 const swalWithBootstrapButtons = Swal.mixin({
@@ -176,13 +144,6 @@ function second(action_uri, gpm_graph_uri, lld_graph_uri){
     }
     $('#action_list').append(response);
 
-    // //編集中のアクションについて、枠線を変える
-    // var chosen_action_uri = $('input[name^="chosen_action_uri"]').val();
-    // if(chosen_action_uri!= null){
-    //   $('#'+escapeSelectorString(chosen_action_uri)).css('border', '3px double #0067c0');
-    // }
-
-
     data1 = {action_uri: action_uri, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri, response:'json'}
     $.ajax({
       type: 'POST',
@@ -197,11 +158,8 @@ function second(action_uri, gpm_graph_uri, lld_graph_uri){
       let hier_actions = objData.hier_actions;
       console.log(hier_actions);
 
-      // $('#action_supinfo').children('div').not('#LLDedit').remove();
       for(let i=0; i<hier_actions.length; i++){
-        // $("#"+escapeSelectorString(String(hier_actions[hier_actions.length-1-i]))).css('background-color', '#ffebcd');
         $("#"+escapeSelectorString(String(hier_actions[i]))).css('background-color', '#adff2f');
-        // show_action_supinfo(hier_actions[hier_actions.length-1-i], gpm_graph_uri, lld_graph_uri, "GPM");
       }
       let chosen_action_uri = $('input[name="chosen_action_uri"]').val();
       $("#"+escapeSelectorString(String(chosen_action_uri))).css('border', '3px double #0067c0')

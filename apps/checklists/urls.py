@@ -15,4 +15,5 @@ urlpatterns = [
     path('add_action', views.add_action, name='add_action'),
     path('hello', views.hello, name='hello'),
     path('loop_add', views.loop_add, name='loop_add'),
+    path('get_nextaction', views.get_nextaction, name='get_nextaction'),
 ]

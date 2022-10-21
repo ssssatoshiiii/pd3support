@@ -22,14 +22,6 @@
 {% endblock %}
 
 {% block Title %}
-<div class="container-fluid mt-1 pr-5">
-  <li  class="d-flex align-items-center justify-content-end">
-    <a href="checklists_edit" rel="noopener noreferrer">
-      <img  src="{% static 'checklists/images/outline_settings.png'%}" alt="" width="30" height="30">
-      <font size="3" color="#135156"><strong>編集</strong></font>
-    </a>
-  </li>
-</div>
 <div class="container text-center">
   <p class="mt-3 mb-2">
     <font color="#135156"><strong>プロセス記述選択画面</strong></font>
@@ -125,12 +117,17 @@
       </svg>
       <div class="todo-list my-custom-board" >
           {% for LLD_title,LLD_graph in LLD_titles|zip:LLD_graphs %}
-          <div class="d-flex flex-row bd-highlight align-items-center m-0 p-0" id="{{action_uri}}">
+          <div class="d-flex flex-row bd-highlight align-items-center m-0 p-0">
             <label class="todo">
               <div class="todo__text">  {{ LLD_title }} </div>
-              <button type="button" onclick="select_LLD('{{LLD_graph}}', '{{LLD_title}}', '{{selected_GPM_graph}}')">選択</button>
-              <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}"
-                onclick="show_selecteddescription('{{LLD_graph}}', '{{LLD_title}}')" />{% csrf_token %}
+                <form method="POST">
+                  {% csrf_token %}
+                  <input type="hidden" name="selected_GPM_graph" value="{{selected_GPM_graph}}" >
+                  <input type="hidden" name="selected_GPM_title" value="{{selected_GPM_title}}" >
+                  <input type="hidden" name="selected_LLD_graph" value="{{LLD_graph}}" >
+                  <input type="hidden" name="selected_LLD_title" value="{{LLD_title}}" >
+                  <input type="submit" value="選択">
+                </form>
               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 25"
                 class="todo__icon">
                 <use xlink:href="#todo__line" class="todo__line"></use>
@@ -163,14 +160,21 @@
 
 {% block action_supinfo %}
 <div class="container-fluid text-center" style="width:30%;float:right;background-color:blanchedalmond;">
-  <div class="container-fluid text-center" style="display:flex;" >
+  <div class="container-fluid text-center" >
     <form action="{% url 'checklists:top' %}" method="POST" class="container-fluid text-center" id = "selected_description">{% csrf_token %}
-      <label id = 'selected_GPM'> 選択中の汎化プロセスモデル </label>
+      <h3 id = 'selected_GPM'> 選択中の汎化プロセスモデル </h3>
       {% if selected_GPM_title %}
       <input id='selected_GPM_title' type='hidden' name='gpm_graph_uri' value= '{{selected_GPM_graph}}'>
-      <lable>{{selected_GPM_title}}</lable>
+      <h4>{{selected_GPM_title}}</h4>
       {% endif %}
-      <label id = 'selected_LLD'>  選択中のログレベルの記述  </label>
+      <h3 id = 'selected_LLD' class="pt-5">  選択中のログレベルの記述  </h3>
+      {% if selected_LLD_title %}
+      <input type="hidden" name="lld_graph_uri" value = '{{selected_LLD_graph}}'>
+      <h4>{{selected_LLD_title}}</h4>
+      {% endif %}
+      {% if selected_GPM_title and selected_LLD_title %}
+      <input type='submit' value='プロセスを開始する'>
+      {% endif %}
     </form>
   </div>
 </div>

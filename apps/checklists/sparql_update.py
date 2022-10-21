@@ -32,9 +32,10 @@ def add_LLDgraph_tofuseki(lld_title, gpm_graph_uri):
     #ログレベルの記述作成のためのエンティティのデータを取得
     triples, urilist = sparql.get_GPM_entity(gpm_graph_uri)
     
+    print("ぶべ")
     #ループのために更新
     update_forloop(triples, urilist)
- 
+    print("ばび")
     new_urilist = []
 
     #新しいURIを生成して置換
@@ -49,12 +50,15 @@ def add_LLDgraph_tofuseki(lld_title, gpm_graph_uri):
         idset.append([URIRef(new_uri), pd3.id, Literal(d+'-'+str(i))])
         useset.append([URIRef(new_uri), pd3.uses, urilist[i]])
 
+    print("ぱ")
+
     integrated_data = insert_data + triples + idset + useset
 
     #アクションのURIに対して、空の詳細情報のentityを追加
     #URIのための番号
     count = len(urilist)
 
+    print(len(triples))
     #詳細情報のエンティティのリスト
     for elem in triples:
         if(elem[1]==rdf.type and elem[2]==pd3.Action):
@@ -118,6 +122,7 @@ def add_LLDgraph_tofuseki(lld_title, gpm_graph_uri):
         [f'{s.n3()} {p.n3()} {o.n3()}.' for (s, p, o) in g]
     )
 
+    print("らりる")
     #LLDの追加
     query_lld= """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
                 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -145,6 +150,7 @@ def add_LLDgraph_tofuseki(lld_title, gpm_graph_uri):
     spo_str2 = '\n'.join(
         [f'{s.n3()} {p.n3()} {o.n3()}.' for (s, p, o) in g2]
     ) 
+    print("れろ")
 
     query_gpm = """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
                 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -164,25 +170,37 @@ def update_forloop(triples, urilist):
     pd3= Namespace('http://DigitalTriplet.net/2021/08/ontology#')  
     #ループの情報矢印を取得
     loop_arrows = list()
+    if_arrows = list()
     for i in range(len(triples)):
         if(triples[i][1] == pd3.value):
             if("[loop]" in triples[i][2]):
                 loop_arrows.append(triples[i][0])
+            elif("[IF" in triples[i][2] and "]" in triples[i][2]):
+                if_arrows.append(triples[i][0])
 
     #ループの情報矢印に関わる情報を取得
     loop_arrows_source = list()
-    loop_arrows_target = list()
-    loop_arrows_value = list()
+
     for i in range(len(loop_arrows)):
         for j in range(len(triples)):
             if(triples[j][0] == loop_arrows[i]):
                 if(triples[j][1] == pd3.source):
                     loop_arrows_source.append(triples[j][2])
-                elif(triples[j][1] == pd3.target):
-                    loop_arrows_target.append(triples[j][2])
-                elif(triples[j][1] == pd3.value):
-                    loop_arrows_value.append(triples[j][2])
     
+    if_arrows_source = list()
+    if_arrows_target = list()
+    if_arrows_value = list()
+
+    for i in range(len(if_arrows)):
+        for j in range(len(triples)):
+            if(triples[j][0] == if_arrows[i]):
+                if(triples[j][1] == pd3.source):
+                    if_arrows_source.append(triples[j][2])
+                elif(triples[j][1] == pd3.target):
+                    if_arrows_target.append(triples[j][2])
+                elif(triples[j][1] == pd3.value):
+                    if_arrows_value.append(triples[j][2])
+
     #ループの情報矢印に関する情報をtripleとurilistから消去する
     for loop_arrow in loop_arrows:
         urilist.remove(loop_arrow)
@@ -190,10 +208,22 @@ def update_forloop(triples, urilist):
             if(loop_arrow in triple):
                 triples.remove(triple)
     
-    #triplesにループに関係する必要な情報を追加する
-    for i in range(len(loop_arrows)):
-        triples.append([loop_arrows_source[i], pd3.ifnext, loop_arrows_target[i]])
-        triples.append([loop_arrows_source[i], pd3.ifcondition, loop_arrows_value[i]])
+    #if矢印のラベル情報のうち、制御構文を消す
+        #if矢印の情報を制御構文とアクションの出力情報に分ける
+    # if_control_values = list()
+    # if_output_values = list()
+    for i in range(len(if_arrows)):
+        str_value = str(if_arrows_value[i])
+        control_value = str_value[str_value.find("[IF") : str_value.find("]")+1]
+        # if_control_values.append(Literal(control_value))
+        output_value = Literal(str_value.replace(control_value, ""))
+        triples.remove([if_arrows[i], pd3.value, if_arrows_value[i]])
+        triples.append([if_arrows[i], pd3.value, output_value])
+
+    for i in range(len(if_arrows)):
+        # triples.append([if_arrows_source[i], pd3.ifnext, if_arrows_target[i]])
+        # triples.append([if_arrows_source[i], pd3.ifcondition, if_control_values[i]])
+        triples.append([if_arrows_source[i], pd3.control, Literal("loop")])
 
 
 #actionおよびその詳細内容を更新する
@@ -206,6 +236,7 @@ def add_LLD_tofuseki(action_uri, action, intention, toolknowledge, annotation, r
 
     action_result, intention_result, toolknowledge_result, annotation_result, rationale_result, output_result = sparql.action_supinfo(action_uri, lld_graph_uri)
     
+    print(output_result)
     delete_data = [[URIRef(action_result['action_uri']), pd3.value, Literal(action_result['action_value'])],
     [URIRef(intention_result['intention_uri']), pd3.value, Literal(intention_result['intention_value'])],
     [URIRef(toolknowledge_result['toolknowledge_uri']), pd3.value, Literal(toolknowledge_result['toolknowledge_value'])],
@@ -329,8 +360,7 @@ def add_LLDaction_tofuseki(added_action, base_action_uri, lld_graph_uri, flag):
                     flow_data.append([URIRef(added_action_uri), pd3.input, URIRef(outflows_uri[i])])
                     new_data += [[URIRef(added_flow_uri), pd3.target, URIRef(nextactions_uri[i])],
                         [URIRef(nextactions_uri[i]), pd3.input, URIRef(added_flow_uri)]]
-
-            
+       
             supinfo_data = [[URIRef(added_intention_uri), rdf.type, pd3.SupFlow],
                     [URIRef(added_intention_uri), pd3.id, Literal(d+'-3')],
                     [URIRef(added_intention_uri), pd3.value, Literal('')],
@@ -405,10 +435,7 @@ def add_LLDaction_tofuseki(added_action, base_action_uri, lld_graph_uri, flag):
 def add_done_action(action_uri, lld_graph_uri):
         #fusekiへの追加
     fuseki = FusekiUpdate('http://digital-triplet.net:3030', 'test')
-    g = Graph()
-    rdf = Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
     pd3= Namespace('http://DigitalTriplet.net/2021/08/ontology#')
-    dcterms = Namespace('http://purl.org/dc/terms/')
 
     insert_data = [[URIRef(action_uri), pd3.done, Literal("done")]]
     g = Graph()
@@ -430,13 +457,12 @@ def add_done_action(action_uri, lld_graph_uri):
         print(False)
 
 #loopの内容を更新する
-def add_loopgraph(action_uri, loopnext, lld_graph_uri, gpm_graph_uri):
+def add_loopgraph(action_uri, gpm_start_action, lld_graph_uri, gpm_graph_uri):
     #fusekiへの追加
     fuseki = FusekiUpdate('http://digital-triplet.net:3030', 'test')
     g = Graph()
     rdf = Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
     pd3= Namespace('http://DigitalTriplet.net/2021/08/ontology#')
-    dcterms = Namespace('http://purl.org/dc/terms/')
 
     t_delta = datetime.timedelta(hours=9)
     JST = datetime.timezone(t_delta, 'JST')
@@ -446,24 +472,34 @@ def add_loopgraph(action_uri, loopnext, lld_graph_uri, gpm_graph_uri):
     new_urilist = []
     idset = []
     useset = []
-    triples, urilist = sparql.get_GPM_part_entity(loopnext, action_uri, gpm_graph_uri)
+    triples, urilist = sparql.get_GPM_part_entity(gpm_start_action, action_uri, gpm_graph_uri)
     update_forloop(triples, urilist)
 
     #loopが存在する階層のプロセスについて、コンテナと、loop矢印と分岐をなす情報矢印と、その情報矢印の刺さるアクション、loopが始まる最初のアクションの元のGPMのアクションの4つを取得
     #gpm_actionは新規のログレベルの記述のために生成したuriと同じなので、新規のログレベルの記述のループの最後を指定するために使用
-    update_container, update_flow, update_action, gpm_start_action, gpm_end_flow = sparql.get_forloop(action_uri, loopnext, lld_graph_uri)
+    #update_flowとupdate_action,update_containerはログにおけるflowとactionであり，ループ構造が挿入される
+    update_container, update_flow, update_action, gpm_end_flow = sparql.get_forloop(action_uri, lld_graph_uri)
 
-    insert_data = [[URIRef(update_flow), pd3.target, URIRef(new_urilist[urilist.index(gpm_start_action)])],
-    [URIRef(new_urilist[urilist.index(gpm_start_action)]), pd3.input, URIRef(update_flow)],
-    [URIRef(gpm_end_flow), pd3.target, URIRef(update_action)],
-    [URIRef(update_action), pd3.source, URIRef(gpm_end_flow)]
-    ]
-    integrated_data += insert_data
+    #update_containerに紐づくgpmのコンテナを取得
+    gpm_container = sparql.get_gpm_action(update_container, gpm_graph_uri)
+
+    #最上位のコンテナの情報を更新
+    container_members = []
+    for triple in triples:
+        if(triple[1] == pd3.attribution and triple[2] == URIRef(gpm_container)):
+            triple[2] = URIRef(update_container)
+            container_members.append([URIRef(update_container), pd3.member, triple[0]])
 
     #情報矢印とアクションを消して追加する
     delete_data = [[URIRef(update_flow), pd3.target, URIRef(update_action)],
     [URIRef(update_action), pd3.input, URIRef(update_flow)]]
 
+    #triplesの中から、gpm_start_actionへの入力と、gpm_end_flowの出力を削除
+    for triple in triples:
+        if(triple[0] == URIRef(gpm_start_action) and triple[1] == pd3.input):
+            triples.remove(triple)
+        elif(triple[0] == URIRef(gpm_end_flow) and triple[1] == pd3.target):
+            triples.remove(triple)
 
     for i in range(len(urilist)):
         new_uri = lld_graph_uri + d + '-' + str(i)
@@ -476,7 +512,14 @@ def add_loopgraph(action_uri, loopnext, lld_graph_uri, gpm_graph_uri):
         idset.append([URIRef(new_uri), pd3.id, Literal(d+'-'+str(i))])
         useset.append([URIRef(new_uri), pd3.uses, urilist[i]])
 
-    integrated_data = triples + idset + useset
+    integrated_data = triples + idset + useset + container_members
+
+    insert_data = [[URIRef(update_flow), pd3.target, new_urilist[urilist.index(URIRef(gpm_start_action))]],
+    [new_urilist[urilist.index(URIRef(gpm_start_action))], pd3.input, URIRef(update_flow)],
+    [new_urilist[urilist.index(URIRef(gpm_end_flow))], pd3.target, URIRef(update_action)],
+    [URIRef(update_action), pd3.input, new_urilist[urilist.index(URIRef(gpm_end_flow))]]
+    ]
+    integrated_data += insert_data
     
     #アクションのURIに対して、空の詳細情報のentityを追加
     #URIのための番号
@@ -550,7 +593,7 @@ def add_loopgraph(action_uri, loopnext, lld_graph_uri, gpm_graph_uri):
         [f'{s.n3()} {p.n3()} {o.n3()}.' for (s, p, o) in g_delete]
     )
     
-    query= """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+    query_lld= """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
             PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
         INSERT DATA{
@@ -558,22 +601,38 @@ def add_loopgraph(action_uri, loopnext, lld_graph_uri, gpm_graph_uri):
         };
 
         DELETE DATA{
-            GRAPH<"""+ lld_graph_uri +""">{""" + spo_str + """}
+            GRAPH<"""+ lld_graph_uri +""">{""" + spo_str_delete + """}
         };
-        }"""
-    query_result = fuseki.run_sparql(query)
+        """
+    query_result = fuseki.run_sparql(query_lld)
     result = query_result.response.read().decode()
+    if result.find("Success") >0:
+        print(True)
+    else:
+        print(False)
 
-    query1="""PREFIX  pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+    usedset = list()
+    for elem in useset:
+        usedset.append([elem[2], pd3.isUsedBy, elem[0]])
+
+    g_gpm = Graph()
+    RdfUtils.add_list_to_graph(g_gpm, usedset)
+    spo_str_gpm = '\n'.join(
+        [f'{s.n3()} {p.n3()} {o.n3()}.' for (s, p, o) in g_gpm]
+    )
+
+    #gpmの中の追加
+    query_gpm="""PREFIX  pd3: <http://DigitalTriplet.net/2021/08/ontology#>
             PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-            WITH<"""+lld_graph_uri +""">
-            DELETE{
-                <"""+str(new_urilist[urilist.index(gpm_start_action)])+"""> pd3.source ?flow.
-            }
+            INSERT DATA{
+                GRAPH<"""+ gpm_graph_uri +""">{""" + spo_str_gpm + """}
+            };
         """
+    query_result_gpm = fuseki.run_sparql(query_gpm)
+    result_gpm = query_result_gpm.response.read().decode()
 
-    if result.find("Success") >0:
+    if result_gpm.find("Success") >0:
         print(True)
     else:
         print(False)

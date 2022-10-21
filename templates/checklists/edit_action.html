@@ -50,7 +50,7 @@
 </div>
 <script>
     function add_LLD_stay(action, intention, toolknowledge, annotation, rationale, output, action_uri, gpm_graph_uri, lld_graph_uri){
-        data = {action_uri:action_uri, action:action.value, intention:intention.value, toolknowledge:toolknowledge.value, annotation:annotation.value, rationale:rationale.value, output:output.value, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri}
+        data = {action_uri:action_uri, action:action.value, intention:intention.value, toolknowledge:toolknowledge.value, annotation:annotation.value, rationale:rationale.value, output:output.value, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri, flag:"stay"}
         $.ajax({
             type: 'POST',
             url: 'add_LLD',
@@ -60,7 +60,7 @@
     }
 
     function add_LLD_gonext(action, intention, toolknowledge, annotation, rationale, output, action_uri, gpm_graph_uri, lld_graph_uri){
-        data = {action_uri:action_uri, action:action.value, intention:intention.value, toolknowledge:toolknowledge.value, annotation:annotation.value, rationale:rationale.value, output:output.value, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri}
+        data = {action_uri:action_uri, action:action.value, intention:intention.value, toolknowledge:toolknowledge.value, annotation:annotation.value, rationale:rationale.value, output:output.value, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri, flag:"gonext"}
 
         $.ajax({
             type: 'POST',
@@ -72,29 +72,48 @@
             let objData = JSON.parse(response);
             let next_action_uri = objData.next_action_uri;
             let loopcondition = objData.loopcondition
+            var loopcondition1 = [];
             let loopnext = objData.loopnext
             for(let i = 0; i < loopcondition.length; i++){
-                loopcondition[i] = loopcondition[i].replace("[loop]", "")+ " 該当する場合は"+ i + "を入力"
+                loopcondition1.push(loopcondition[i].replace("[loop]", ""));
+                loopcondition1[i] = "「" + loopcondition1[i].substring(loopcondition1[i].indexOf("[IF")+3, loopcondition1[i].indexOf("]")) + "」　こちらに該当する場合は" + i + "を入力 \n"
+                // loopcondition1.push(loopcondition[i].replace("[loop]", "").replace("[IF", "").replace("]", "")+ " 該当する場合は"+ i + "を入力")
             }
 
             if(loopcondition.length != 0){
-                var condition_result = prompt(loopcondition+"\n 上記条件に該当しない場合は"+ loopcondition.length+"を入力");
+                var condition_result = prompt(loopcondition1);
                 if(condition_result < loopcondition.length && condition_result >= 0){
-                    data1 = {action_uri: action_uri, loopnext: loopnext[condition_result], gpm_graph_uri: gpm_graph_uri, lld_graph_uri:lld_graph_uri}
-                    $.ajax({
-                        type: 'POST',
-                        url: 'loop_add',
-                        data: data1,
-                        dataType: 'text',
-                    })
-                    .done(function(response){
+
+                    if(loopcondition[condition_result].includes("[loop]") == false){
+                        console.log(next_action_uri);
+                        console.log("さとし");
                         second(next_action_uri, gpm_graph_uri, lld_graph_uri)
                         edit_action(next_action_uri, gpm_graph_uri, lld_graph_uri)
-                    })
-                }
-                else if(condition_result == loopcondition.length){
-                    second(next_action_uri, gpm_graph_uri, lld_graph_uri)
-                    edit_action(next_action_uri, gpm_graph_uri, lld_graph_uri)
+                    }
+                    else{
+                        data1 = {action_uri: action_uri, loopnext: loopnext[condition_result], gpm_graph_uri: gpm_graph_uri, lld_graph_uri:lld_graph_uri}
+                        $.ajax({
+                            type: 'POST',
+                            url: 'loop_add',
+                            data: data1,
+                            dataType: 'text',
+                        })
+                        .done(function(response){
+                            data2 = {action_uri: action_uri, lld_graph_uri: lld_graph_uri}
+                            $.ajax({
+                                type:'POST',
+                                url: 'get_nextaction',
+                                data:data2,
+                                dataType: 'text',
+                            })
+                            .done(function(response){
+                                let objData2 = JSON.parse(response);
+                                next_action_uri = objData2.next_action_uri
+                                second(next_action_uri, gpm_graph_uri, lld_graph_uri)
+                                edit_action(next_action_uri, gpm_graph_uri, lld_graph_uri)
+                            })
+                        })
+                    }
                 }
             }
             else{
