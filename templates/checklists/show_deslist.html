@@ -86,7 +86,6 @@
 </div>
 <div class="col-md-0 col-sm-0 col-lg-0 p-0 m-0"></div>
 
-
 <div class="col-md-6 col-sm-6 col-lg-6 pl-0 pr-0 pt-3 pb-3 m-0" style="width: 100%;">
   <div class="row p-0 m-0" >
     <div class="container text-center">
@@ -159,26 +158,57 @@
 {% endblock %}
 
 {% block action_supinfo %}
-<div class="container-fluid text-center" style="width:30%;float:right;background-color:blanchedalmond;">
-  <div class="container-fluid text-center" >
-    <form action="{% url 'checklists:top' %}" method="POST" class="container-fluid text-center" id = "selected_description">{% csrf_token %}
-      <h3 id = 'selected_GPM'> 選択中の汎化プロセスモデル </h3>
-      {% if selected_GPM_title %}
-      <input id='selected_GPM_title' type='hidden' name='gpm_graph_uri' value= '{{selected_GPM_graph}}'>
-      <h4>{{selected_GPM_title}}</h4>
-      {% endif %}
-      <h3 id = 'selected_LLD' class="pt-5">  選択中のログレベルの記述  </h3>
-      {% if selected_LLD_title %}
-      <input type="hidden" name="lld_graph_uri" value = '{{selected_LLD_graph}}'>
-      <h4>{{selected_LLD_title}}</h4>
-      {% endif %}
-      {% if selected_GPM_title and selected_LLD_title %}
-      <input type='submit' value='プロセスを開始する'>
-      {% endif %}
-    </form>
-  </div>
+<div class="container-fluid text-center" style="width:45%;float:right;background-color:blanchedalmond;">
+  <form name="selected_GPMLLD" action="{%url 'checklists:top' %}" method="POST" class="container-fluid text-center" id = "selected_description">{% csrf_token %}
+    <table class="mb-3" style="width:100%; table-layout: fixed; font-size:150%;" border="1">
+      <tr>
+        <th style="width:10%;"></th>
+        <th style="width:45%;">選択中の汎化プロセスモデル</th>
+        <th style="width:45%;">選択中のログレベルの記述</th>
+      </tr>
+      <tr>
+        <th>タイトル</th>
+        <td>{{selected_GPM_title}}</td>
+        <td><input style="width:100%;" type="text" name="selected_LLD_title" value="{{selected_LLD_title}}"></td>
+      </tr>
+      <tr>
+        <th>作成者</th>
+        <td>{{selected_GPM_creator}}</td>
+        <td><input style="width:100%;" type="text" name="selected_LLD_creator" value="{{selected_LLD_creator}}"></td>
+      </tr>
+      <tr>
+        <th>記述の情報</th>
+        <td>{{selected_GPM_description}}</td>
+        <td><textarea name="selected_LLD_description">{{selected_LLD_description}}</textarea></td>
+      </tr>
+    </table>
+    <input type='hidden' name='gpm_graph_uri' value= '{{selected_GPM_graph}}'>
+    <input type="hidden" name="lld_graph_uri" value = '{{selected_LLD_graph}}'>
+
+    {% if selected_GPM_title and selected_LLD_title %}
+    <input class="mb-3" type="button" value="ログレベルの記述のメタ情報を更新する" onclick="add_lld_metainfo(lld_graph_uri, selected_LLD_title, selected_LLD_creator, selected_LLD_description)">
+    <input class="mb-3" type='submit' value="ログレベルの記述を作成する">
+    {% endif %}
+  </form>
 </div>
+<script>
+  function add_lld_metainfo(lld_graph_uri, selected_LLD_title, selected_LLD_creator, selected_LLD_description){
+    console.log(lld_graph_uri.value, selected_LLD_title.value, selected_LLD_creator.value, selected_LLD_description.value);
+    data = {lld_graph_uri: lld_graph_uri.value, selected_LLD_title: selected_LLD_title.value, selected_LLD_creator: selected_LLD_creator.value, selected_LLD_description: selected_LLD_description.value}
+    $.ajax({
+      type: 'POST',
+      url: 'add_LLD_metainfo',
+      data: data,
+      dataType: 'text',
+    })
+    .done(function(response){
+      console.log("success");
+    })
+
+  }
+</script>
 {% endblock%}
+
 
 
 

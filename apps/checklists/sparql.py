@@ -55,6 +55,67 @@ def get_lld_list(gpm_graph_uri):
 
     return results_graph, results_title
 
+#記述のメタデータの取得
+def get_description_metainfo(graph_uri):
+    query="""PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+    PREFIX dcterms:<http://purl.org/dc/terms/>
+    
+    SELECT ?title
+    WHERE{
+        GRAPH<"""+graph_uri+""">{
+            <"""+graph_uri+"""> dcterms:title ?title.
+        }
+    }
+    """
+    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    result = sparql.query().convert()["results"]["bindings"]
+    if(len(result)!=0):
+        title = result[0]["title"]["value"]
+    else:
+        title = ""
+
+    query1="""PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+    PREFIX dcterms:<http://purl.org/dc/terms/>
+    
+    SELECT ?creator ?description
+    WHERE{
+        GRAPH<"""+graph_uri+""">{
+            <"""+graph_uri+"""> dcterms:creator ?creator.
+        }
+    }
+    """
+    sparql1 = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql1.setQuery(query1)
+    sparql1.setReturnFormat(JSON)
+    result1 = sparql1.query().convert()["results"]["bindings"]
+    if(len(result1)!= 0):
+        creator = result1[0]["creator"]["value"]
+    else:
+        creator = ""
+    
+    query2="""PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+    PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    PREFIX dcterms:<http://purl.org/dc/terms/>
+    
+    SELECT ?creator ?description
+    WHERE{
+        GRAPH<"""+graph_uri+""">{
+            <"""+graph_uri+"""> dcterms:description ?description.
+        }
+    }
+    """
+    sparql2 = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql2.setQuery(query2)
+    sparql2.setReturnFormat(JSON)
+    result2 = sparql2.query().convert()["results"]["bindings"]
+    if(len(result2)!=0):
+        description = result2[0]["description"]["value"]
+    else:
+        description = ""
+    return title, creator, description
+
 def get_GPM_entity(gpm_graph_uri):
     #LLD作成のために、必要な要素を全て獲得
     query="""PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>

@@ -1,5 +1,6 @@
 from django.urls import path, include
 from . import views
+from . import sparql_update
 
 app_name = 'checklists'
 urlpatterns = [
@@ -16,4 +17,5 @@ urlpatterns = [
     path('hello', views.hello, name='hello'),
     path('loop_add', views.loop_add, name='loop_add'),
     path('get_nextaction', views.get_nextaction, name='get_nextaction'),
+    path('add_LLD_metainfo', sparql_update.add_LLD_metainfo, name='add_LLD_metainfo'),
 ]

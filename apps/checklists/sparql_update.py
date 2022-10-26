@@ -1,4 +1,5 @@
 from SPARQLWrapper import SPARQLWrapper, JSON, TURTLE
+from django.http import JsonResponse
 from rdflib import Graph, RDFS, URIRef, Namespace, RDF, Literal
 from pyfuseki import FusekiUpdate
 from pyfuseki.utils import RdfUtils
@@ -224,6 +225,64 @@ def update_forloop(triples, urilist):
         # triples.append([if_arrows_source[i], pd3.ifnext, if_arrows_target[i]])
         # triples.append([if_arrows_source[i], pd3.ifcondition, if_control_values[i]])
         triples.append([if_arrows_source[i], pd3.control, Literal("loop")])
+
+#LLDのメタ情報を更新する
+def add_LLD_metainfo(request):
+    graph_uri = request.POST.get("lld_graph_uri")
+    new_title = request.POST.get("selected_LLD_title")
+    new_creator = request.POST.get("selected_LLD_creator")
+    new_description = request.POST.get("selected_LLD_description")
+
+    #fusekiへの追加
+    fuseki = FusekiUpdate('http://digital-triplet.net:3030', 'test')
+    dcterms = Namespace('http://purl.org/dc/terms/')
+
+    print("new_title", new_title)
+    old_title, old_creator, old_description = sparql.get_description_metainfo(graph_uri)
+
+    delete_data = []
+    insert_data = []
+    if(new_title != old_title):
+        delete_data.append([URIRef(graph_uri), dcterms.title, Literal(old_title)])
+        insert_data.append([URIRef(graph_uri), dcterms.title, Literal(new_title)])
+    if(new_creator != old_creator):
+        delete_data.append([URIRef(graph_uri), dcterms.creator, Literal(old_creator)])
+        insert_data.append([URIRef(graph_uri), dcterms.creator, Literal(new_creator)])
+    if(new_description != old_description):
+        delete_data.append([URIRef(graph_uri), dcterms.description, Literal(old_description)])
+        insert_data.append([URIRef(graph_uri), dcterms.description, Literal(new_description)])
+
+    if(delete_data != []):
+        print(delete_data, insert_data)
+        g_delete = Graph()
+        g_insert = Graph()
+        RdfUtils.add_list_to_graph(g_delete, delete_data)
+        spo_str_delete = '\n'.join(
+            [f'{s.n3()} {p.n3()} {o.n3()}.' for (s, p, o) in g_delete]
+        )
+        RdfUtils.add_list_to_graph(g_insert, insert_data)
+        spo_str_insert = '\n'.join(
+            [f'{s.n3()} {p.n3()} {o.n3()}.' for (s, p, o) in g_insert]
+        )
+        query= """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+                    PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+                DELETE DATA{
+                GRAPH<"""+ graph_uri +""">{""" + spo_str_delete + """}
+                };
+
+                INSERT DATA{
+                GRAPH<""" + graph_uri + """>{""" + spo_str_insert +"""}
+                }"""
+        query_result = fuseki.run_sparql(query)
+        result = query_result.response.read().decode()
+
+        if result.find("Success") >0:
+            print(True)
+        else:
+            print(False)
+    a = dict()
+    return JsonResponse(a)
 
 
 #actionおよびその詳細内容を更新する

@@ -27,7 +27,10 @@ def show_deslist(request):
         if "selected_GPM_graph" in request.POST:
             context['selected_GPM_title']=request.POST.get('selected_GPM_title')
             selected_GPM_graph = request.POST.get('selected_GPM_graph')
+            GPM_title, selected_GPM_creator, selected_GPM_description = sparql.get_description_metainfo(selected_GPM_graph)
             context['selected_GPM_graph']=selected_GPM_graph
+            context['selected_GPM_creator']=selected_GPM_creator
+            context['selected_GPM_description']=selected_GPM_description
             
             if "added_lld_title" in request.POST:
                 print("add")
@@ -38,8 +41,12 @@ def show_deslist(request):
             context['LLD_titles'] = LLD_title
 
             if "selected_LLD_graph" in request.POST:
+                selected_LLD_graph= request.POST.get("selected_LLD_graph")
                 context['selected_LLD_title']=request.POST.get("selected_LLD_title")
-                context['selected_LLD_graph']=request.POST.get("selected_LLD_graph")
+                context['selected_LLD_graph']=selected_LLD_graph
+                title, selected_LLD_creator, selected_LLD_description = sparql.get_description_metainfo(selected_LLD_graph)
+                context['selected_LLD_creator']=selected_LLD_creator
+                context['selected_LLD_description']=selected_LLD_description
         
     return render(request, os.getcwd()+'/templates/checklists/show_deslist.html', context)
 
@@ -49,7 +56,7 @@ def graphlist(request):
 
     gpm_graph_uri = request.POST.get('gpm_graph_uri')
     lld_graph_uri = request.POST.get('lld_graph_uri')
-
+    print(gpm_graph_uri, lld_graph_uri)
     if request.method == 'POST':
         if "added_action" in request.POST and "action_uri" in request.POST:
             added_action = request.POST.get("added_action")

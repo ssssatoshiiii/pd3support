@@ -64,7 +64,7 @@
       </svg>
       <div class="todo-list my-custom-board" >
           {% for action,action_uri in actions|zip:actions_uri %}
-          <div class="align-items-center m-0 p-0 todo" style="width:30%;">
+          <div class="align-items-center m-0 p-0 todo" style="width:30%;" onclick="edit_action('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')">
             <label class="todo" id="{{action_uri}}" style="height:70%;">
               {% if forloop.counter0 in checklist %}
               <input class="todo__state" type="checkbox" id="{{forloop.counter0}}_{{ contents_AM_id }}" onclick="buttonClick(this.id)" 
@@ -80,13 +80,13 @@
                 <use xlink:href="#todo__check" class="todo__check"></use>
                 <use xlink:href="#todo__circle" class="todo__circle"></use>
               </svg>
-              <div class="todo__text">  {{forloop.counter}}. {{ action }} </div>
+              <div class="todo__text" >  {{forloop.counter}}. {{ action }} </div>
             </label>
             <div class="d-flex flex-row bd-highlight mt-2 pl-3" >
               {% if forloop.counter0 in expansionlist %}
               <img id='{{action_uri}}_test1' class="ml-0 mr-1" src="{% static 'checklists/images/dictionary.png'%}" width ="22" height="22" onclick = "second('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')">
               {% endif %}
-              <img id='{{action_uri}}_test' class="ml-0 mr-1 mt-0" src="{% static 'checklists/images/information.png'%}" alt="" width="22" height="22"  onclick = "edit_action('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
+              <!-- <img id='{{action_uri}}_test' class="ml-0 mr-1 mt-0" src="{% static 'checklists/images/information.png'%}" alt="" width="22" height="22"  onclick = "edit_action('{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/> -->
               <form action="{%url 'checklists:show_pastLLD' %}" method='POST' target="_blank">
                 {% csrf_token %}
                 <input type="image" class="ml-0 mr-1" src="{% static 'checklists/images/database.png'%}" width="24" height="24">
