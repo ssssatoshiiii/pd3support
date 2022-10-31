@@ -728,6 +728,38 @@ def get_nextloop(action_uri, gpm_graph_uri, lld_graph_uri):
     for converted_result in converted_results:
         results_condition.append(converted_result['loopcondition']['value'])
         results_next.append(converted_result["loopnext"]["value"])
+
+    if(results_next ==[]):
+        query1 = """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+        PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+        SELECT ?loopcondition ?loopnext (COUNT (?inter) AS ?distance)
+        WHERE
+        {GRAPH <"""+ lld_graph_uri + """> {
+            <"""+ action_uri +"""> pd3:output/pd3:target ?end.
+            ?end pd3:actionType "end".
+            <"""+action_uri+"""> (pd3:attribution/pd3:contraction)* ?inter.
+            ?inter (pd3:attribution/pd3:contraction)+ ?upper.
+            ?upper pd3:control "loop";
+            pd3:uses ?gpm_action.
+        }
+        GRAPH<"""+gpm_graph_uri+""">{
+            ?gpm_action pd3:output ?gpm_flow.
+            ?gpm_flow pd3:value ?loopcondition;
+            pd3:target ?loopnext.
+        }
+        }
+        GROUP BY ?loopcondition ?loopnext
+        ORDER BY ?distance
+        """
+        sparql1 = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+        sparql1.setQuery(query1)
+        sparql1.setReturnFormat(JSON)
+        converted_results = sparql1.query().convert()["results"]["bindings"]
+        for converted_result in converted_results:
+            results_condition.append(converted_result['loopcondition']['value'])
+            results_next.append(converted_result["loopnext"]["value"])
+
     return results_condition, results_next
 
 
