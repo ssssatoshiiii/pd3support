@@ -14,7 +14,6 @@ from .models import Graph
 
 @login_required
 def show_deslist(request):
-
     #GPMのグラフのURIとGPMの記述のURIは共通
     context = dict()
     context['GPM_graphs'], context['GPM_titles'] = sparql.get_deslist("GPM")

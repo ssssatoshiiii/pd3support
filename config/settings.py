@@ -12,6 +12,16 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
+from socket import gethostname
+
+HOSTNAME = gethostname()
+if 'tk2-213-16073' in HOSTNAME:
+    DB_DOMAIN='digital-triplet.net'
+    DATASET='test'
+else:
+    DB_DOMAIN='localhost'
+    DATASET='akiyama'
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

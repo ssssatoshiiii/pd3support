@@ -1,9 +1,11 @@
 from SPARQLWrapper import SPARQLWrapper, JSON, TURTLE
 from rdflib import Graph, RDFS, URIRef, Namespace, RDF, Literal
 import logging
+from django.conf import settings
 
 def get_deslist(epType):
-
+    print(settings.DB_DOMAIN+"がドメインです")
+    print(settings.DATASET+"がデータセットです")
     query= """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
     PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX dcterms:<http://purl.org/dc/terms/>
@@ -16,7 +18,7 @@ def get_deslist(epType):
             }
         }"""
 
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
 
     sparql.setReturnFormat(JSON)
@@ -42,7 +44,7 @@ def get_lld_list(gpm_graph_uri):
             }
         }"""
 
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()
@@ -67,7 +69,7 @@ def get_description_metainfo(graph_uri):
         }
     }
     """
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     result = sparql.query().convert()["results"]["bindings"]
@@ -86,7 +88,7 @@ def get_description_metainfo(graph_uri):
         }
     }
     """
-    sparql1 = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql1 = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql1.setQuery(query1)
     sparql1.setReturnFormat(JSON)
     result1 = sparql1.query().convert()["results"]["bindings"]
@@ -106,7 +108,7 @@ def get_description_metainfo(graph_uri):
         }
     }
     """
-    sparql2 = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql2 = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql2.setQuery(query2)
     sparql2.setReturnFormat(JSON)
     result2 = sparql2.query().convert()["results"]["bindings"]
@@ -171,7 +173,7 @@ def get_GPM_entity(gpm_graph_uri):
         }
     } 
     """
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()
@@ -279,7 +281,7 @@ def get_GPM_part_entity(gpmstart_action_uri, lldend_action_uri, graph_uri):
     }
     }
     """
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()
@@ -329,7 +331,7 @@ def get_graph(gpm_graph_uri):
     ORDER BY ?distance
         """
     
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()
@@ -358,7 +360,7 @@ def get_detail_action(action, gpm_graph_uri):
         }
         }
         }"""
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
 
     sparql.setReturnFormat(JSON)
@@ -385,7 +387,7 @@ def action_supinfo(action_uri, graph_uri):
             <""" + action_uri + """> pd3:value ?value.
             }
             }"""
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query_value)
     sparql.setReturnFormat(JSON)
     conresult = sparql.query().convert()["results"]["bindings"]
@@ -407,7 +409,7 @@ def action_supinfo(action_uri, graph_uri):
         }
         }"""
 
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query_intention)
     sparql.setReturnFormat(JSON)
     conresult = sparql.query().convert()["results"]["bindings"]
@@ -429,7 +431,7 @@ def action_supinfo(action_uri, graph_uri):
         }
         }"""
 
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query_toolknowledge)
     sparql.setReturnFormat(JSON)
     conresult = sparql.query().convert()["results"]["bindings"]
@@ -451,7 +453,7 @@ def action_supinfo(action_uri, graph_uri):
         }
         }"""
 
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query_annotation)
     sparql.setReturnFormat(JSON)
     conresult = sparql.query().convert()["results"]["bindings"]
@@ -474,7 +476,7 @@ def action_supinfo(action_uri, graph_uri):
         }
         }"""
 
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query_rationale)
     sparql.setReturnFormat(JSON)
     conresult = sparql.query().convert()["results"]["bindings"]
@@ -495,7 +497,7 @@ def action_supinfo(action_uri, graph_uri):
         ?output_uri pd3:value ?output_value.
         }
         }"""
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query_output)
     sparql.setReturnFormat(JSON)
     conresult = sparql.query().convert()["results"]["bindings"]
@@ -531,7 +533,7 @@ def get_hier_actions(uri, gpm_graph_uri):
     GROUP BY ?contractedActionUri
     ORDER BY DESC(?distance)    
     """
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
 
     sparql.setReturnFormat(JSON)
@@ -554,7 +556,7 @@ def get_gpm_action(action_uri, gpm_graph_uri):
         }
     }
     """
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
@@ -578,7 +580,7 @@ def get_lld_action2(action_uri, gpm_graph_uri):
     }
     """
 
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
@@ -604,7 +606,7 @@ def get_input_flow(action_uri, graph_uri):
         }
     }
     """
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
@@ -626,7 +628,7 @@ def get_output_flow(action_uri, graph_uri):
         }
     }
     """
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
@@ -660,7 +662,7 @@ def get_nextaction(action_uri, graph_uri):
     GROUP BY ?nextaction
     ORDER BY ?distance
     """
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
@@ -686,7 +688,7 @@ def get_nextaction(action_uri, graph_uri):
             }
             
             """
-            sparql1 = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+            sparql1 = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
             sparql1.setQuery(query1)
             sparql1.setReturnFormat(JSON)
             converted_results1 = sparql1.query().convert()["results"]["bindings"]
@@ -719,7 +721,7 @@ def get_nextloop(action_uri, gpm_graph_uri, lld_graph_uri):
     }
     }
     """
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
@@ -752,7 +754,7 @@ def get_nextloop(action_uri, gpm_graph_uri, lld_graph_uri):
         GROUP BY ?loopcondition ?loopnext
         ORDER BY ?distance
         """
-        sparql1 = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+        sparql1 = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
         sparql1.setQuery(query1)
         sparql1.setReturnFormat(JSON)
         converted_results = sparql1.query().convert()["results"]["bindings"]
@@ -776,7 +778,7 @@ def get_nextaction1(action_uri, graph_uri):
         
     }}
     """
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
@@ -798,7 +800,7 @@ def get_container(action_uri, graph_uri):
         }
     }
     """
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
@@ -817,7 +819,7 @@ def get_graph_title(graph_uri):
         }
     }
     """
-    sparql =  SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql =  SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
@@ -836,7 +838,7 @@ def get_graph_description(graph_uri):
         }
     }
     """
-    sparql =  SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql =  SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
@@ -855,7 +857,7 @@ def get_action_layer(action_uri, graph_uri):
         }
     }
     """
-    sparql =  SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql =  SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
@@ -876,7 +878,7 @@ def get_done_action(action_uri, graph_uri):
         }
     }
     """
-    sparql =  SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql =  SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
@@ -900,7 +902,7 @@ def get_done_hieraction(action_uri, graph_uri):
         }
     }
     """
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
@@ -922,7 +924,7 @@ def get_forloop(action_uri, graph_uri):
         }
     }
     """
-    sparql =  SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql =  SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
@@ -941,7 +943,7 @@ def get_expansion(action_uri, graph_uri):
         }
     }
     """
-    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]

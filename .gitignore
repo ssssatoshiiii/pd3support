@@ -1,3 +1,4 @@
 # pycファイルを外す
 
 *.pyc
+db.sqlite3
