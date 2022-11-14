@@ -1,11 +1,10 @@
-from SPARQLWrapper import SPARQLWrapper, JSON, TURTLE
+from SPARQLWrapper import SPARQLWrapper, JSON, TURTLE, BASIC
 from rdflib import Graph, RDFS, URIRef, Namespace, RDF, Literal
 import logging
 from django.conf import settings
 
 def get_deslist(epType):
-    print(settings.DB_DOMAIN+"がドメインです")
-    print(settings.DATASET+"がデータセットです")
+    print(settings.DB_DOMAIN)
     query= """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
     PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX dcterms:<http://purl.org/dc/terms/>
@@ -20,7 +19,8 @@ def get_deslist(epType):
 
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
-
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()
     results_graph = list()
@@ -46,6 +46,8 @@ def get_lld_list(gpm_graph_uri):
 
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()
 
@@ -71,6 +73,8 @@ def get_description_metainfo(graph_uri):
     """
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     result = sparql.query().convert()["results"]["bindings"]
     if(len(result)!=0):
@@ -90,6 +94,8 @@ def get_description_metainfo(graph_uri):
     """
     sparql1 = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql1.setQuery(query1)
+    sparql1.setHTTPAuth(BASIC)
+    sparql1.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql1.setReturnFormat(JSON)
     result1 = sparql1.query().convert()["results"]["bindings"]
     if(len(result1)!= 0):
@@ -110,6 +116,8 @@ def get_description_metainfo(graph_uri):
     """
     sparql2 = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql2.setQuery(query2)
+    sparql2.setHTTPAuth(BASIC)
+    sparql2.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql2.setReturnFormat(JSON)
     result2 = sparql2.query().convert()["results"]["bindings"]
     if(len(result2)!=0):
@@ -175,6 +183,8 @@ def get_GPM_entity(gpm_graph_uri):
     """
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()
     result = list()
@@ -283,6 +293,8 @@ def get_GPM_part_entity(gpmstart_action_uri, lldend_action_uri, graph_uri):
     """
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()
     result = list()
@@ -333,6 +345,8 @@ def get_graph(gpm_graph_uri):
     
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()
     results_uri = list()
@@ -362,6 +376,8 @@ def get_detail_action(action, gpm_graph_uri):
         }"""
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
 
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()
@@ -389,6 +405,8 @@ def action_supinfo(action_uri, graph_uri):
             }"""
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query_value)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     conresult = sparql.query().convert()["results"]["bindings"]
     if(len(conresult) != 0):
@@ -411,6 +429,8 @@ def action_supinfo(action_uri, graph_uri):
 
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query_intention)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     conresult = sparql.query().convert()["results"]["bindings"]
     if(len(conresult) != 0):
@@ -433,6 +453,8 @@ def action_supinfo(action_uri, graph_uri):
 
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query_toolknowledge)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     conresult = sparql.query().convert()["results"]["bindings"]
     if(len(conresult) != 0):
@@ -455,6 +477,8 @@ def action_supinfo(action_uri, graph_uri):
 
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query_annotation)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     conresult = sparql.query().convert()["results"]["bindings"]
     if(len(conresult) != 0):
@@ -478,6 +502,8 @@ def action_supinfo(action_uri, graph_uri):
 
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query_rationale)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     conresult = sparql.query().convert()["results"]["bindings"]
     if(len(conresult) != 0):
@@ -499,6 +525,8 @@ def action_supinfo(action_uri, graph_uri):
         }"""
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query_output)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     conresult = sparql.query().convert()["results"]["bindings"]
     
@@ -535,6 +563,8 @@ def get_hier_actions(uri, gpm_graph_uri):
     """
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
 
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
@@ -558,6 +588,8 @@ def get_gpm_action(action_uri, gpm_graph_uri):
     """
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
     if(len(converted_results)!= 0):
@@ -582,6 +614,8 @@ def get_lld_action2(action_uri, gpm_graph_uri):
 
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
     results_graph_uri = []
@@ -608,6 +642,8 @@ def get_input_flow(action_uri, graph_uri):
     """
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
     results = []
@@ -630,6 +666,8 @@ def get_output_flow(action_uri, graph_uri):
     """
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
     results = []
@@ -664,6 +702,8 @@ def get_nextaction(action_uri, graph_uri):
     """
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
     print(converted_results)
@@ -690,6 +730,8 @@ def get_nextaction(action_uri, graph_uri):
             """
             sparql1 = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
             sparql1.setQuery(query1)
+            sparql.setHTTPAuth(BASIC)
+            sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
             sparql1.setReturnFormat(JSON)
             converted_results1 = sparql1.query().convert()["results"]["bindings"]
             
@@ -723,6 +765,8 @@ def get_nextloop(action_uri, gpm_graph_uri, lld_graph_uri):
     """
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
     results_condition = []
@@ -756,6 +800,8 @@ def get_nextloop(action_uri, gpm_graph_uri, lld_graph_uri):
         """
         sparql1 = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
         sparql1.setQuery(query1)
+        sparql1.setHTTPAuth(BASIC)
+        sparql1.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
         sparql1.setReturnFormat(JSON)
         converted_results = sparql1.query().convert()["results"]["bindings"]
         for converted_result in converted_results:
@@ -780,6 +826,8 @@ def get_nextaction1(action_uri, graph_uri):
     """
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
     results = []
@@ -802,6 +850,8 @@ def get_container(action_uri, graph_uri):
     """
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
     if(len(converted_results) != 0):
@@ -821,6 +871,8 @@ def get_graph_title(graph_uri):
     """
     sparql =  SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
     if(len(converted_results) != 0):
@@ -840,6 +892,8 @@ def get_graph_description(graph_uri):
     """
     sparql =  SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
     if(len(converted_results) != 0):
@@ -859,6 +913,8 @@ def get_action_layer(action_uri, graph_uri):
     """
     sparql =  SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
     if(len(converted_results) != 0):
@@ -880,6 +936,8 @@ def get_done_action(action_uri, graph_uri):
     """
     sparql =  SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
     if(len(converted_results) != 0):
@@ -904,6 +962,8 @@ def get_done_hieraction(action_uri, graph_uri):
     """
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
     results = []
@@ -926,6 +986,8 @@ def get_forloop(action_uri, graph_uri):
     """
     sparql =  SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
     if(len(converted_results) != 0):
@@ -945,6 +1007,8 @@ def get_expansion(action_uri, graph_uri):
     """
     sparql = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql.setQuery(query)
+    sparql.setHTTPAuth(BASIC)
+    sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     sparql.setReturnFormat(JSON)
     converted_results = sparql.query().convert()["results"]["bindings"]
     if(len(converted_results) != 0):
