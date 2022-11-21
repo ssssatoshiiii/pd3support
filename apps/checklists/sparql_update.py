@@ -1,16 +1,21 @@
 from SPARQLWrapper import SPARQLWrapper, JSON, TURTLE, BASIC
 from django.http import JsonResponse
 from rdflib import Graph, RDFS, URIRef, Namespace, RDF, Literal
-from pyfuseki import FusekiUpdate
 from pyfuseki.utils import RdfUtils
 import datetime
 from . import sparql
 from django.conf import settings
 
+import sys
+
 
 def add_LLDgraph_tofuseki(lld_title, gpm_graph_uri):
     #fusekiへの追加
-    fuseki = FusekiUpdate(f'http://{settings.DB_DOMAIN}:3030', f'{settings.DATASET}', {"id":settings.FUSEKI_ID , "pw":settings.FUSEKI_PW})
+    sp = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/update")
+    sp.method = "POST"
+    sp.setHTTPAuth(BASIC)
+    sp.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
+
     g = Graph()
     rdf = Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
     pd3= Namespace('http://DigitalTriplet.net/2021/08/ontology#')
@@ -133,7 +138,9 @@ def add_LLDgraph_tofuseki(lld_title, gpm_graph_uri):
             INSERT DATA{
             GRAPH<""" + lld_uri + """>{""" + spo_str +"""}
             }"""
-    query_result = fuseki.run_sparql(query_lld, {"id":settings.FUSEI_ID , "pw":settings.FUSEI_PW})
+    sp.setQuery(query_lld)
+    query_result = sp.query()
+
     result = query_result.response.read().decode()
 
     if result.find("Success") >0:
@@ -161,7 +168,9 @@ def add_LLDgraph_tofuseki(lld_title, gpm_graph_uri):
             INSERT DATA{
             GRAPH<""" + gpm_graph_uri + """>{""" + spo_str2 +"""}
             }"""
-    query_result = fuseki.run_sparql(query_gpm, {"id":settings.FUSEI_ID , "pw":settings.FUSEI_PW})
+    sp.setQuery(query_gpm)
+    query_result = sp.query()
+
     result2 = query_result.response.read().decode()
 
     if result2.find("Sucess") > 0:
@@ -236,7 +245,10 @@ def add_LLD_metainfo(request):
     new_description = request.POST.get("selected_LLD_description")
 
     #fusekiへの追加
-    fuseki = FusekiUpdate(f'http://{settings.DB_DOMAIN}:3030', f'{settings.DATASET}', {"id":settings.FUSEKI_ID , "pw":settings.FUSEKI_PW})
+    sp = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/update")
+    sp.method = "POST"
+    sp.setHTTPAuth(BASIC)
+    sp.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     dcterms = Namespace('http://purl.org/dc/terms/')
 
     print("new_title", new_title)
@@ -276,7 +288,8 @@ def add_LLD_metainfo(request):
                 INSERT DATA{
                 GRAPH<""" + graph_uri + """>{""" + spo_str_insert +"""}
                 }"""
-        query_result = fuseki.run_sparql(query, {"id":settings.FUSEI_ID , "pw":settings.FUSEI_PW})
+        sp.setQuery(query)
+        query_result = sp.query()
         result = query_result.response.read().decode()
 
         if result.find("Success") >0:
@@ -286,12 +299,14 @@ def add_LLD_metainfo(request):
     a = dict()
     return JsonResponse(a)
 
-
 #actionおよびその詳細内容を更新する
 def add_LLD_tofuseki(action_uri, action, intention, toolknowledge, annotation, rationale, output, gpm_graph_uri, lld_graph_uri):
 
     #fusekiへの追加
-    fuseki = FusekiUpdate(f'http://{settings.DB_DOMAIN}:3030', f'{settings.DATASET}', {"id":settings.FUSEKI_ID , "pw":settings.FUSEKI_PW})
+    sp = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/update")
+    sp.method = "POST"
+    sp.setHTTPAuth(BASIC)
+    sp.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     rdf = Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
     pd3= Namespace('http://DigitalTriplet.net/2021/08/ontology#')
 
@@ -333,14 +348,14 @@ def add_LLD_tofuseki(action_uri, action, intention, toolknowledge, annotation, r
             INSERT DATA{
             GRAPH<""" + lld_graph_uri + """>{""" + spo_str_insert +"""}
             }"""
-    query_result = fuseki.run_sparql(query, {"id":settings.FUSEI_ID , "pw":settings.FUSEI_PW})
+    sp.setQuery(query)
+    query_result = sp.query()
     result = query_result.response.read().decode()
 
     if result.find("Success") >0:
         print(True)
     else:
         print(False)
-
 
 #actionを追加
 def add_LLDaction_tofuseki(added_action, base_action_uri, lld_graph_uri, flag):
@@ -369,8 +384,10 @@ def add_LLDaction_tofuseki(added_action, base_action_uri, lld_graph_uri, flag):
     if(len(converted_results)!= 0):
         if(converted_results[0]["added_action"]["value"] != added_action):
             #fusekiへの追加
-            fuseki = FusekiUpdate(f'http://{settings.DB_DOMAIN}:3030', f'{settings.DATASET}', {"id":settings.FUSEKI_ID , "pw":settings.FUSEKI_PW})
-            g = Graph()
+            sp = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/update")
+            sp.method = "POST"
+            sp.setHTTPAuth(BASIC)
+            sp.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
             rdf = Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
             pd3= Namespace('http://DigitalTriplet.net/2021/08/ontology#')
 
@@ -486,7 +503,8 @@ def add_LLDaction_tofuseki(added_action, base_action_uri, lld_graph_uri, flag):
                     INSERT DATA{
                     GRAPH<""" + lld_graph_uri + """>{""" + spo_str_insert +"""}
                     }"""
-            query_result = fuseki.run_sparql(query, {"id":settings.FUSEI_ID , "pw":settings.FUSEI_PW})
+            sp.setQuery(query)
+            query_result = sp.query()
             result = query_result.response.read().decode()
 
             if result.find("Success") >0:
@@ -496,8 +514,11 @@ def add_LLDaction_tofuseki(added_action, base_action_uri, lld_graph_uri, flag):
 
 #実行済みのアクションに対してcheckをつける
 def add_done_action(action_uri, lld_graph_uri):
-        #fusekiへの追加
-    fuseki = FusekiUpdate(f'http://{settings.DB_DOMAIN}:3030', f'{settings.DATASET}', {"id":settings.FUSEKI_ID , "pw":settings.FUSEKI_PW})
+    #fusekiへの追加
+    sp = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/update")
+    sp.method = "POST"
+    sp.setHTTPAuth(BASIC)
+    sp.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     pd3= Namespace('http://DigitalTriplet.net/2021/08/ontology#')
 
     insert_data = [[URIRef(action_uri), pd3.done, Literal("done")]]
@@ -512,7 +533,8 @@ def add_done_action(action_uri, lld_graph_uri):
                 GRAPH<""" + lld_graph_uri + """>{""" + spo_str + """}
             }"""
 
-    query_result=fuseki.run_sparql(query, {"id":settings.FUSEI_ID , "pw":settings.FUSEI_PW})
+    sp.setQuery(query)
+    query_result = sp.query()
     result = query_result.response.read().decode()
     if result.find("Success") >0:
             print(True)
@@ -522,8 +544,10 @@ def add_done_action(action_uri, lld_graph_uri):
 #loopの内容を更新する
 def add_loopgraph(action_uri, gpm_start_action, lld_graph_uri, gpm_graph_uri):
     #fusekiへの追加
-    fuseki = FusekiUpdate(f'http://{settings.DB_DOMAIN}:3030', f'{settings.DATASET}', {"id":settings.FUSEKI_ID , "pw":settings.FUSEKI_PW})
-    g = Graph()
+    sp = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/update")
+    sp.method = "POST"
+    sp.setHTTPAuth(BASIC)
+    sp.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     rdf = Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
     pd3= Namespace('http://DigitalTriplet.net/2021/08/ontology#')
 
@@ -667,7 +691,8 @@ def add_loopgraph(action_uri, gpm_start_action, lld_graph_uri, gpm_graph_uri):
             GRAPH<"""+ lld_graph_uri +""">{""" + spo_str_delete + """}
         };
         """
-    query_result = fuseki.run_sparql(query_lld, {"id":settings.FUSEI_ID , "pw":settings.FUSEI_PW})
+    sp.setQuery(query_lld)
+    query_result = sp.query()
     result = query_result.response.read().decode()
     if result.find("Success") >0:
         print(True)
@@ -692,7 +717,8 @@ def add_loopgraph(action_uri, gpm_start_action, lld_graph_uri, gpm_graph_uri):
                 GRAPH<"""+ gpm_graph_uri +""">{""" + spo_str_gpm + """}
             };
         """
-    query_result_gpm = fuseki.run_sparql(query_gpm, {"id":settings.FUSEI_ID , "pw":settings.FUSEI_PW})
+    sp.setQuery(query_gpm)
+    query_result_gpm = sp.query()
     result_gpm = query_result_gpm.response.read().decode()
 
     if result_gpm.find("Success") >0:
