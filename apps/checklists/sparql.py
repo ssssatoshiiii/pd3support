@@ -499,19 +499,41 @@ def action_supinfo(action_uri, graph_uri):
     sparql.setQuery(query_output)
     sparql.setReturnFormat(JSON)
     conresult = sparql.query().convert()["results"]["bindings"]
+
+    print("output")
+    print(conresult)
     
     output_result = {'output_uri': '', 'output_value': ''}
-    for i in range(len(conresult)):
-        output_result["output_value"]+= conresult[i]["output_value"]["value"]
-        if(conresult[i]["output_value"]["value"]):
-            output_result["output_uri"] = conresult[i]["output_uri"]["value"]
-    output_value1 = output_result["output_value"].replace("[loop]", "")
+    # for i in range(len(conresult)):
+    #     output_result["output_value"]+= conresult[i]["output_value"]["value"]
+    #     if(conresult[i]["output_value"]["value"]):
+    #         output_result["output_uri"] = conresult[i]["output_uri"]["value"]
+    # output_value1 = output_result["output_value"].replace("[loop]", "")
 
-    while("[IF" in output_value1):
-        output_control_value = output_value1[output_value1.find("[IF"):output_value1.find("]")+1]
-        print(output_control_value)
-        output_value1 = output_value1.replace(output_control_value, "")
-    output_result["output_value"] = output_value1
+    # while("[IF" in output_value1):
+    #     output_control_value = output_value1[output_value1.find("[IF"):output_value1.find("]")+1]
+    #     print(output_control_value)
+    #     output_value1 = output_value1.replace(output_control_value, "")
+    # output_result["output_value"] = output_value1
+
+    output_uris = []
+    output_values = []
+    for i in range(len(conresult)):
+        output_uris.append(conresult[i]["output_uri"]["value"])
+        output_values.append(conresult[i]["output_value"]["value"])
+
+    for i in range(len(output_values)):
+        output_values[i] = output_values[i].replace("[loop]","")
+        output_control_value = output_values[i][output_values[i].find("[IF"):output_values[i].find("]")+1]
+        output_values[i] = output_values[i].replace(output_control_value, "")
+        if(output_values[i] != ""):
+            output_result["output_uri"] = output_uris[i]
+            output_result["output_value"] = output_values[i]
+            break
+    if(output_result["output_uri"]==""):
+        output_uris, output_values = zip(*sorted(zip(output_uris, output_values)))
+        output_result["output_uri"] = output_uris[0]
+        output_result["output_value"] = output_values[0]
 
     return action_result, intention_result, toolknowledge_result, annotation_result, rationale_result, output_result
 

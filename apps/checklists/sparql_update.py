@@ -288,6 +288,7 @@ def add_LLD_metainfo(request):
 #actionおよびその詳細内容を更新する
 def add_LLD_tofuseki(action_uri, action, intention, toolknowledge, annotation, rationale, output, gpm_graph_uri, lld_graph_uri):
 
+    print('あいうえお')
     #fusekiへの追加
     fuseki = FusekiUpdate('http://digital-triplet.net:3030', 'test')
     rdf = Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')

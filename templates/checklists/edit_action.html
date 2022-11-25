@@ -12,8 +12,8 @@
             </tr>
             <tr>
                 <th style="writing-mode:tb-rl;">実施アクション</th>
-                <td><textarea rows="5" style="background-color:aliceblue;overflow:auto;" readonly>{{gpm_action}}</textarea></td>
-                <td><textarea rows="5" style="overflow:auto;" name="lld_action">{{lld_action}}</textarea></td>
+                <td><textarea rows="5" style="background-color:aliceblue;overflow:auto;" class="js-autolink" readonly>{{gpm_action}}</textarea></td>
+                <td><textarea rows="5" style="overflow:auto;" class="js-autolink" name="lld_action">{{lld_action}}</textarea></td>
             </tr>
             <tr>
                 <th style="writing-mode:tb-rl;">意図</th>
@@ -49,6 +49,17 @@
     </form>
 </div>
 <script>
+    $(function(){
+        $('.js-autolink').each(function(){
+            text_before = $(this).html()
+            text_after = text_before.replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig,"<a target='_blank' href='$1'>$1</a>");
+            if(text_before != text_after){
+                $(this).parent().append(text_after);
+            }
+        });
+    });
+
+
     function add_LLD_stay(action, intention, toolknowledge, annotation, rationale, output, action_uri, gpm_graph_uri, lld_graph_uri){
         data = {action_uri:action_uri, action:action.value, intention:intention.value, toolknowledge:toolknowledge.value, annotation:annotation.value, rationale:rationale.value, output:output.value, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri, flag:"stay"}
         $.ajax({

@@ -332,9 +332,7 @@ def add_LLD(request):
 
         next_action_uri = sparql.get_nextaction(action_uri, lld_graph_uri)
         print('ねくすと')
-        print(action_uri)
-        print(lld_graph_uri)
-        print(next_action_uri)
+        print(output)
 
         #loopが存在する場合、条件文と次のアクションを保存する
         #loopnextはgpmのアクションであることに注意
