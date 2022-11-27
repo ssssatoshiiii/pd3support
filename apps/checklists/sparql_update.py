@@ -295,7 +295,7 @@ def add_LLD_tofuseki(action_uri, action, intention, toolknowledge, annotation, r
     pd3= Namespace('http://DigitalTriplet.net/2021/08/ontology#')
 
     action_result, intention_result, toolknowledge_result, annotation_result, rationale_result, output_result = sparql.action_supinfo(action_uri, lld_graph_uri)
-    
+
     print(output_result)
     delete_data = [[URIRef(action_result['action_uri']), pd3.value, Literal(action_result['action_value'])],
     [URIRef(intention_result['intention_uri']), pd3.value, Literal(intention_result['intention_value'])],
@@ -304,12 +304,18 @@ def add_LLD_tofuseki(action_uri, action, intention, toolknowledge, annotation, r
     [URIRef(rationale_result['rationale_uri']), pd3.value, Literal(rationale_result['rationale_value'])],
     [URIRef(output_result['output_uri']), pd3.value, Literal(output_result['output_value'])]]
 
+    t_delta = datetime.timedelta(hours=9)
+    JST = datetime.timezone(t_delta, 'JST')
+    now = datetime.datetime.now(JST)
+    d = '{:%Y%m%d%H%M%S}'.format(now) 
+
     insert_data = [[URIRef(action_result['action_uri']), pd3.value, Literal(action)],
     [URIRef(intention_result['intention_uri']), pd3.value, Literal(intention)],
     [URIRef(toolknowledge_result['toolknowledge_uri']), pd3.value, Literal(toolknowledge)],
     [URIRef(annotation_result['annotation_uri']), pd3.value, Literal(annotation)],
     [URIRef(rationale_result['rationale_uri']), pd3.value, Literal(rationale)],
-    [URIRef(output_result['output_uri']), pd3.value, Literal(output)]]
+    [URIRef(output_result['output_uri']), pd3.value, Literal(output)],
+    [URIRef(action_result['action_uri']), pd3.time, Literal(d)]]
 
     g_delete = Graph()
     g_insert = Graph()
