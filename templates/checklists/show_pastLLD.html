@@ -76,7 +76,96 @@
       <td style="word-break:break-all;">{{lld_output}}</td>
       {% endfor %}
     </tr>
+    <tr>
+      <th>Document</th>
+      {% for lld_document in lld_documents %}
+      <td style="word-break:break-all;">{{lld_document}}</td>
+      {% endfor %}
+    </tr>
+    <tr>
+      <th>Engineer</th>
+      {% for lld_engineer in lld_engineers %}
+      <td style="word-break:break-all;">{{lld_engineer}}</td>
+      {% endfor %}
+    </tr>
+    <tr>
+      <th>Tool</th>
+      {% for lld_tool in lld_tools %}
+      <td style="word-break:break-all;">{{lld_tool}}</td>
+      {% endfor %}
+    </tr>
   </table>
 </div>
 
+<p>知識文書 ランキング</p>
+<div class="container-fluid text-center mb-5" style="width:100%;background-color:aliceblue;overflow: auto;">
+  <table style="width:100%;" border="1">
+    <tr>
+      <th style="width:20%;">知識文書タイトル</th>
+      {% for doc_title in document_titles %}
+      <td style="word-break:break-all;">{{doc_title}}</td>
+      {% endfor %}
+    </tr>
+    <tr>
+      <th style="width:20%;">リンク</th>
+      {% for doc_link in document_links %}
+      <td style="word-break:break-all;">{{doc_link}}</td>
+      {% endfor %}
+    </tr>
+    <tr>
+      <th style="width:20%;">参照回数</th>
+      {% for doc_count in document_counts %}
+      <td style="word-break:break-all;">{{doc_count}}</td>
+      {% endfor %}
+    </tr>
+  </table>
+</div>
+
+<p>技術者 ランキング</p>
+<div class="container-fluid text-center mb-5" style="width:100%;background-color:aliceblue;overflow: auto;">
+  <table style="width:100%;" border="1">
+    <tr>
+      <th style="width:20%;">技術者</th>
+      {% for eng_name in engineer_names %}
+      <td style="word-break:break-all;">{{eng_name}}</td>
+      {% endfor %}
+    </tr>
+    <tr>
+      <th style="width:20%;">リンク</th>
+      {% for eng_link in engineer_links %}
+      <td style="word-break:break-all;">{{eng_link}}</td>
+      {% endfor %}
+    </tr>
+    <tr>
+      <th style="width:20%;">参照回数</th>
+      {% for eng_count in engineer_counts %}
+      <td style="word-break:break-all;">{{eng_count}}</td>
+      {% endfor %}
+    </tr>
+  </table>
+</div>
+
+<p>ツール ランキング</p>
+<div class="container-fluid text-center mb-5" style="width:100%;background-color:aliceblue;overflow: auto;">
+  <table style="width:100%;" border="1">
+    <tr>
+      <th style="width:20%;">ツール名</th>
+      {% for tool_name in tool_names %}
+      <td style="word-break:break-all;">{{tool_name}}</td>
+      {% endfor %}
+    </tr>
+    <tr>
+      <th style="width:20%;">リンク</th>
+      {% for tool_link in tool_links %}
+      <td style="word-break:break-all;">{{tool_link}}</td>
+      {% endfor %}
+    </tr>
+    <tr>
+      <th style="width:20%;">参照回数</th>
+      {% for tool_count in tool_counts %}
+      <td style="word-break:break-all;">{{tool_count}}</td>
+      {% endfor %}
+    </tr>
+  </table>
+</div>
 {% endblock %}

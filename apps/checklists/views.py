@@ -254,28 +254,38 @@ def action_supinfo_show(request):
         #GPMのsupinfoの情報取得
         if(gpm_action_uri != ''):
             gpm_action, gpm_intention, gpm_toolknowledge, gpm_annotation, gpm_rationale, gpm_output = sparql.action_supinfo(gpm_action_uri, gpm_graph_uri)
+            gpm_document, gpm_engineer, gpm_tool = sparql.get_gpm_ref_info(gpm_graph_uri, gpm_action_uri)
             context['gpm_action'] = gpm_action['action_value']
             context['gpm_intention'] = gpm_intention['intention_value']
             context['gpm_toolknowledge'] = gpm_toolknowledge['toolknowledge_value']
             context['gpm_annotation'] = gpm_annotation['annotation_value']
             context['gpm_rationale'] = gpm_rationale['rationale_value'] 
             context['gpm_output'] = gpm_output['output_value']
+            context['gpm_document'] = gpm_document['document_value']
+            context['gpm_engineer'] = gpm_engineer['engineer_value']
+            context['gpm_tool'] = gpm_tool['tool_value']
 
         option = request.POST.get('option')
-        print(option)
+
         if(option == "LLD"):
             #記入したLLDのsupinfoの情報の取得
-            lld_action, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output = sparql.action_supinfo(action_uri, lld_graph_uri)
+            lld_action, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output = \
+                            sparql.action_supinfo(action_uri, lld_graph_uri)
+            lld_document, lld_engineer, lld_tool = sparql.get_lld_ref_info(gpm_graph_uri, gpm_action_uri, lld_graph_uri, action_uri)
             context['lld_action'] = lld_action['action_value'] 
             context['lld_intention'] = lld_intention['intention_value'] 
             context['lld_toolknowledge'] = lld_toolknowledge['toolknowledge_value']
             context['lld_annotation'] = lld_annotation['annotation_value']
             context['lld_rationale'] = lld_rationale['rationale_value']
             context['lld_output'] = lld_output['output_value']
+            context['lld_document'] = lld_document['document_value']
+            context['lld_engineer'] = lld_engineer['engineer_value']
+            context['lld_tool'] = lld_tool['tool_value']
 
         return render(request, os.getcwd()+'/templates/checklists/action_supinfo.html', context)
 
 def edit_action(request):
+
     if request.method == 'POST':
         context = dict()
         action_uri = request.POST.get('action_uri')
@@ -284,26 +294,34 @@ def edit_action(request):
         context['gpm_graph_uri'] = gpm_graph_uri
         lld_graph_uri = request.POST.get('lld_graph_uri')
         context['lld_graph_uri'] = lld_graph_uri
+        gpm_action_uri = sparql.get_gpm_action(action_uri, gpm_graph_uri)
 
         #記入したLLDのsupinfoの情報の取得
         lld_action, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output = sparql.action_supinfo(action_uri, lld_graph_uri)
+        lld_document, lld_engineer, lld_tool = sparql.get_lld_ref_info(gpm_graph_uri, gpm_action_uri, lld_graph_uri, action_uri)
         context['lld_action'] = lld_action['action_value'] 
         context['lld_intention'] = lld_intention['intention_value'] 
         context['lld_toolknowledge'] = lld_toolknowledge['toolknowledge_value']
         context['lld_annotation'] = lld_annotation['annotation_value']
         context['lld_rationale'] = lld_rationale['rationale_value']
         context['lld_output'] = lld_output['output_value']
+        context['lld_document'] = lld_document['document_value']
+        context['lld_engineer'] = lld_engineer['engineer_value']
+        context['lld_tool'] = lld_tool['tool_value']
 
         #GPMのsupinfoの情報取得
-        gpm_action_uri = sparql.get_gpm_action(action_uri, gpm_graph_uri)
         if(gpm_action_uri != ''):
             gpm_action, gpm_intention, gpm_toolknowledge, gpm_annotation, gpm_rationale, gpm_output = sparql.action_supinfo(gpm_action_uri, gpm_graph_uri)
+            gpm_document, gpm_engineer, gpm_tool = sparql.get_gpm_ref_info(gpm_graph_uri, gpm_action_uri)
             context['gpm_action'] = gpm_action['action_value']
             context['gpm_intention'] = gpm_intention['intention_value']
             context['gpm_toolknowledge'] = gpm_toolknowledge['toolknowledge_value']
             context['gpm_annotation'] = gpm_annotation['annotation_value']
             context['gpm_rationale'] = gpm_rationale['rationale_value'] 
             context['gpm_output'] = gpm_output['output_value']
+            context['gpm_document'] = gpm_document['document_value']
+            context['gpm_engineer'] = gpm_engineer['engineer_value']
+            context['gpm_tool'] = gpm_tool['tool_value']
 
         return render(request, os.getcwd()+'/templates/checklists/edit_action.html', context)
 
@@ -358,11 +376,11 @@ def get_nextaction(request):
 
     return JsonResponse(result)
 
-
 def show_pastLLD(request):
     context = {}
     action_uri = request.POST.get('action_uri')
     gpm_graph_uri = request.POST.get('gpm_graph_uri')
+    lld_graph_uri = request.POST.get('lld_graph_uri')
     context['gpm_graph_uri'] = gpm_graph_uri
     gpm_action_uri = sparql.get_gpm_action(action_uri, gpm_graph_uri)
     graph_uri, lld_actions_uri = sparql.get_lld_action2(gpm_action_uri, gpm_graph_uri)
@@ -376,10 +394,14 @@ def show_pastLLD(request):
     context['lld_annotations'] = []
     context['lld_rationales'] = []
     context['lld_outputs'] = []
+    context['lld_documents'] = []
+    context['lld_engineers'] = []
+    context['lld_tools'] = []
 
     for i in range(len(lld_actions_uri)):
         context['lld_graphs'].append(graph_uri[i])
         lld_action_value, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output = sparql.action_supinfo(lld_actions_uri[i],graph_uri[i])
+        lld_document, lld_engineer, lld_tool = sparql.get_lld_ref_info(gpm_graph_uri, gpm_action_uri, graph_uri[i], lld_actions_uri[i])
         context['lld_titles'].append(sparql.get_graph_title(graph_uri[i]))
         context['lld_descriptions'].append(sparql.get_graph_description(graph_uri[i]))
         context['lld_actions'].append(lld_action_value['action_value'])
@@ -388,6 +410,27 @@ def show_pastLLD(request):
         context['lld_annotations'].append(lld_annotation['annotation_value'])
         context['lld_rationales'].append(lld_rationale['rationale_value'])
         context['lld_outputs'].append(lld_output['output_value'])
+        context['lld_documents'].append(lld_document['document_value'])
+        context['lld_engineers'].append(lld_engineer['engineer_value'])
+        context['lld_tools'].append(lld_tool['tool_value'])
+
+    # Documentランキングを取得
+    document_info = sparql.fetch_lld_document_rank(lld_graph_uri)
+    context['document_titles'] = document_info['titles']
+    context['document_links'] = document_info['links']
+    context['document_counts'] = document_info['counts']
+
+    # Engineerランキングを取得
+    engineer_info = sparql.fetch_lld_engineer_rank(lld_graph_uri)
+    context['engineer_names'] = engineer_info['names']
+    context['engineer_links'] = engineer_info['links']
+    context['engineer_counts'] = engineer_info['counts']
+
+    # Toolランキングを取得
+    tool_info = sparql.fetch_lld_tool_rank(lld_graph_uri)
+    context['tool_names'] = tool_info['names']
+    context['tool_links'] = tool_info['links']
+    context['tool_counts'] = tool_info['counts']
 
     return render(request, os.getcwd()+'/templates/checklists/show_pastLLD.html', context)
 

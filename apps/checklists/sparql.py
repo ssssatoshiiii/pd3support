@@ -3,6 +3,12 @@ from rdflib import Graph, RDFS, URIRef, Namespace, RDF, Literal
 import logging
 from django.conf import settings
 
+from ..common import FusekiManagement as fm
+from ..common import DataManagement
+
+fuseki = fm.FusekiManagement(f"http://{settings.DB_DOMAIN}:3030", settings.DATASET)
+data_mgt = DataManagement.DataManagement()
+
 def get_deslist(epType):
     print(settings.DB_DOMAIN)
     query= """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
@@ -1015,3 +1021,782 @@ def get_expansion(action_uri, graph_uri):
         return converted_results[0]["container"]["value"]
     else:
         return ''
+
+def get_gpm_ref_info(graph_uri, node_uri):
+    """ GPMで過去事例情報検索
+
+    Args:
+        graph_uri: グラフuri
+        node_uri: 選択しているノードuri
+
+    Returns:
+        document_result: 知識文書検索結果
+        engineer_result: 技術者検索結果
+        tool_result: ツール検索結果
+
+    """
+    # node valueを取得
+    node_id = node_uri.replace(graph_uri, "")
+    graph_name = "<" + graph_uri + ">"
+    node_value = data_mgt.get_node_value(graph_name, graph_uri, node_id)
+
+    # documentを取得
+    document = fetch_document_gpm(graph_uri, node_value)
+    document_result = {'document_value': ", \n".join(document)}
+
+    # engineerを取得
+    engineer = fetch_engineer_gpm(graph_uri, node_value)
+    engineer_result = {'engineer_value': ", \n".join(engineer)}
+
+    # toolを取得
+    tool = fetch_tool_gpm(graph_uri, node_value)
+    tool_result = {'tool_value': ", \n".join(tool)}
+
+    return document_result, engineer_result, tool_result
+
+def get_lld_ref_info(gpm_graph_uri, gpm_node_uri, lld_graph_uri, lld_node_uri):
+    """ LLDで過去事例情報検索
+
+    Args:
+        gpm_graph_uri: gpmグラフuri
+        gpm_node_uri: gpmノードuri
+        lld_graph_uri: lldグラフuri
+        lld_node_uri: lldノードuri
+
+    Returns:
+        document_result: 知識文書検索結果
+        engineer_result: 技術者検索結果
+        tool_result: ツール検索結果
+
+    """
+    # node valueを取得
+    gpm_node_id = gpm_node_uri.replace(gpm_graph_uri, "")
+    gpm_graph_name = "<" + gpm_graph_uri + ">"
+    gpm_node_value = data_mgt.get_node_value(gpm_graph_name, gpm_graph_uri, gpm_node_id)
+
+    lld_node_id = lld_node_uri.replace(lld_graph_uri, "")
+    lld_graph_name = "<" + lld_graph_uri + ">"
+    lld_node_value = data_mgt.get_node_value(lld_graph_name, lld_graph_uri, lld_node_id)
+
+    # documentを取得
+    document = fetch_document_lld(gpm_graph_uri, gpm_node_value, lld_graph_uri, lld_node_value)
+    document_result = {'document_value': ", \n".join(document)}
+
+    # engineerを取得
+    engineer = fetch_engineer_lld(gpm_graph_uri, gpm_node_value, lld_graph_uri, lld_node_value)
+    engineer_result = {'engineer_value': ", \n".join(engineer)}
+
+    # toolを取得
+    tool = fetch_tool_lld(gpm_graph_uri, gpm_node_value, lld_graph_uri, lld_node_value)
+    tool_result = {'tool_value': ", \n".join(tool)}
+
+    return document_result, engineer_result, tool_result
+
+def fetch_lld_document_rank(graph):
+    """ LLDにある知識文書ランキング検索
+
+    Args:
+        graph: グラフ名
+
+    Returns:
+        document: 知識文書検索結果
+
+    """    
+    query = """
+    PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+    PREFIX d3aki: <http://DigitalTriplet.net/2021/11/ontology/akiyama#>
+    PREFIX d3: <http://digital-triplet.net/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    select ?documentTitle ?documentLink (COUNT(?event) as ?count)
+    where {
+    {
+        GRAPH <"""+graph+""">
+        {
+            ?log_ep pd3:epType "LLD".
+            ?log_action pd3:value ?log_action_name.
+            ?document d3aki:reference ?log_action;
+                    d3aki:documentURI ?documentURI.
+        }
+        GRAPH <http://localhost:3030/akiyama/data/document>
+        {
+            OPTIONAL{?documentURI d3aki:linkTo ?documentLink;
+                                    d3aki:title ?documentTitle}.
+        }
+        GRAPH <http://localhost:3030/akiyama/data/event>
+        {
+            OPTIONAL{?event d3aki:eventType "reference";
+                            d3aki:referTo ?documentURI;
+                            d3aki:referedTo ?log_action}.
+        }
+    }
+    UNION
+    {
+        GRAPH <"""+graph+""">
+        {
+            ?log_ep pd3:epType "LLD".
+            ?log_action pd3:value ?log_action_name.
+            ?document d3aki:reference ?log_action;
+                    d3aki:documentURI ?documentURI.
+        }
+        GRAPH <http://localhost:3030/akiyama/data/document>
+        {
+            OPTIONAL{?documentURI d3aki:linkTo ?documentLink;
+                                d3aki:title ?documentTitle}.
+        }
+    }
+    }
+    group by ?documentTitle ?documentLink
+    order by DESC(?count)
+    """
+
+    results = fuseki.get_fuseki_data_json(query)
+    titles, links, counts = [], [], []
+    document = dict()
+    for result in results:
+        if "documentTitle" in result.keys():
+            titles.append(result["documentTitle"]["value"])
+            links.append(result["documentLink"]["value"])
+            counts.append(result["count"]["value"])
+
+    document['titles'] = titles
+    document['links'] = links
+    document['counts'] = counts
+
+    return document
+
+def fetch_lld_engineer_rank(graph):
+    """ LLDにある技術者ランキング検索
+
+    Args:
+        graph: グラフ名
+
+    Returns:
+        document: 技術者検索結果
+
+    """ 
+    query = """
+    PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+    PREFIX d3aki: <http://DigitalTriplet.net/2021/11/ontology/akiyama#>
+    PREFIX d3: <http://digital-triplet.net/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    select ?engineerName ?engineerLink (COUNT(?event) as ?count)
+    where {
+        {
+            GRAPH <"""+graph+""">
+            {
+                ?log_ep pd3:epType "LLD".
+                ?log_action pd3:value ?log_action_name.
+                ?engineer d3aki:practitioner ?log_action;
+                        d3aki:engineerURI ?engineerURI;
+                        pd3:value ?engineerName.
+            }
+            GRAPH <http://localhost:3030/akiyama/data/engineer>
+            {
+                OPTIONAL{?engineerURI d3aki:linkTo ?engineerLink;
+                                    }.
+            }
+            GRAPH <http://localhost:3030/akiyama/data/event>
+            {
+                OPTIONAL{?event d3aki:eventType "reference";
+                                d3aki:referTo ?engineerURI;
+                                d3aki:referedTo ?log_action}.
+            }
+        }
+        UNION
+        {
+            GRAPH <"""+graph+""">
+            {
+                ?log_ep pd3:epType "LLD".
+                ?log_action pd3:value ?log_action_name.
+                ?engineer d3aki:practitioner ?log_action;
+                        d3aki:engineerURI ?engineerURI;
+                        pd3:value ?engineerName.
+            }
+            GRAPH <http://localhost:3030/akiyama/data/engineer>
+            {
+                OPTIONAL{?engineerURI d3aki:linkTo ?engineerLink;
+                                    }.
+            }
+        }
+    }
+    group by ?engineerName ?engineerLink
+    order by DESC(?count)
+    """
+
+    results = fuseki.get_fuseki_data_json(query)
+    names, links, counts = [], [], []
+    engineer = dict()
+    for result in results:
+        if "engineerName" in result.keys():
+            names.append(result["engineerName"]["value"])
+            links.append(result["engineerLink"]["value"])
+            counts.append(result["count"]["value"])
+
+    engineer['names'] = names
+    engineer['links'] = links
+    engineer['counts'] = counts
+
+    return engineer
+
+def fetch_lld_tool_rank(graph):
+    """ LLDにあるツールランキング検索
+
+    Args:
+        graph: グラフ名
+
+    Returns:
+        document: ツール検索結果
+
+    """
+    query = """
+    PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+    PREFIX d3aki: <http://DigitalTriplet.net/2021/11/ontology/akiyama#>
+    PREFIX d3: <http://digital-triplet.net/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    select ?toolName ?toolLink (COUNT(?event) as ?count)
+    where {
+        {
+            GRAPH <"""+graph+""">
+            {
+                ?log_ep pd3:epType "LLD".
+                ?log_action pd3:value ?log_action_name.
+                ?tool d3aki:practitioner ?log_action;
+                        d3aki:toolURI ?toolURI;
+                        pd3:value ?toolName.
+            }
+            GRAPH <http://localhost:3030/akiyama/data/tool>
+            {
+                OPTIONAL{?toolURI d3aki:linkTo ?toolLink;
+                                    }.
+            }
+            GRAPH <http://localhost:3030/akiyama/data/event>
+            {
+                OPTIONAL{?event d3aki:eventType "reference";
+                                d3aki:referTo ?toolURI;
+                                d3aki:referedTo ?log_action}.
+            }
+        }
+        UNION
+        {
+            GRAPH <"""+graph+""">
+            {
+                ?log_ep pd3:epType "LLD".
+                ?log_action pd3:value ?log_action_name.
+                ?tool d3aki:practitioner ?log_action;
+                        d3aki:toolURI ?toolURI;
+                        pd3:value ?toolName.
+            }
+            GRAPH <http://localhost:3030/akiyama/data/tool>
+            {
+                OPTIONAL{?toolURI d3aki:linkTo ?toolLink;
+                                    }.
+            }
+        }
+    }
+    group by ?toolName ?toolLink
+    order by DESC(?count)
+    """
+
+    results = fuseki.get_fuseki_data_json(query)
+    names, links, counts = [], [], []
+    tool = dict()
+    for result in results:
+        if "toolName" in result.keys():
+            names.append(result["toolName"]["value"])
+            links.append(result["toolLink"]["value"])
+            counts.append(result["count"]["value"])
+
+    tool['names'] = names
+    tool['links'] = links
+    tool['counts'] = counts
+
+    return tool
+
+def fetch_document_gpm(model, action_name):
+    """ GPMで知識文書検索
+
+    Args:
+        model: グラフ名
+        action_name: アクション名
+
+    Returns:
+        document_list: 知識文書検索結果
+
+    """
+    query = """
+    PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+    PREFIX d3aki: <http://DigitalTriplet.net/2021/11/ontology/akiyama#>
+    PREFIX d3: <http://digital-triplet.net/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    select ?documentTitle ?documentLink (COUNT(?event) as ?count)
+    where {
+    {
+        GRAPH <"""+model+""">
+        {
+            ?s pd3:value ?action_name.
+            filter(?action_name = '"""+action_name+"""')
+        }
+        GRAPH ?log
+        {
+            ?log_ep pd3:epType "lld".
+            ?log_action rdfs:seeAlso ?s;
+            pd3:value ?log_action_name.
+                ?document d3aki:reference ?log_action;
+                        d3aki:documentURI ?documentURI.
+        }
+        GRAPH <http://localhost:3030/akiyama/data/document>
+        {
+            OPTIONAL{?documentURI d3aki:linkTo ?documentLink;
+                                    d3aki:title ?documentTitle}.
+        }
+        GRAPH <http://localhost:3030/akiyama/data/event>
+        {
+            OPTIONAL{?event d3aki:eventType "reference";
+                            d3aki:referTo ?documentURI;
+                            d3aki:referedTo ?log_action}.
+        }
+    }
+    UNION
+    {
+        GRAPH <"""+model+""">
+        {
+            ?s pd3:value ?action_name.
+            filter(?action_name = '"""+action_name+"""')
+        }
+        GRAPH ?log
+        {
+            ?log_ep pd3:epType "LLD".
+            ?log_action rdfs:seeAlso ?s;
+            pd3:value ?log_action_name.
+                ?document d3aki:reference ?log_action;
+                        d3aki:documentURI ?documentURI.
+        }
+        GRAPH <http://localhost:3030/akiyama/data/document>
+        {
+            OPTIONAL{?documentURI d3aki:linkTo ?documentLink;
+                                    d3aki:title ?documentTitle}.
+        }
+    }
+    }
+    group by ?documentTitle ?documentLink
+    order by DESC(?count)
+    """
+
+    results = fuseki.get_fuseki_data_json(query)
+    document_list = [] 
+    for result in results:
+        if "documentTitle" in result.keys():
+            document_list.append(result["documentTitle"]["value"])
+
+    return document_list
+
+def fetch_document_lld(gpm_model, gpm_action_name, lld_model, lld_action_name):
+    """ LLDで知識文書検索
+
+    Args:
+        gpm_model: GPMグラフ名
+        gpm_action_name: GPMアクション名
+        lld_model: LLDグラフ名
+        lld_action_name: LLDアクション名
+
+    Returns:
+        document_list: 知識文書検索結果
+
+    """
+    query = """
+    PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+    PREFIX d3aki: <http://DigitalTriplet.net/2021/11/ontology/akiyama#>
+    PREFIX d3: <http://digital-triplet.net/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    select ?documentTitle ?documentLink (COUNT(?event) as ?count)
+    where {
+    {
+        GRAPH <"""+gpm_model+""">
+        {
+            ?s pd3:value ?action_name.
+            filter(?action_name = '"""+gpm_action_name+"""')
+        }
+        GRAPH <"""+lld_model+""">
+        {
+            ?log_ep pd3:epType "lld".
+            ?log_action rdfs:seeAlso ?s;
+            pd3:value ?log_action_name.
+                ?document d3aki:reference ?log_action;
+                        d3aki:documentURI ?documentURI.
+            filter(?log_action_name = '"""+lld_action_name+"""')
+        }
+        GRAPH <http://localhost:3030/akiyama/data/document>
+        {
+            OPTIONAL{?documentURI d3aki:linkTo ?documentLink;
+                                    d3aki:title ?documentTitle}.
+        }
+        GRAPH <http://localhost:3030/akiyama/data/event>
+        {
+            OPTIONAL{?event d3aki:eventType "reference";
+                            d3aki:referTo ?documentURI;
+                            d3aki:referedTo ?log_action}.
+        }
+    }
+    UNION
+    {
+        GRAPH <"""+gpm_model+""">
+        {
+            ?s pd3:value ?action_name.
+            filter(?action_name = '"""+gpm_action_name+"""')
+        }
+        GRAPH <"""+lld_model+""">
+        {
+            ?log_ep pd3:epType "LLD".
+            ?log_action rdfs:seeAlso ?s;
+            pd3:value ?log_action_name.
+                ?document d3aki:reference ?log_action;
+                        d3aki:documentURI ?documentURI.
+            filter(?log_action_name = '"""+lld_action_name+"""')
+        }
+        GRAPH <http://localhost:3030/akiyama/data/document>
+        {
+            OPTIONAL{?documentURI d3aki:linkTo ?documentLink;
+                                    d3aki:title ?documentTitle}.
+        }
+    }
+    }
+    group by ?documentTitle ?documentLink
+    order by DESC(?count)
+    """
+
+    results = fuseki.get_fuseki_data_json(query)
+    document_list = []
+    for result in results:
+        if "documentTitle" in result.keys():
+            document_list.append(result["documentTitle"]["value"])
+
+    return document_list
+
+def fetch_engineer_gpm(model, action_name):
+    """ GPMで技術者検索
+
+    Args:
+        model: グラフ名
+        action_name: アクション名
+
+    Returns:
+        engineer_list: 技術者検索結果
+
+    """
+    query = """
+    PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+    PREFIX d3aki: <http://DigitalTriplet.net/2021/11/ontology/akiyama#>
+    PREFIX d3: <http://digital-triplet.net/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    select ?log ?log_action ?log_action_name ?engineer ?engineerName ?engineerLink (COUNT(?event) as ?count)
+    where {
+        {
+        GRAPH <"""+model+""">
+        {
+            ?s pd3:value ?action_name.
+            filter(?action_name = '"""+action_name+"""')
+        }
+        GRAPH ?log
+        {
+            ?log_ep pd3:epType "LLD".
+            ?log_action rdfs:seeAlso ?s;
+            pd3:value ?log_action_name.
+            ?engineer d3aki:practitioner ?log_action;
+                        d3aki:engineerURI ?engineerURI;
+                        pd3:value ?engineerName.
+        }
+        GRAPH <http://localhost:3030/akiyama/data/engineer>
+        {
+            OPTIONAL{?engineerURI d3aki:linkTo ?engineerLink;
+                                }.
+        }
+        GRAPH <http://localhost:3030/akiyama/data/event>
+        {
+            OPTIONAL{?event d3aki:eventType "reference";
+                            d3aki:referTo ?engineerURI;
+                            d3aki:referedTo ?log_action}.
+        }
+        }
+        UNION
+        {
+        GRAPH <"""+model+""">
+        {
+            ?s pd3:value ?action_name.
+            filter(?action_name = '"""+action_name+"""')
+        }
+        GRAPH ?log
+        {
+            ?log_ep pd3:epType "LLD".
+            ?log_action rdfs:seeAlso ?s;
+            pd3:value ?log_action_name.
+            ?engineer d3aki:practitioner ?log_action;
+                        d3aki:engineerURI ?engineerURI;
+                        pd3:value ?engineerName.
+        }
+        GRAPH <http://localhost:3030/akiyama/data/engineer>
+        {
+            OPTIONAL{?engineerURI d3aki:linkTo ?engineerLink;
+                                }.
+        }
+        }
+    }
+    group by ?log ?log_action ?log_action_name ?engineer ?engineerName ?engineerLink
+    order by DESC(?count)
+    """
+    results = fuseki.get_fuseki_data_json(query)
+    engineer_list = []
+    for result in results:
+        if "engineerName" in result.keys():
+            engineer_list.append(result["engineerName"]["value"])
+    return engineer_list
+
+def fetch_engineer_lld(gpm_model, gpm_action_name, lld_model, lld_action_name):
+    """ LLDで技術者検索
+
+    Args:
+        gpm_model: GPMグラフ名
+        gpm_action_name: GPMアクション名
+        lld_model: LLDグラフ名
+        lld_action_name: LLDアクション名
+
+    Returns:
+        engineer_list: 技術者検索結果
+
+    """
+    query = """
+    PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+    PREFIX d3aki: <http://DigitalTriplet.net/2021/11/ontology/akiyama#>
+    PREFIX d3: <http://digital-triplet.net/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    select ?log ?log_action ?log_action_name ?engineer ?engineerName ?engineerLink (COUNT(?event) as ?count)
+    where {
+        {
+        GRAPH <"""+gpm_model+""">
+        {
+            ?s pd3:value ?action_name.
+            filter(?action_name = '"""+gpm_action_name+"""')
+        }
+        GRAPH <"""+lld_model+""">
+        {
+            ?log_ep pd3:epType "LLD".
+            ?log_action rdfs:seeAlso ?s;
+            pd3:value ?log_action_name.
+            ?engineer d3aki:practitioner ?log_action;
+                        d3aki:engineerURI ?engineerURI;
+                        pd3:value ?engineerName.
+            filter(?log_action_name = '"""+lld_action_name+"""')
+        }
+        GRAPH <http://localhost:3030/akiyama/data/engineer>
+        {
+            OPTIONAL{?engineerURI d3aki:linkTo ?engineerLink;
+                                }.
+        }
+        GRAPH <http://localhost:3030/akiyama/data/event>
+        {
+            OPTIONAL{?event d3aki:eventType "reference";
+                            d3aki:referTo ?engineerURI;
+                            d3aki:referedTo ?log_action}.
+        }
+        }
+        UNION
+        {
+        GRAPH <"""+gpm_model+""">
+        {
+            ?s pd3:value ?action_name.
+            filter(?action_name = '"""+gpm_action_name+"""')
+        }
+        GRAPH <"""+lld_model+""">
+        {
+            ?log_ep pd3:epType "LLD".
+            ?log_action rdfs:seeAlso ?s;
+            pd3:value ?log_action_name.
+            ?engineer d3aki:practitioner ?log_action;
+                        d3aki:engineerURI ?engineerURI;
+                        pd3:value ?engineerName.
+            filter(?log_action_name = '"""+lld_action_name+"""')
+        }
+        GRAPH <http://localhost:3030/akiyama/data/engineer>
+        {
+            OPTIONAL{?engineerURI d3aki:linkTo ?engineerLink;
+                                }.
+        }
+        }
+    }
+    group by ?log ?log_action ?log_action_name ?engineer ?engineerName ?engineerLink
+    order by DESC(?count)
+    """
+    results = fuseki.get_fuseki_data_json(query)
+    engineer_list = []
+    for result in results:
+        if "engineerName" in result.keys():
+            engineer_list.append(result["engineerName"]["value"])
+    return engineer_list
+
+def fetch_tool_gpm(model, action_name):
+    """ GPMでツール検索
+
+    Args:
+        model: グラフ名
+        action_name: アクション名
+
+    Returns:
+        tool_list: ツール検索結果
+
+    """
+    query = """
+    PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+    PREFIX d3aki: <http://DigitalTriplet.net/2021/11/ontology/akiyama#>
+    PREFIX d3: <http://digital-triplet.net/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    select ?log ?log_action ?log_action_name ?tool ?toolName ?toolLink (COUNT(?event) as ?count)
+    where {
+        {
+        GRAPH <"""+model+""">
+        {
+            ?s pd3:value ?action_name.
+            filter(?action_name = '"""+action_name+"""')
+        }
+        GRAPH ?log
+        {
+            ?log_ep pd3:epType "LLD".
+            ?log_action rdfs:seeAlso ?s;
+            pd3:value ?log_action_name.
+            ?tool d3aki:practitioner ?log_action;
+                        d3aki:toolURI ?toolURI;
+                        pd3:value ?toolName.
+        }
+        GRAPH <http://localhost:3030/akiyama/data/tool>
+        {
+            OPTIONAL{?toolURI d3aki:linkTo ?toolLink;
+                                }.
+        }
+        GRAPH <http://localhost:3030/akiyama/data/event>
+        {
+            OPTIONAL{?event d3aki:eventType "reference";
+                            d3aki:referTo ?toolURI;
+                            d3aki:referedTo ?log_action}.
+        }
+        }
+        UNION
+        {
+        GRAPH <"""+model+""">
+        {
+            ?s pd3:value ?action_name.
+            filter(?action_name = '"""+action_name+"""')
+        }
+        GRAPH ?log
+        {
+            ?log_ep pd3:epType "LLD".
+            ?log_action rdfs:seeAlso ?s;
+            pd3:value ?log_action_name.
+            ?tool d3aki:practitioner ?log_action;
+                        d3aki:toolURI ?toolURI;
+                        pd3:value ?toolName.
+        }
+        GRAPH <http://localhost:3030/akiyama/data/tool>
+        {
+            OPTIONAL{?toolURI d3aki:linkTo ?toolLink;
+                                }.
+        }
+        }
+    }
+    group by ?log ?log_action ?log_action_name ?tool ?toolName ?toolLink
+    order by DESC(?count)
+    """
+    results = fuseki.get_fuseki_data_json(query)
+    tool_list = []
+    for result in results:
+        if "toolName" in result.keys():
+            tool_list.append(result["toolName"]["value"])
+    return tool_list
+
+def fetch_tool_lld(gpm_model, gpm_action_name, lld_model, lld_action_name):
+    """ LLDでツール検索
+
+    Args:
+        gpm_model: GPMグラフ名
+        gpm_action_name: GPMアクション名
+        lld_model: LLDグラフ名
+        lld_action_name: LLDアクション名
+
+    Returns:
+        tool_list: ツール検索結果
+
+    """
+    query = """
+    PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+    PREFIX d3aki: <http://DigitalTriplet.net/2021/11/ontology/akiyama#>
+    PREFIX d3: <http://digital-triplet.net/>
+    PREFIX dcterms: <http://purl.org/dc/terms/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    select ?log ?log_action ?log_action_name ?tool ?toolName ?toolLink (COUNT(?event) as ?count)
+    where {
+        {
+        GRAPH <"""+gpm_model+""">
+        {
+            ?s pd3:value ?action_name.
+            filter(?action_name = '"""+gpm_action_name+"""')
+        }
+        GRAPH <"""+lld_model+""">
+        {
+            ?log_ep pd3:epType "LLD".
+            ?log_action rdfs:seeAlso ?s;
+            pd3:value ?log_action_name.
+            ?tool d3aki:practitioner ?log_action;
+                        d3aki:toolURI ?toolURI;
+                        pd3:value ?toolName.
+            filter(?log_action_name = '"""+lld_action_name+"""')
+        }
+        GRAPH <http://localhost:3030/akiyama/data/tool>
+        {
+            OPTIONAL{?toolURI d3aki:linkTo ?toolLink;
+                                }.
+        }
+        GRAPH <http://localhost:3030/akiyama/data/event>
+        {
+            OPTIONAL{?event d3aki:eventType "reference";
+                            d3aki:referTo ?toolURI;
+                            d3aki:referedTo ?log_action}.
+        }
+        }
+        UNION
+        {
+        GRAPH <"""+gpm_model+""">
+        {
+            ?s pd3:value ?action_name.
+            filter(?action_name = '"""+gpm_action_name+"""')
+        }
+        GRAPH <"""+lld_model+""">
+        {
+            ?log_ep pd3:epType "LLD".
+            ?log_action rdfs:seeAlso ?s;
+            pd3:value ?log_action_name.
+            ?tool d3aki:practitioner ?log_action;
+                        d3aki:toolURI ?toolURI;
+                        pd3:value ?toolName.
+            filter(?log_action_name = '"""+lld_action_name+"""')
+        }
+        GRAPH <http://localhost:3030/akiyama/data/tool>
+        {
+            OPTIONAL{?engineerURI d3aki:linkTo ?toolLink;
+                                }.
+        }
+        }
+    }
+    group by ?log ?log_action ?log_action_name ?tool ?toolName ?toolLink
+    order by DESC(?count)
+    """
+    results = fuseki.get_fuseki_data_json(query)
+    tool_list = []
+    for result in results:
+        if "toolName" in result.keys():
+            tool_list.append(result["toolName"]["value"])
+    return tool_list

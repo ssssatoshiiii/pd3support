@@ -71,6 +71,7 @@
                 <input type="image" class="ml-0 mr-1" src="{% static 'checklists/images/database.png'%}" width="24" height="24">
                 <input type="hidden" name="action_uri" value='{{action_uri}}'>
                 <input type="hidden" name="gpm_graph_uri" value='{{gpm_graph_uri}}'>
+                <input type="hidden" name="lld_graph_uri" value='{{lld_graph_uri}}'>
               </form>
               <!-- <img class="ml-0 mr-0" src="{% static 'checklists/images/icon_135090_256.png'%}" alt="" width="22" height="22" onclick="add_action_form(this.parentNode.id, '{{action}}')"/> -->
               <form action="{%url 'checklists:add_action' %}" method='POST' width="200" height="200">
