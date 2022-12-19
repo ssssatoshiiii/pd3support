@@ -300,7 +300,11 @@ def add_LLD_metainfo(request):
     return JsonResponse(a)
 
 #actionおよびその詳細内容を更新する
-def add_LLD_tofuseki(action_uri, action, intention, toolknowledge, annotation, rationale, output, gpm_graph_uri, lld_graph_uri):
+def add_LLD_tofuseki(action_uri, action, intention, toolknowledge, annotation, rationale, output, document, engineer, tool, gpm_graph_uri, lld_graph_uri):
+
+    new_document = []
+    new_engineer = []
+    new_tool = []
 
     #fusekiへの追加
     sp = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/update")
@@ -309,16 +313,43 @@ def add_LLD_tofuseki(action_uri, action, intention, toolknowledge, annotation, r
     sp.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
     rdf = Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
     pd3= Namespace('http://DigitalTriplet.net/2021/08/ontology#')
+    d3aki = Namespace('http://DigitalTriplet.net/2021/11/ontology/akiyama#')
+    doc_graph_uri = "http://localhost:3030/akiyama/data/document"
+    gpm_action_uri = sparql.get_gpm_action(action_uri, gpm_graph_uri)
 
     action_result, intention_result, toolknowledge_result, annotation_result, rationale_result, output_result = sparql.action_supinfo(action_uri, lld_graph_uri)
-    
-    print(output_result)
+    document_result, engineer_result, tool_result = sparql.get_lld_ref_info(gpm_graph_uri, gpm_action_uri, lld_graph_uri, action_uri)
+
+    # 複数データある場合
+    if(len(document) != 0 and ',' in document):
+        new_document = document.split(', \n')
+    else:
+        new_document.append(document)
+
+    if(len(engineer) != 0 and ',' in engineer):
+        new_engineer= engineer.split(', \n')
+    else:
+        new_engineer.append(engineer)
+
+    if(len(tool) != 0 and ',' in tool):
+        new_tool = tool.split(', \n')
+    else:
+        new_tool.append(tool)
+
     delete_data = [[URIRef(action_result['action_uri']), pd3.value, Literal(action_result['action_value'])],
     [URIRef(intention_result['intention_uri']), pd3.value, Literal(intention_result['intention_value'])],
     [URIRef(toolknowledge_result['toolknowledge_uri']), pd3.value, Literal(toolknowledge_result['toolknowledge_value'])],
     [URIRef(annotation_result['annotation_uri']), pd3.value, Literal(annotation_result['annotation_value'])],
     [URIRef(rationale_result['rationale_uri']), pd3.value, Literal(rationale_result['rationale_value'])],
     [URIRef(output_result['output_uri']), pd3.value, Literal(output_result['output_value'])]]
+
+    # engineer, tool更新データ用意
+    # 削除データ
+    for index, data in enumerate(engineer_result['engineer_uri']):
+        delete_data.append([URIRef(data), pd3.value, Literal(engineer_result['engineer_value'][index])])
+
+    for index, data in enumerate(tool_result['tool_uri']):
+        delete_data.append([URIRef(data), pd3.value, Literal(tool_result['tool_value'][index])])
 
     insert_data = [[URIRef(action_result['action_uri']), pd3.value, Literal(action)],
     [URIRef(intention_result['intention_uri']), pd3.value, Literal(intention)],
@@ -327,8 +358,29 @@ def add_LLD_tofuseki(action_uri, action, intention, toolknowledge, annotation, r
     [URIRef(rationale_result['rationale_uri']), pd3.value, Literal(rationale)],
     [URIRef(output_result['output_uri']), pd3.value, Literal(output)]]
 
+    # 追加データ
+    for index, data in enumerate(engineer_result['engineer_uri']):
+        insert_data.append([URIRef(data), pd3.value, Literal(new_engineer[index])])
+
+    for index, data in enumerate(tool_result['tool_uri']):
+        insert_data.append([URIRef(data), pd3.value, Literal(new_tool[index])])
+
+    # document更新データ用意
+    deldata_doc = []
+    insertdata_doc = []
+    # 削除データ
+    for index, data in enumerate(document_result['document_uri']):
+        deldata_doc.append([URIRef(data), d3aki.title, Literal(document_result['document_value'][index])])
+    # 追加データ
+    for index, data in enumerate(document_result['document_uri']):
+        insertdata_doc.append([URIRef(data), d3aki.title, Literal(new_document[index])])
+
+    # 共通用
     g_delete = Graph()
     g_insert = Graph()
+    # document用
+    g_del_doc = Graph()
+    d_insert_doc = Graph()
     RdfUtils.add_list_to_graph(g_delete, delete_data)
     spo_str_delete = '\n'.join(
         [f'{s.n3()} {p.n3()} {o.n3()}.' for (s, p, o) in g_delete]
@@ -336,6 +388,14 @@ def add_LLD_tofuseki(action_uri, action, intention, toolknowledge, annotation, r
     RdfUtils.add_list_to_graph(g_insert, insert_data)
     spo_str_insert = '\n'.join(
         [f'{s.n3()} {p.n3()} {o.n3()}.' for (s, p, o) in g_insert]
+    )
+    RdfUtils.add_list_to_graph(g_del_doc, deldata_doc)
+    spo_str_delete_doc = '\n'.join(
+        [f'{s.n3()} {p.n3()} {o.n3()}.' for (s, p, o) in g_del_doc]
+    )
+    RdfUtils.add_list_to_graph(d_insert_doc, insertdata_doc)
+    spo_str_insert_doc = '\n'.join(
+        [f'{s.n3()} {p.n3()} {o.n3()}.' for (s, p, o) in d_insert_doc]
     )
 
     query= """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
@@ -347,6 +407,14 @@ def add_LLD_tofuseki(action_uri, action, intention, toolknowledge, annotation, r
 
             INSERT DATA{
             GRAPH<""" + lld_graph_uri + """>{""" + spo_str_insert +"""}
+            };
+
+            DELETE DATA{
+            GRAPH<"""+ doc_graph_uri +""">{""" + spo_str_delete_doc + """}
+            };
+
+            INSERT DATA{
+            GRAPH<""" + doc_graph_uri + """>{""" + spo_str_insert_doc +"""}
             }"""
     sp.setQuery(query)
     query_result = sp.query()

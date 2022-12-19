@@ -278,9 +278,9 @@ def action_supinfo_show(request):
             context['lld_annotation'] = lld_annotation['annotation_value']
             context['lld_rationale'] = lld_rationale['rationale_value']
             context['lld_output'] = lld_output['output_value']
-            context['lld_document'] = lld_document['document_value']
-            context['lld_engineer'] = lld_engineer['engineer_value']
-            context['lld_tool'] = lld_tool['tool_value']
+            context['lld_document'] = ", \n".join(lld_document['document_value'])
+            context['lld_engineer'] = ", \n".join(lld_engineer['engineer_value'])
+            context['lld_tool'] = ", \n".join(lld_tool['tool_value'])
 
         return render(request, os.getcwd()+'/templates/checklists/action_supinfo.html', context)
 
@@ -305,9 +305,9 @@ def edit_action(request):
         context['lld_annotation'] = lld_annotation['annotation_value']
         context['lld_rationale'] = lld_rationale['rationale_value']
         context['lld_output'] = lld_output['output_value']
-        context['lld_document'] = lld_document['document_value']
-        context['lld_engineer'] = lld_engineer['engineer_value']
-        context['lld_tool'] = lld_tool['tool_value']
+        context['lld_document'] = ", \n".join(lld_document['document_value'])
+        context['lld_engineer'] = ", \n".join(lld_engineer['engineer_value'])
+        context['lld_tool'] = ", \n".join(lld_tool['tool_value'])
 
         #GPMのsupinfoの情報取得
         if(gpm_action_uri != ''):
@@ -339,8 +339,11 @@ def add_LLD(request):
         rationale = request.POST.get('rationale')
         output = request.POST.get('output')
         flag = request.POST.get('flag')
+        document = request.POST.get('document')
+        engineer = request.POST.get('engineer')
+        tool = request.POST.get('tool')
 
-        sparql_update.add_LLD_tofuseki(action_uri, action, intention, toolknowledge, annotation, rationale, output, gpm_graph_uri, lld_graph_uri)
+        sparql_update.add_LLD_tofuseki(action_uri, action, intention, toolknowledge, annotation, rationale, output, document, engineer, tool, gpm_graph_uri, lld_graph_uri)
         if(flag == "gonext"):
             sparql_update.add_done_action(action_uri, lld_graph_uri)
             done_hieractions = sparql.get_done_hieraction(action_uri, lld_graph_uri)
@@ -410,9 +413,9 @@ def show_pastLLD(request):
         context['lld_annotations'].append(lld_annotation['annotation_value'])
         context['lld_rationales'].append(lld_rationale['rationale_value'])
         context['lld_outputs'].append(lld_output['output_value'])
-        context['lld_documents'].append(lld_document['document_value'])
-        context['lld_engineers'].append(lld_engineer['engineer_value'])
-        context['lld_tools'].append(lld_tool['tool_value'])
+        context['lld_documents'].append(", \n".join(lld_document['document_value']))
+        context['lld_engineers'].append(", \n".join(lld_engineer['engineer_value']))
+        context['lld_tools'].append(", \n".join(lld_tool['tool_value']))
 
     # Documentランキングを取得
     document_info = sparql.fetch_lld_document_rank(lld_graph_uri)

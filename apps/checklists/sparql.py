@@ -736,8 +736,8 @@ def get_nextaction(action_uri, graph_uri):
             """
             sparql1 = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
             sparql1.setQuery(query1)
-            sparql.setHTTPAuth(BASIC)
-            sparql.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
+            sparql1.setHTTPAuth(BASIC)
+            sparql1.setCredentials(settings.FUSEKI_ID, settings.FUSEKI_PW)
             sparql1.setReturnFormat(JSON)
             converted_results1 = sparql1.query().convert()["results"]["bindings"]
             
@@ -1080,17 +1080,14 @@ def get_lld_ref_info(gpm_graph_uri, gpm_node_uri, lld_graph_uri, lld_node_uri):
 
     # documentを取得
     document = fetch_document_lld(gpm_graph_uri, gpm_node_value, lld_graph_uri, lld_node_value)
-    document_result = {'document_value': ", \n".join(document)}
 
     # engineerを取得
     engineer = fetch_engineer_lld(gpm_graph_uri, gpm_node_value, lld_graph_uri, lld_node_value)
-    engineer_result = {'engineer_value': ", \n".join(engineer)}
 
     # toolを取得
     tool = fetch_tool_lld(gpm_graph_uri, gpm_node_value, lld_graph_uri, lld_node_value)
-    tool_result = {'tool_value': ", \n".join(tool)}
 
-    return document_result, engineer_result, tool_result
+    return document, engineer, tool
 
 def fetch_lld_document_rank(graph):
     """ LLDにある知識文書ランキング検索
@@ -1413,7 +1410,7 @@ def fetch_document_lld(gpm_model, gpm_action_name, lld_model, lld_action_name):
     PREFIX d3: <http://digital-triplet.net/>
     PREFIX dcterms: <http://purl.org/dc/terms/>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    select ?documentTitle ?documentLink (COUNT(?event) as ?count)
+    select ?documentURI ?documentTitle ?documentLink (COUNT(?event) as ?count)
     where {
     {
         GRAPH <"""+gpm_model+""">
@@ -1465,17 +1462,22 @@ def fetch_document_lld(gpm_model, gpm_action_name, lld_model, lld_action_name):
         }
     }
     }
-    group by ?documentTitle ?documentLink
+    group by ?documentURI ?documentTitle ?documentLink
     order by DESC(?count)
     """
 
     results = fuseki.get_fuseki_data_json(query)
-    document_list = []
+    document = {}
+    uri_list = []
+    title_list = []
+
     for result in results:
         if "documentTitle" in result.keys():
-            document_list.append(result["documentTitle"]["value"])
+            uri_list.append(result["documentURI"]["value"])
+            title_list.append(result["documentTitle"]["value"])
 
-    return document_list
+    document = {'document_uri': uri_list, 'document_value': title_list}
+    return document
 
 def fetch_engineer_gpm(model, action_name):
     """ GPMで技術者検索
@@ -1633,11 +1635,16 @@ def fetch_engineer_lld(gpm_model, gpm_action_name, lld_model, lld_action_name):
     order by DESC(?count)
     """
     results = fuseki.get_fuseki_data_json(query)
-    engineer_list = []
+    engineer = {}
+    uri_list = []
+    name_list = []
     for result in results:
         if "engineerName" in result.keys():
-            engineer_list.append(result["engineerName"]["value"])
-    return engineer_list
+            uri_list.append(result["engineer"]["value"])
+            name_list.append(result["engineerName"]["value"])
+
+    engineer = {'engineer_uri': uri_list, 'engineer_value': name_list}
+    return engineer
 
 def fetch_tool_gpm(model, action_name):
     """ GPMでツール検索
@@ -1795,8 +1802,13 @@ def fetch_tool_lld(gpm_model, gpm_action_name, lld_model, lld_action_name):
     order by DESC(?count)
     """
     results = fuseki.get_fuseki_data_json(query)
-    tool_list = []
+    tool = {}
+    uri_list = []
+    name_list = []
     for result in results:
         if "toolName" in result.keys():
-            tool_list.append(result["toolName"]["value"])
-    return tool_list
+            uri_list.append(result["tool"]["value"])
+            name_list.append(result["toolName"]["value"])
+
+    tool = {'tool_uri': uri_list, 'tool_value': name_list}
+    return tool

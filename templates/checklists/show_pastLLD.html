@@ -102,21 +102,36 @@
   <table style="width:100%;" border="1">
     <tr>
       <th style="width:20%;">知識文書タイトル</th>
-      {% for doc_title in document_titles %}
-      <td style="word-break:break-all;">{{doc_title}}</td>
-      {% endfor %}
+        <!--検索結果が空の場合-->
+        {% if not document_titles %}
+          <td></td>
+        {% else %}
+          {% for doc_title in document_titles %}
+          <td style="word-break:break-all;">{{doc_title}}</td>
+          {% endfor %}
+        {% endif %}
     </tr>
     <tr>
       <th style="width:20%;">リンク</th>
-      {% for doc_link in document_links %}
-      <td style="word-break:break-all;">{{doc_link}}</td>
-      {% endfor %}
+        <!--検索結果が空の場合-->
+        {% if not document_links %}
+          <td></td>
+        {% else %}
+          {% for doc_link in document_links %}
+          <td style="word-break:break-all;">{{doc_link}}</td>
+          {% endfor %}
+        {% endif %}
     </tr>
     <tr>
       <th style="width:20%;">参照回数</th>
-      {% for doc_count in document_counts %}
-      <td style="word-break:break-all;">{{doc_count}}</td>
-      {% endfor %}
+        <!--検索結果が空の場合-->
+        {% if not document_counts %}
+          <td></td>
+        {% else %}
+          {% for doc_count in document_counts %}
+          <td style="word-break:break-all;">{{doc_count}}</td>
+          {% endfor %}
+        {% endif %}   
     </tr>
   </table>
 </div>
@@ -126,21 +141,36 @@
   <table style="width:100%;" border="1">
     <tr>
       <th style="width:20%;">技術者</th>
-      {% for eng_name in engineer_names %}
-      <td style="word-break:break-all;">{{eng_name}}</td>
-      {% endfor %}
+        <!--検索結果が空の場合-->
+        {% if not engineer_names %}
+          <td></td>
+        {% else %}
+          {% for eng_name in engineer_names %}
+          <td style="word-break:break-all;">{{eng_name}}</td>
+          {% endfor %}
+        {% endif %}
     </tr>
     <tr>
       <th style="width:20%;">リンク</th>
-      {% for eng_link in engineer_links %}
-      <td style="word-break:break-all;">{{eng_link}}</td>
-      {% endfor %}
+        <!--検索結果が空の場合-->
+        {% if not engineer_links %}
+          <td></td>
+        {% else %}
+          {% for eng_link in engineer_links %}
+          <td style="word-break:break-all;">{{eng_link}}</td>
+          {% endfor %}
+        {% endif %}
     </tr>
     <tr>
       <th style="width:20%;">参照回数</th>
-      {% for eng_count in engineer_counts %}
-      <td style="word-break:break-all;">{{eng_count}}</td>
-      {% endfor %}
+        <!--検索結果が空の場合-->
+        {% if not engineer_counts %}
+          <td></td>
+        {% else %}
+          {% for eng_count in engineer_counts %}
+          <td style="word-break:break-all;">{{eng_count}}</td>
+          {% endfor %}
+        {% endif %}
     </tr>
   </table>
 </div>
@@ -150,21 +180,36 @@
   <table style="width:100%;" border="1">
     <tr>
       <th style="width:20%;">ツール名</th>
-      {% for tool_name in tool_names %}
-      <td style="word-break:break-all;">{{tool_name}}</td>
-      {% endfor %}
+        <!--tool検索結果が空の場合-->
+        {% if not tool_names %}
+          <td></td>
+        {% else %}
+          {% for tool_name in tool_names %}
+          <td style="word-break:break-all;">{{tool_name}}</td>
+          {% endfor %}
+        {% endif %} 
     </tr>
     <tr>
       <th style="width:20%;">リンク</th>
-      {% for tool_link in tool_links %}
-      <td style="word-break:break-all;">{{tool_link}}</td>
-      {% endfor %}
+        <!--tool検索結果が空の場合-->
+        {% if not tool_links %}
+          <td></td>
+        {% else %}
+          {% for tool_link in tool_links %}
+          <td style="word-break:break-all;">{{tool_link}}</td>
+          {% endfor %}
+        {% endif %}   
     </tr>
     <tr>
       <th style="width:20%;">参照回数</th>
-      {% for tool_count in tool_counts %}
-      <td style="word-break:break-all;">{{tool_count}}</td>
-      {% endfor %}
+        <!--tool検索結果が空の場合-->
+        {% if not tool_counts %}
+          <td></td>
+        {% else %}
+          {% for tool_count in tool_counts %}
+          <td style="word-break:break-all;">{{tool_count}}</td>
+          {% endfor %}
+        {% endif %}    
     </tr>
   </table>
 </div>

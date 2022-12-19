@@ -43,29 +43,31 @@
             <tr>
                 <th style="writing-mode:horizontal-tb;">Document</th>
                 <td><textarea rows="5" style="background-color:aliceblue;overflow:auto;" readonly>{{gpm_document}}</textarea></td>
-                <td><textarea rows="5" style="overflow:auto;" name="lld_output">{{lld_document}}</textarea></td>
+                <td><textarea rows="5" style="overflow:auto;" name="lld_document">{{lld_document}}</textarea></td>
             </tr>
             <tr>
                 <th style="writing-mode:horizontal-tb;">Engineer</th>
                 <td><textarea rows="5" style="background-color:aliceblue;overflow:auto;" readonly>{{gpm_engineer}}</textarea></td>
-                <td><textarea rows="5" style="overflow:auto;" name="lld_output">{{lld_engineer}}</textarea></td>
+                <td><textarea rows="5" style="overflow:auto;" name="lld_engineer">{{lld_engineer}}</textarea></td>
             </tr>
             <tr>
                 <th style="writing-mode:horizontal-tb;">Tool</th>
                 <td><textarea rows="5" style="background-color:aliceblue;overflow:auto;" readonly>{{gpm_tool}}</textarea></td>
-                <td><textarea rows="5" style="overflow:auto;" name="lld_output">{{lld_tool}}</textarea></td>
+                <td><textarea rows="5" style="overflow:auto;" name="lld_tool">{{lld_tool}}</textarea></td>
             </tr>
         </table>
         <div class="container text-center" style="display:flex;justify-content: space-evenly;">
-            <input type="button" value="一時登録" onclick = "add_LLD_stay(lld_action, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output, '{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
-            <input type="button" value="登録して次のアクションへ" onclick = "add_LLD_gonext(lld_action, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output, '{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
+            <input type="button" value="一時登録" onclick = "add_LLD_stay(lld_action, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output, lld_document, lld_engineer, lld_tool,'{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
+            <input type="button" value="登録して次のアクションへ" onclick = "add_LLD_gonext(lld_action, lld_intention, lld_toolknowledge, lld_annotation, lld_rationale, lld_output, lld_document, lld_engineer, lld_tool, '{{action_uri}}', '{{gpm_graph_uri}}', '{{lld_graph_uri}}')"/>
         </div>
         <input type="hidden" name="chosen_action_uri" value="{{action_uri}}" >
     </form>
 </div>
 <script>
-    function add_LLD_stay(action, intention, toolknowledge, annotation, rationale, output, action_uri, gpm_graph_uri, lld_graph_uri){
-        data = {action_uri:action_uri, action:action.value, intention:intention.value, toolknowledge:toolknowledge.value, annotation:annotation.value, rationale:rationale.value, output:output.value, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri, flag:"stay"}
+    function add_LLD_stay(action, intention, toolknowledge, annotation, rationale, output, document, engineer, tool, action_uri, gpm_graph_uri, lld_graph_uri){
+        data = {action_uri:action_uri, action:action.value, intention:intention.value, toolknowledge:toolknowledge.value, annotation:annotation.value, rationale:rationale.value, output:output.value, 
+            document:document.value, engineer:engineer.value, tool:tool.value,
+            gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri, flag:"stay"}
         $.ajax({
             type: 'POST',
             url: 'add_LLD',
@@ -74,8 +76,10 @@
         })
     }
 
-    function add_LLD_gonext(action, intention, toolknowledge, annotation, rationale, output, action_uri, gpm_graph_uri, lld_graph_uri){
-        data = {action_uri:action_uri, action:action.value, intention:intention.value, toolknowledge:toolknowledge.value, annotation:annotation.value, rationale:rationale.value, output:output.value, gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri, flag:"gonext"}
+    function add_LLD_gonext(action, intention, toolknowledge, annotation, rationale, output, document, engineer, tool, action_uri, gpm_graph_uri, lld_graph_uri){
+        data = {action_uri:action_uri, action:action.value, intention:intention.value, toolknowledge:toolknowledge.value, annotation:annotation.value, rationale:rationale.value, output:output.value, 
+            document:document.value, engineer:engineer.value, tool:tool.value,
+            gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri, flag:"gonext"}
 
         $.ajax({
             type: 'POST',
