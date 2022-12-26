@@ -82,48 +82,74 @@
         .done(function(response){
             let objData = JSON.parse(response);
             let next_action_uri = objData.next_action_uri;
-            let loopcondition = objData.loopcondition
-            var loopcondition1 = [];
-            let loopnext = objData.loopnext
-            for(let i = 0; i < loopcondition.length; i++){
-                loopcondition1.push(loopcondition[i].replace("[loop]", ""));
-                loopcondition1[i] = "「" + loopcondition1[i].substring(loopcondition1[i].indexOf("[IF")+3, loopcondition1[i].indexOf("]")) + "」　こちらに該当する場合は" + i + "を入力 \n"
-                // loopcondition1.push(loopcondition[i].replace("[loop]", "").replace("[IF", "").replace("]", "")+ " 該当する場合は"+ i + "を入力")
+            let ifcondition = objData.ifcondition
+            var ifcondition1 = [];
+            let ifnext = objData.ifnext
+            let control = objData.control
+            for(let i = 0; i < ifcondition.length; i++){
+                ifcondition1.push(ifcondition[i].replace("[loop]", ""));
+                ifcondition1[i] = "「" + ifcondition1[i].substring(ifcondition1[i].indexOf("[IF")+3, ifcondition1[i].indexOf("]")) + "」　こちらに該当する場合は" + i + "を入力 \n"
+                // ifcondition1.push(ifcondition[i].replace("[loop]", "").replace("[IF", "").replace("]", "")+ " 該当する場合は"+ i + "を入力")
             }
 
-            if(loopcondition.length != 0){
-                var condition_result = prompt(loopcondition1);
-                if(condition_result < loopcondition.length && condition_result >= 0){
-
-                    if(loopcondition[condition_result].includes("[loop]") == false){
-                        console.log(next_action_uri);
-                        second(next_action_uri, gpm_graph_uri, lld_graph_uri)
-                        edit_action(next_action_uri, gpm_graph_uri, lld_graph_uri)
-                    }
-                    else{
-                        data1 = {action_uri: action_uri, loopnext: loopnext[condition_result], gpm_graph_uri: gpm_graph_uri, lld_graph_uri:lld_graph_uri}
+            if(ifcondition.length != 0){
+                //プロンプトウィンドウの入力値
+                var condition_result = prompt(ifcondition1);
+                if(condition_result < ifcondition.length && condition_result >= 0){
+                    if(control.includes("if")){
+                        data1 = {action_uri: action_uri, ifnext:ifnext[condition_result], gpm_graph_uri:gpm_graph_uri, lld_graph_uri:lld_graph_uri, control:"if"}
                         $.ajax({
-                            type: 'POST',
-                            url: 'loop_add',
+                            type:'POST',
+                            url:'add_subprocess',
                             data: data1,
                             dataType: 'text',
                         })
-                        .done(function(response){
+                        .done(function(responce){
                             data2 = {action_uri: action_uri, lld_graph_uri: lld_graph_uri}
+                                $.ajax({
+                                    type:'POST',
+                                    url: 'get_nextaction',
+                                    data:data2,
+                                    dataType: 'text',
+                                })
+                                .done(function(response){
+                                    let objData2 = JSON.parse(response);
+                                    next_action_uri = objData2.next_action_uri
+                                    second(next_action_uri, gpm_graph_uri, lld_graph_uri)
+                                    edit_action(next_action_uri, gpm_graph_uri, lld_graph_uri)
+                                })
+                            })
+                        }
+                    else{
+                        if(ifcondition[condition_result].includes("[loop]") == false){
+                            second(next_action_uri, gpm_graph_uri, lld_graph_uri)
+                            edit_action(next_action_uri, gpm_graph_uri, lld_graph_uri)
+                        }
+                        else{
+                            data1 = {action_uri: action_uri, ifnext: ifnext[condition_result], gpm_graph_uri: gpm_graph_uri, lld_graph_uri:lld_graph_uri, control:"loop"}
                             $.ajax({
-                                type:'POST',
-                                url: 'get_nextaction',
-                                data:data2,
+                                type: 'POST',
+                                url: 'add_subprocess',
+                                data: data1,
                                 dataType: 'text',
                             })
                             .done(function(response){
-                                let objData2 = JSON.parse(response);
-                                next_action_uri = objData2.next_action_uri
-                                second(next_action_uri, gpm_graph_uri, lld_graph_uri)
-                                edit_action(next_action_uri, gpm_graph_uri, lld_graph_uri)
+                                data2 = {action_uri: action_uri, lld_graph_uri: lld_graph_uri}
+                                $.ajax({
+                                    type:'POST',
+                                    url: 'get_nextaction',
+                                    data:data2,
+                                    dataType: 'text',
+                                })
+                                .done(function(response){
+                                    let objData2 = JSON.parse(response);
+                                    next_action_uri = objData2.next_action_uri
+                                    second(next_action_uri, gpm_graph_uri, lld_graph_uri)
+                                    edit_action(next_action_uri, gpm_graph_uri, lld_graph_uri)
+                                })
                             })
-                        })
-                    }
+                        }
+                    } 
                 }
             }
             else{

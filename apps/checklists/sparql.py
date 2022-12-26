@@ -199,7 +199,7 @@ def get_GPM_entity(gpm_graph_uri):
     return result, urilist
 
 #始点となるアクションと終点となるアクションを指定して、その間のアクション、情報矢印、コンテナを全て取得
-def get_GPM_part_entity(gpmstart_action_uri, lldend_action_uri, graph_uri):
+def get_GPM_part_entity(gpmstart_action_uri, gpmend_action_uri, graph_uri):
 
     query= """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
     PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -207,26 +207,24 @@ def get_GPM_part_entity(gpmstart_action_uri, lldend_action_uri, graph_uri):
     SELECT ?s ?p ?o
         WHERE
         {GRAPH<"""+graph_uri+""">
-        {{  ?end_action_uri pd3:isUsedBy <"""+ lldend_action_uri +""">.
+        {{ 
             <"""+ gpmstart_action_uri +"""> (pd3:output/pd3:target)* ?action.
-            ?action (pd3:output/pd3:target)* ?end_action_uri.
+            ?action (pd3:output/pd3:target)* <"""+ gpmend_action_uri +""">.
             ?s ?p ?o.
             FILTER (?s = ?action)
             FILTER (?p = rdf:type || ?p = pd3:actionType || ?p = pd3:expansion || ?p = pd3:layer || ?p = pd3:output || ?p = pd3:value || ?p = pd3:attribution)
         }
         UNION{
-            ?end_action_uri pd3:isUsedBy <"""+ lldend_action_uri +""">.
             <"""+gpmstart_action_uri+"""> (pd3:output/pd3:target)* ?action.
-                ?action (pd3:output/pd3:target)* ?end_action_uri.
+                ?action (pd3:output/pd3:target)* <"""+gpmend_action_uri+""">.
             ?action pd3:output ?s.
             ?s rdf:type pd3:Flow.
             ?s ?p ?o.
             FILTER (?p = rdf:type || ?p = pd3:arcType || ?p = pd3:layer || ?p = pd3:source || ?p = pd3:target || ?p = pd3:value)
         }
         UNION{
-            ?end_action_uri pd3:isUsedBy <"""+ lldend_action_uri +""">.
             <"""+gpmstart_action_uri+"""> (pd3:output/pd3:target)* ?action.
-                ?action (pd3:output/pd3:target)* ?end_action_uri.
+                ?action (pd3:output/pd3:target)* <"""+gpmend_action_uri+""">.
             ?action pd3:expansion/(pd3:member/pd3:expansion)* ?s.
             ?s rdf:type pd3:Container.
             {           ?s ?p ?o
@@ -242,9 +240,8 @@ def get_GPM_part_entity(gpmstart_action_uri, lldend_action_uri, graph_uri):
                     }
         }
         UNION{
-            ?end_action_uri pd3:isUsedBy <"""+ lldend_action_uri +""">.
             <"""+gpmstart_action_uri+"""> (pd3:output/pd3:target)* ?action.
-                ?action (pd3:output/pd3:target)* ?end_action_uri.
+                ?action (pd3:output/pd3:target)* <"""+gpmend_action_uri+""">.
             ?action pd3:expansion/(pd3:member/pd3:expansion)* ?container.
             ?container rdf:type pd3:Container;
                pd3:output ?s.
@@ -253,9 +250,8 @@ def get_GPM_part_entity(gpmstart_action_uri, lldend_action_uri, graph_uri):
             FILTER(?p = rdf:type || ?p = pd3:arcType || ?p = pd3:layer || ?p = pd3:source || ?p = pd3:target || ?p = pd3:value)
         }
         UNION{
-            ?end_action_uri pd3:isUsedBy <"""+ lldend_action_uri +""">.
             <"""+gpmstart_action_uri+"""> (pd3:output/pd3:target)* ?action.
-                ?action (pd3:output/pd3:target)* ?end_action_uri.
+                ?action (pd3:output/pd3:target)* <"""+gpmend_action_uri+""">.
             ?action pd3:expansion/(pd3:member/pd3:expansion)* ?container.
             ?container rdf:type pd3:Container.
             ?container pd3:member ?s.
@@ -265,9 +261,8 @@ def get_GPM_part_entity(gpmstart_action_uri, lldend_action_uri, graph_uri):
             FILTER (?p = rdf:type || ?p = pd3:actionType || ?p = pd3:expansion || ?p = pd3:layer || ?p = pd3:output || ?p = pd3:value || ?p = pd3:attribution)
         }
         UNION{
-            ?end_action_uri pd3:isUsedBy <"""+ lldend_action_uri +""">.
             <"""+gpmstart_action_uri+"""> (pd3:output/pd3:target)* ?action.
-                ?action (pd3:output/pd3:target)* ?end_action_uri.
+                ?action (pd3:output/pd3:target)* <"""+gpmend_action_uri+""">.
             ?action pd3:expansion/(pd3:member/pd3:expansion)* ?container.
             ?container rdf:type pd3:Container.
             ?container pd3:member ?s.
@@ -500,8 +495,6 @@ def action_supinfo(action_uri, graph_uri):
     sparql.setReturnFormat(JSON)
     conresult = sparql.query().convert()["results"]["bindings"]
 
-    print("output")
-    print(conresult)
     
     output_result = {'output_uri': '', 'output_value': ''}
     # for i in range(len(conresult)):
@@ -531,6 +524,9 @@ def action_supinfo(action_uri, graph_uri):
             output_result["output_value"] = output_values[i]
             break
     if(output_result["output_uri"]==""):
+        print("ふぁい")
+        print(action_uri)
+        print(output_uris, output_values)
         output_uris, output_values = zip(*sorted(zip(output_uris, output_values)))
         output_result["output_uri"] = output_uris[0]
         output_result["output_value"] = output_values[0]
@@ -582,6 +578,26 @@ def get_gpm_action(action_uri, gpm_graph_uri):
     converted_results = sparql.query().convert()["results"]["bindings"]
     if(len(converted_results)!= 0):
         return converted_results[0]['gpm_action_uri']["value"]
+    else:
+        return ''
+
+def get_gpm_endaction(action_uri, gpm_graph_uri):
+    query = """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
+    SELECT ?end
+    WHERE{
+        GRAPH <""" + str(gpm_graph_uri) + """>{
+            ?gpm_action_uri pd3:isUsedBy <""" + action_uri + """>.
+            ?gpm_action_uri (pd3:output/pd3:target)* ?end.
+            ?end pd3:actionType "end".
+        }
+    }
+    """
+    sparql = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql.setQuery(query)
+    sparql.setReturnFormat(JSON)
+    converted_results = sparql.query().convert()["results"]["bindings"]
+    if(len(converted_results)!= 0):
+        return converted_results[0]['end']["value"]
     else:
         return ''
 
@@ -728,16 +744,16 @@ def get_nextloop(action_uri, gpm_graph_uri, lld_graph_uri):
     query = """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
     PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-    SELECT ?loopcondition ?loopnext
+    SELECT ?ifcondition ?ifnext ?control
     WHERE
     {GRAPH <"""+ lld_graph_uri + """> {
-        <"""+ action_uri +"""> pd3:control "loop";
-        pd3:uses ?gpm_action
+        <"""+ action_uri +"""> pd3:control ?control;
+        pd3:uses ?gpm_action.
     }
     GRAPH<"""+gpm_graph_uri+""">{
         ?gpm_action pd3:output ?gpm_flow.
-        ?gpm_flow pd3:value ?loopcondition;
-        pd3:target ?loopnext.
+        ?gpm_flow pd3:value ?ifcondition;
+        pd3:target ?ifnext.
     }
     }
     """
@@ -747,31 +763,34 @@ def get_nextloop(action_uri, gpm_graph_uri, lld_graph_uri):
     converted_results = sparql.query().convert()["results"]["bindings"]
     results_condition = []
     results_next = []
+    results_control = []
     for converted_result in converted_results:
-        results_condition.append(converted_result['loopcondition']['value'])
-        results_next.append(converted_result["loopnext"]["value"])
+        results_condition.append(converted_result['ifcondition']['value'])
+        results_next.append(converted_result["ifnext"]["value"])
+        results_control.append(converted_result["control"]["value"])
 
+    #編集中のアクションが一番最後であり，かつその上の階層のアクションの後にループ構造が来る場合
     if(results_next ==[]):
         query1 = """PREFIX pd3: <http://DigitalTriplet.net/2021/08/ontology#>
         PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-        SELECT ?loopcondition ?loopnext (COUNT (?inter) AS ?distance)
+        SELECT ?ifcondition ?ifnext ?control (COUNT (?inter) AS ?distance)
         WHERE
         {GRAPH <"""+ lld_graph_uri + """> {
             <"""+ action_uri +"""> pd3:output/pd3:target ?end.
             ?end pd3:actionType "end".
             <"""+action_uri+"""> (pd3:attribution/pd3:contraction)* ?inter.
             ?inter (pd3:attribution/pd3:contraction)+ ?upper.
-            ?upper pd3:control "loop";
+            ?upper pd3:control ?control;
             pd3:uses ?gpm_action.
         }
         GRAPH<"""+gpm_graph_uri+""">{
             ?gpm_action pd3:output ?gpm_flow.
-            ?gpm_flow pd3:value ?loopcondition;
-            pd3:target ?loopnext.
+            ?gpm_flow pd3:value ?ifcondition;
+            pd3:target ?ifnext.
         }
         }
-        GROUP BY ?loopcondition ?loopnext
+        GROUP BY ?ifcondition ?ifnext ?control
         ORDER BY ?distance
         """
         sparql1 = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
@@ -779,10 +798,11 @@ def get_nextloop(action_uri, gpm_graph_uri, lld_graph_uri):
         sparql1.setReturnFormat(JSON)
         converted_results = sparql1.query().convert()["results"]["bindings"]
         for converted_result in converted_results:
-            results_condition.append(converted_result['loopcondition']['value'])
-            results_next.append(converted_result["loopnext"]["value"])
+            results_condition.append(converted_result['ifcondition']['value'])
+            results_next.append(converted_result["ifnext"]["value"])
+            results_control.append(converted_result["control"]["value"])
 
-    return results_condition, results_next
+    return results_condition, results_next, results_control
 
 
 def get_nextaction1(action_uri, graph_uri):

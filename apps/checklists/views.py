@@ -334,14 +334,16 @@ def add_LLD(request):
         print('ねくすと')
         print(output)
 
-        #loopが存在する場合、条件文と次のアクションを保存する
-        #loopnextはgpmのアクションであることに注意
-        loopcondition, loopnext = sparql.get_nextloop(action_uri, gpm_graph_uri, lld_graph_uri)
+        #ifが存在する場合、条件文と次のアクションを保存する
+        #ifnextはgpmのアクションであることに注意
+        ifcondition, ifnext, control = sparql.get_nextloop(action_uri, gpm_graph_uri, lld_graph_uri)
+        print(control)
 
         result = dict()
         result['next_action_uri']= next_action_uri
-        result['loopcondition'] = loopcondition
-        result['loopnext'] = loopnext
+        result['ifcondition'] = ifcondition
+        result['ifnext'] = ifnext
+        result['control'] = control
 
     return JsonResponse(result)
 # Create your views here.
@@ -403,14 +405,24 @@ def hello(request):
     context = dict()
     return render(request,os.getcwd()+'/templates/checklists/hello.html', context )
 
-def loop_add(request):
+#制御構文（if,loop）によるプロセスの追加の機能
+def add_subprocess(request):
     result = dict()
     #このaction_uriはlld上のアクション
     action_uri = request.POST.get('action_uri')
-    #loopnextはgpm上のアクション
-    loopnext = request.POST.get('loopnext')
+    #ifnextはgpm上のアクション
+    ifnext = request.POST.get('ifnext')
     lld_graph_uri = request.POST.get('lld_graph_uri')
     gpm_graph_uri = request.POST.get('gpm_graph_uri')
-    sparql_update.add_loopgraph(action_uri, loopnext, lld_graph_uri, gpm_graph_uri)
+    control = request.POST.get('control')
+    print("control")
+    print(control)
+    gpm_end_action =""
+    if(control == "loop"):
+        gpm_end_action = sparql.get_gpm_action(action_uri, gpm_graph_uri)
+    elif(control == "if"):
+        gpm_end_action = sparql.get_gpm_endaction(action_uri, gpm_graph_uri)
+    
+    sparql_update.add_loopgraph(action_uri, ifnext, gpm_end_action, lld_graph_uri, gpm_graph_uri, control)
 
     return JsonResponse(result)
