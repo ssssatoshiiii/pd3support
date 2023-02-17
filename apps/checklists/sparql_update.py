@@ -3,12 +3,13 @@ from django.http import JsonResponse
 from rdflib import Graph, RDFS, URIRef, Namespace, RDF, Literal
 from pyfuseki import FusekiUpdate
 from pyfuseki.utils import RdfUtils
+from django.conf import settings
 import datetime
 from . import sparql
 
 def add_LLDgraph_tofuseki(lld_title, gpm_graph_uri):
     #fusekiへの追加
-    fuseki = FusekiUpdate('http://digital-triplet.net:3030', 'test')
+    fuseki = FusekiUpdate(f"http://{settings.DB_DOMAIN}:3030", settings.DATASET)
     g = Graph()
     rdf = Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
     pd3= Namespace('http://DigitalTriplet.net/2021/08/ontology#')
@@ -19,7 +20,7 @@ def add_LLDgraph_tofuseki(lld_title, gpm_graph_uri):
     now = datetime.datetime.now(JST)
     d = '{:%Y%m%d%H%M%S}'.format(now) 
 
-    lld_uri = 'http://digital-triplet.net:3030' + '/' + lld_title + '/' + d + '/'
+    lld_uri = f"http://{settings.DB_DOMAIN}:3030" + '/' + lld_title + '/' + d + '/'
     
     #記述のメタデータの作成
     insert_data = [[URIRef(lld_uri),rdf.type, pd3.EngineeringProcess], 
@@ -239,7 +240,7 @@ def update_forloopif(triples, urilist, gpm_graph_uri):
                 }
             }
             """
-            sparql1 = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+            sparql1 = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
             sparql1.setQuery(query)
             sparql1.setReturnFormat(JSON)
             converted_results = sparql1.query().convert()["results"]["bindings"]
@@ -266,7 +267,7 @@ def add_LLD_metainfo(request):
     new_description = request.POST.get("selected_LLD_description")
 
     #fusekiへの追加
-    fuseki = FusekiUpdate('http://digital-triplet.net:3030', 'test')
+    fuseki = FusekiUpdate(f"http://{settings.DB_DOMAIN}:3030", settings.DATASET)
     dcterms = Namespace('http://purl.org/dc/terms/')
 
     print("new_title", new_title)
@@ -322,7 +323,7 @@ def add_LLD_tofuseki(action_uri, action, intention, toolknowledge, annotation, r
 
     print('あいうえお')
     #fusekiへの追加
-    fuseki = FusekiUpdate('http://digital-triplet.net:3030', 'test')
+    fuseki = FusekiUpdate(f"http://{settings.DB_DOMAIN}:3030", settings.DATASET)
     rdf = Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
     pd3= Namespace('http://DigitalTriplet.net/2021/08/ontology#')
 
@@ -396,7 +397,7 @@ def add_LLDaction_tofuseki(added_action, base_action_uri, lld_graph_uri, flag):
             <"""+ base_action_uri +"""> """+ part_query +"""/pd3:value ?added_action.
         }
     }"""
-    sparql1 = SPARQLWrapper("http://digital-triplet.net:3030/test/sparql")
+    sparql1 = SPARQLWrapper(f"http://{settings.DB_DOMAIN}:3030/{settings.DATASET}/sparql")
     sparql1.setQuery(query)
     sparql1.setReturnFormat(JSON)
     converted_results = sparql1.query().convert()["results"]["bindings"]
@@ -404,7 +405,7 @@ def add_LLDaction_tofuseki(added_action, base_action_uri, lld_graph_uri, flag):
     if(len(converted_results)!= 0):
         if(converted_results[0]["added_action"]["value"] != added_action):
             #fusekiへの追加
-            fuseki = FusekiUpdate('http://digital-triplet.net:3030', 'test')
+            fuseki = FusekiUpdate(f"http://{settings.DB_DOMAIN}:3030", settings.DATASET)
             g = Graph()
             rdf = Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
             pd3= Namespace('http://DigitalTriplet.net/2021/08/ontology#')
@@ -532,7 +533,7 @@ def add_LLDaction_tofuseki(added_action, base_action_uri, lld_graph_uri, flag):
 #実行済みのアクションに対してcheckをつける
 def add_done_action(action_uri, lld_graph_uri):
         #fusekiへの追加
-    fuseki = FusekiUpdate('http://digital-triplet.net:3030', 'test')
+    fuseki = FusekiUpdate(f"http://{settings.DB_DOMAIN}:3030", settings.DATASET)
     pd3= Namespace('http://DigitalTriplet.net/2021/08/ontology#')
 
     insert_data = [[URIRef(action_uri), pd3.done, Literal("done")]]
@@ -557,7 +558,7 @@ def add_done_action(action_uri, lld_graph_uri):
 #loopの内容を更新する
 def add_loopgraph(action_uri, gpm_start_action, gpm_end_action, lld_graph_uri, gpm_graph_uri, control):
     #fusekiへの追加
-    fuseki = FusekiUpdate('http://digital-triplet.net:3030', 'test')
+    fuseki = FusekiUpdate(f"http://{settings.DB_DOMAIN}:3030", settings.DATASET)
     g = Graph()
     rdf = Namespace('http://www.w3.org/1999/02/22-rdf-syntax-ns#')
     pd3= Namespace('http://DigitalTriplet.net/2021/08/ontology#')
