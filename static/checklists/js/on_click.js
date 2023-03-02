@@ -186,4 +186,6 @@ function edit_action(action_uri, gpm_graph_uri, lld_graph_uri){
     $("#"+escapeSelectorString(String(action_uri))).css('border', '3px double #0067c0');
   })
 
+  second(action_uri, gpm_graph_uri, lld_graph_uri)
+
 }
